@@ -1,0 +1,26 @@
+# Batch files
+*.bat
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE specific files
+.idea/
+.vscode/
+*.code-workspace
+
+# Compiled Python files
+*.pyc
+
+# Virtual environment
+venv/
