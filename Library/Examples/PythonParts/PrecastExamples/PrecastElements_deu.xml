@@ -1,0 +1,63 @@
+<?xml version="1.0"?><Element>
+  <StringTable>AssemblyGroupPlacement Stringtable</StringTable>
+  <Item>
+    <TextId>1000</TextId>
+    <Text>Werk</Text>
+  </Item>
+  <Item>
+    <TextId>1001</TextId>
+    <Text>Norm</Text>
+  </Item>
+  <Item>
+    <TextId>1002</TextId>
+    <Text>Als PythonPart erzeugen</Text>
+  </Item>
+  <Item>
+    <TextId>1003</TextId>
+    <Text>Element</Text>
+  </Item>
+  <Item>
+    <TextId>1004</TextId>
+    <Text>Schicht</Text>
+  </Item>
+  <Item>
+    <TextId>1005</TextId>
+    <Text>Positionsnummer</Text>
+  </Item>
+  <Item>
+    <TextId>1006</TextId>
+    <Text>Positionsnummer Zus.-Text</Text>
+  </Item>
+  <Item>
+    <TextId>1007</TextId>
+    <Text>Stückfaktor</Text>
+  </Item>
+  <Item>
+    <TextId>1008</TextId>
+    <Text>Typenkennzeichen</Text>
+  </Item>
+  <Item>
+    <TextId>1009</TextId>
+    <Text>Beschriftung erzeugen</Text>
+  </Item>
+  <Item>
+    <TextId>1010</TextId>
+    <Text>Ref.-punkt für die Beschriftung</Text>
+  </Item>
+  <Item>
+    <TextId>1011</TextId>
+    <Text>Manuelle Abmessungen</Text>
+  </Item>
+  <Item>
+    <TextId>1012</TextId>
+    <Text>Abmesssung in Blickrichtung</Text>
+  </Item>
+  <Item>
+    <TextId>1013</TextId>
+    <Text>Abmesssung in Spannrichtung</Text>
+  </Item>
+    <Item>
+    <TextId>1014</TextId>
+    <Text>Abmesssung in Querrichtung</Text>
+  </Item>
+</Element>

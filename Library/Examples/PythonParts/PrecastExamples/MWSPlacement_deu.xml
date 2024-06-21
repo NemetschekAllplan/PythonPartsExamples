@@ -1,0 +1,83 @@
+<?xml version="1.0"?><Element>
+  <StringTable>AssemblyGroupPlacement Stringtable</StringTable>
+  <Item>
+    <TextId>1000</TextId>
+    <Text>Länge</Text>
+  </Item>
+  <Item>
+    <TextId>1001</TextId>
+    <Text>Breite</Text>
+  </Item>
+  <Item>
+    <TextId>1002</TextId>
+    <Text>Höhe</Text>
+  </Item>
+  <Item>
+    <TextId>1003</TextId>
+    <Text>Bewehrung</Text>
+  </Item>
+  <Item>
+    <TextId>1004</TextId>
+    <Text>Stahlgüte</Text>
+  </Item>
+  <Item>
+    <TextId>1005</TextId>
+    <Text>Biegerolle</Text>
+  </Item>
+  <Item>
+    <TextId>1006</TextId>
+    <Text>Durchmesser 1. Verlegung</Text>
+  </Item>
+  <Item>
+    <TextId>1007</TextId>
+    <Text>Betondeckung 1. Verlegung</Text>
+  </Item>
+  <Item>
+    <TextId>1008</TextId>
+    <Text>Abstand 1. Verlegung</Text>
+  </Item>
+  <Item>
+    <TextId>1009</TextId>
+    <Text>Durchmesser 2. Verlegung</Text>
+  </Item>
+  <Item>
+    <TextId>1010</TextId>
+    <Text>Betondeckung 2. Verlegung</Text>
+  </Item>
+  <Item>
+    <TextId>1011</TextId>
+    <Text>Abstand 2. Verlegung</Text>
+  </Item>
+  <Item>
+    <TextId>1012</TextId>
+    <Text>Mattenschweißanlage</Text>
+  </Item>
+  <Item>
+    <TextId>1013</TextId>
+    <Text>Nummer</Text>
+  </Item>
+    <Item>
+    <TextId>1014</TextId>
+    <Text>Bezeichnung</Text>
+  </Item>
+    <Item>
+    <TextId>1015</TextId>
+    <Text>Werk</Text>
+  </Item>
+    <Item>
+    <TextId>1016</TextId>
+    <Text>Stückfaktor</Text>
+  </Item>
+    <TextId>1017</TextId>
+    <Text>Höhe Längseisen</Text>
+  </Item>
+  <Item>
+    <TextId>1018</TextId>
+    <Text>Längseisen auswählen</Text>
+  </Item>
+  <Item>
+    <TextId>1019</TextId>
+    <Text>Basissegmentnummer der Basisverlegung</Text>
+  </Item>
+
+</Element>

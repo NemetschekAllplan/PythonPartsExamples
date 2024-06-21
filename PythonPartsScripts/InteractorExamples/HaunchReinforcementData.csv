@@ -1,0 +1,5 @@
+X_Coord,Y_Coord,Z_Coord,Parameter
+0, 0, 1000,"BottomLength=1000;BottomWidth=1000;Height=1000"
+10000, 0, 0,"BottomLength=1500;BottomWidth=2000;Height=1500"
+0, 10000, 500,"BottomLength=1000;BottomWidth=1000;Height=1000"
+10000, 10000, 500,"BottomLength=2000;BottomWidth=2000;Height=1500"

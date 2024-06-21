@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>Plate</Title>
+        <Name>InteractorExamples\General\PythonPartConnectionPlate.py</Name>
+    </Script>
+    <Page>
+        <Name>Parent:PythonPartConnection</Name>
+        <Text>Properties</Text>
+
+        <Parameter>
+            <Name>Format</Name>
+            <Text>Format</Text>
+            <ValueType>Expander</ValueType>
+            <Parameter>
+                <Name>CommonProp</Name>
+                <Text></Text>
+                <Value></Value>
+                <ValueType>CommonProperties</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>PlateExpander</Name>
+            <Text>Plate</Text>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>Length</Name>
+                <Text>Length</Text>
+                <Value>2000.</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>Width</Name>
+                <Text>Width</Text>
+                <Value>1000.</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>Height</Name>
+                <Text>Height</Text>
+                <Value>100.</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>CreateButtonRow</Name>
+                <Text> </Text>
+                <ValueType>Row</ValueType>
+                <Parameter>
+                    <Name>CreateButtonRow</Name>
+                    <Text>Create</Text>
+                    <EventId>1000</EventId>
+                    <ValueType>Button</ValueType>
+                    <Visible>__is_input_mode()</Visible>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+    </Page>
+    <Page>
+        <Name>__HiddenPage__</Name>
+
+        <Parameter>
+            <Name>__HoleConnectionUuidTimeStamp__</Name>
+            <Value>[]</Value>
+            <ValueType>Tuple(String,String)</ValueType>
+        </Parameter>
+    </Page>
+</Element>

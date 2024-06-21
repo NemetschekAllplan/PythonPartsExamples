@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>Select type</Title>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text></Text>
+
+        <Parameter>
+            <Name>Row1</Name>
+            <Text> </Text>
+            <ValueType>Row</ValueType>
+
+            <Parameter>
+                <Name>Button1</Name>
+                <Text>Cuboid</Text>
+                <EventId>1000</EventId>
+                <ValueType>Button</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>Row2</Name>
+            <Text>  </Text>
+            <ValueType>Row</ValueType>
+
+            <Parameter>
+                <Name>Button2</Name>
+                <Text>Cylinder</Text>
+                <EventId>1001</EventId>
+                <ValueType>Button</ValueType>
+            </Parameter>
+        </Parameter>
+    </Page>
+</Element>

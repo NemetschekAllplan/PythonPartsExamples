@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Name>ReinforcementExamples\ColumnGroup.py</Name>
+        <Title>Column group</Title>
+        <Version>1.0</Version>
+        <ReadLastInput>True</ReadLastInput>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Geometry</Text>
+
+        <Parameter>
+            <Name>ColumnWidth</Name>
+            <Text>Width</Text>
+            <Value>600.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>ColumnThickness</Name>
+            <Text>Thickness</Text>
+            <Value>400.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>ColumnHeight</Name>
+            <Text>Height</Text>
+            <Value>5000.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>Divisions</Name>
+            <Text>Divisions</Text>
+            <Value>4</Value>
+            <ValueType>Integer</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>Radius</Name>
+            <Text>Radius</Text>
+            <Value>10000</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>CreateReinf</Name>
+            <Text>Create reinforcement</Text>
+            <Value>True</Value>
+            <ValueType>Checkbox</ValueType>
+        </Parameter>
+    </Page>
+</Element>

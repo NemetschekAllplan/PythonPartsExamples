@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>ExportImportInteractor</Title>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Example</Text>
+
+        <Parameter>
+            <Name>DwgExportConfigFileName</Name>
+            <Text>DWG export configuration file</Text>
+            <Value></Value>
+            <ValueType>String</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>DwgImportConfigFileName</Name>
+            <Text>DWG import configuration file</Text>
+            <Value></Value>
+            <ValueType>String</ValueType>
+        </Parameter>
+
+        <Parameter>
+            <Name>Expander1</Name>
+            <Text>Drawing file</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>DrawingFileNumber</Name>
+                <Text>File number</Text>
+                <Value>10</Value>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>DwgDrawingFileName</Name>
+                <Text>DWG export/import file</Text>
+                <Value>C:\Nemetschek\Output\DWGDrawing.dwg</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>DrawingFileButton1</Name>
+                <Text>Export DWG</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>DrawingButton1</Name>
+                    <Text>Execute</Text>
+                    <EventId>1001</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingXOffset</Name>
+                <Text>X offset</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingYOffset</Name>
+                <Text>Y offset</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingZOffset</Name>
+                <Text>Z offset</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingZAngle</Name>
+                <Text>Rotation around the Z-axis</Text>
+                <Value>0</Value>
+                <ValueType>Angle</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingXRotation</Name>
+                <Text>X rotation (mm)</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingYRotation</Name>
+                <Text>Y rotation (mm)</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingFileButton2</Name>
+                <Text>Import DWG</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>DrawingButton2</Name>
+                    <Text>Execute</Text>
+                    <EventId>1002</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+
+            <Parameter>
+                <Name>BvbsDrawingFileName</Name>
+                <Text>BVBS export file name</Text>
+                <Value>C:\Nemetschek\Output\BVBSDrawing.abs</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>BvbsProject</Name>
+                <Text>BVBS export project</Text>
+                <Value>BVBS Project</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>BvbsPlan</Name>
+                <Text>BVBS export plan</Text>
+                <Value>BVBS plan</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>BvbsIndex</Name>
+                <Text>BVBS export index</Text>
+                <Value>BVBS index</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>BvbsSplitGroups</Name>
+                <Text>BVBS export split groups</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>DrawingFileButton4</Name>
+                <Text>Export BVBS</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>DrawingButton4</Name>
+                    <Text>Execute</Text>
+                    <EventId>1004</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>Expander2</Name>
+            <Text>Layout file</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>LayoutFileNumber</Name>
+                <Text>File number</Text>
+                <Value>10</Value>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>DwgLayoutFileName</Name>
+                <Text>DWG export/import file name</Text>
+                <Value>C:\Nemetschek\Output\DWGLayout.dwg</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>LayoutFileButton1</Name>
+                <Text>Export DWG</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>LayoutButton1</Name>
+                    <Text>Execute</Text>
+                    <EventId>2001</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+            <Parameter>
+                <Name>LayoutXOffset</Name>
+                <Text>X offset</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>LayoutYOffset</Name>
+                <Text>Y offset</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>LayoutFileButton2</Name>
+                <Text>Import DWG</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>LayoutButton2</Name>
+                    <Text>Execute</Text>
+                    <EventId>2002</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+
+            <Parameter>
+                <Name>PdfLayoutFileName</Name>
+                <Text>PDF export/import file name</Text>
+                <Value>C:\Nemetschek\Output\PDFLayout.pdf</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>PdfFavLayoutFileName</Name>
+                <Text>PDF favorite export/import file name</Text>
+                <Value>C:\Nemetschek\Output\PdfFavorite.pdfnfx</Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>LayoutFileButton3</Name>
+                <Text>Export PDF</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>LayoutButton3</Name>
+                    <Text>Execute</Text>
+                    <EventId>2003</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+    </Page>
+</Element>

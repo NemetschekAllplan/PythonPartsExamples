@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>Hole</Title>
+        <Name>InteractorExamples\General\PythonPartConnectionHole.py</Name>
+    </Script>
+    <Page>
+        <Name>Parent:PythonPartConnection</Name>
+        <Text>Properties</Text>
+
+        <Parameter>
+            <Name>HoleExpander</Name>
+            <Text>Hole</Text>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>Radius</Name>
+                <Text>Radius</Text>
+                <Value>100.</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>RefPointX</Name>
+                <Text>Reference point x</Text>
+                <Value>500.</Value>
+                <ValueType>Length</ValueType>
+                <ExcludeIdentical>True</ExcludeIdentical>
+            </Parameter>
+            <Parameter>
+                <Name>RefPointY</Name>
+                <Text>Reference point y</Text>
+                <Value>500.</Value>
+                <ValueType>Length</ValueType>
+                <ExcludeIdentical>True</ExcludeIdentical>
+            </Parameter>
+            <Parameter>
+                <Name>CreateButtonRow</Name>
+                <Text> </Text>
+                <ValueType>Row</ValueType>
+                <Parameter>
+                    <Name>CreateButtonRow</Name>
+                    <Text>Create</Text>
+                    <EventId>1000</EventId>
+                    <ValueType>Button</ValueType>
+                    <Visible>__is_input_mode()</Visible>
+                    <Enable>__PlateConnectionUUID__</Enable>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+    </Page>
+    <Page>
+        <Name>__HiddenPage__</Name>
+
+        <Parameter>
+            <Name>__PlateConnectionUUID__</Name>
+            <Text></Text>
+            <Value></Value>
+            <ValueType>String</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>PlateHeight</Name>
+            <Text>needed to create a hole update in case of plate height update</Text>
+            <Value></Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>PlatePlacementMatrix</Name>
+            <Text>needed to create a hole update in case of plate movement, ...</Text>
+            <Value></Value>
+            <ValueType>Matrix3D</ValueType>
+        </Parameter>
+    </Page>
+</Element>

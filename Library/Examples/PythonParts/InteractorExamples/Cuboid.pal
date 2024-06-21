@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>Cuboid</Title>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Geometry</Text>
+
+        <Parameter>
+            <Name>Length</Name>
+            <Text>Length</Text>
+            <Value>400.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>Width</Name>
+            <Text>Width</Text>
+            <Value>500.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>Height</Name>
+            <Text>Height</Text>
+            <Value>600.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+    </Page>
+</Element>

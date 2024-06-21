@@ -1,0 +1,84 @@
+<?xml version="1.0"?><Element>
+  <StringTable>AssemblyGroupPlacement Stringtable</StringTable>
+  <Item>
+    <TextId>1000</TextId>
+    <Text>Length</Text>
+  </Item>
+  <Item>
+    <TextId>1001</TextId>
+    <Text>Width</Text>
+  </Item>
+  <Item>
+    <TextId>1002</TextId>
+    <Text>Height</Text>
+  </Item>
+  <Item>
+    <TextId>1003</TextId>
+    <Text>Reinforcement</Text>
+  </Item>
+  <Item>
+    <TextId>1004</TextId>
+    <Text>Steelgrade</Text>
+  </Item>
+  <Item>
+    <TextId>1005</TextId>
+    <Text>Bendingroller</Text>
+  </Item>
+  <Item>
+    <TextId>1006</TextId>
+    <Text>Diameter 1st placement</Text>
+  </Item>
+  <Item>
+    <TextId>1007</TextId>
+    <Text>Concretecover 1st placement</Text>
+  </Item>
+  <Item>
+    <TextId>1008</TextId>
+    <Text>Distance 1st placement</Text>
+  </Item>
+  <Item>
+    <TextId>1009</TextId>
+    <Text>Diameter 2nd placement</Text>
+  </Item>
+  <Item>
+    <TextId>1010</TextId>
+    <Text>Concretecover 2nd placement</Text>
+  </Item>
+  <Item>
+    <TextId>1011</TextId>
+    <Text>Distance 2nd placement</Text>
+  </Item>
+  <Item>
+    <TextId>1012</TextId>
+    <Text>Mesh welding system</Text>
+  </Item>
+  <Item>
+    <TextId>1013</TextId>
+    <Text>Number</Text>
+  </Item>
+  <Item>
+    <TextId>1014</TextId>
+    <Text>Name</Text>
+  </Item>
+  <Item>
+    <TextId>1015</TextId>
+    <Text>Factory</Text>
+  </Item>
+  <Item>
+    <TextId>1016</TextId>
+    <Text>Piecefactor</Text>
+  </Item>
+  <Item>
+    <TextId>1017</TextId>
+    <Text>Height longit bar</Text>
+  </Item>
+  <Item>
+    <TextId>1018</TextId>
+    <Text>Select longit placement</Text>
+  </Item>
+  <Item>
+    <TextId>1019</TextId>
+    <Text>Basesegmentnumber of baseplacement</Text>
+  </Item>
+
+</Element>

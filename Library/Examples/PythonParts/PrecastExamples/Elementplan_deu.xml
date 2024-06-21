@@ -1,0 +1,11 @@
+<?xml version="1.0"?><Element>
+    <StringTable>Elementplan Stringtable</StringTable>
+    <Item>
+        <TextId>1000</TextId>
+        <Text>Elementplan</Text>
+    </Item>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>MSA-Gruppe mit Elementplan erzeugen</Text>
+    </Item>
+</Element>

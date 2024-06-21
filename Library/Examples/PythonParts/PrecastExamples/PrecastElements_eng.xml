@@ -1,0 +1,63 @@
+<?xml version="1.0"?><Element>
+  <StringTable>AssemblyGroupPlacement Stringtable</StringTable>
+  <Item>
+    <TextId>1000</TextId>
+    <Text>Factory</Text>
+  </Item>
+  <Item>
+    <TextId>1001</TextId>
+    <Text>Norm</Text>
+  </Item>
+  <Item>
+    <TextId>1002</TextId>
+    <Text>Create as PythonPart</Text>
+  </Item>
+  <Item>
+    <TextId>1003</TextId>
+    <Text>Element</Text>
+  </Item>
+  <Item>
+    <TextId>1004</TextId>
+    <Text>Layer</Text>
+  </Item>
+  <Item>
+    <TextId>1005</TextId>
+    <Text>Positionnumber</Text>
+  </Item>
+  <Item>
+    <TextId>1006</TextId>
+    <Text>Positionnumber add. text</Text>
+  </Item>
+  <Item>
+    <TextId>1007</TextId>
+    <Text>Piecefactor</Text>
+  </Item>
+  <Item>
+    <TextId>1008</TextId>
+    <Text>Typelabel</Text>
+  </Item>
+  <Item>
+    <TextId>1009</TextId>
+    <Text>Create labelling</Text>
+  </Item>
+  <Item>
+    <TextId>1010</TextId>
+    <Text>Ref. point for labelling</Text>
+  </Item>
+  <Item>
+    <TextId>1011</TextId>
+    <Text>Manual dimensions</Text>
+  </Item>
+  <Item>
+    <TextId>1012</TextId>
+    <Text>Dimensioning view direction</Text>
+  </Item>
+  <Item>
+    <TextId>1013</TextId>
+    <Text>Dimensioning span direction</Text>
+  </Item>
+    <Item>
+    <TextId>1014</TextId>
+    <Text>Dimensioning cross direction</Text>
+  </Item>
+</Element>

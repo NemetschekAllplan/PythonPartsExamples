@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<Element>
+    <StringTable>Allplan PythonParts stringtable</StringTable>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>red</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>green</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>blue</Text>
+    </Item>
+    <Item>
+        <TextId>1004</TextId>
+        <Text>color of the body</Text>
+    </Item>
+    <Item>
+        <TextId>1005</TextId>
+        <Text>String combobox localized</Text>
+    </Item>
+</Element>

@@ -1,0 +1,30 @@
+<Include>
+    <Parameter>
+        <Name>Expander</Name>
+        <TextId>1001</TextId>
+        <Text>Cuboid #</Text>
+        <ValueType>Expander</ValueType>
+
+        <Parameter>
+            <Name>Length</Name>
+            <Text>Length</Text>
+            <TextId>1002</TextId>
+            <Value>1000</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>Width</Name>
+            <Text>Width</Text>
+            <TextId>1003</TextId>
+            <Value>2000</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>Height</Name>
+            <Text>Height</Text>
+            <TextId>1004</TextId>
+            <Value>3000</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+    </Parameter>
+</Include>

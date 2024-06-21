@@ -1,0 +1,20 @@
+﻿<?xml version="1.0"?>
+<Element>
+    <StringTable>Allplan PythonParts stringtable</StringTable>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>Use global settings for pen, linetype, color</Text>
+    </Item>
+    <Item>
+        <TextId>e_HELPCONSTRUCTION</TextId>
+        <Text>Helpconstruction</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>Bardiameter 1</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Common style controls example</Text>
+    </Item>
+</Element>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?><Element>
+    <StringTable>Elementplan Stringtable</StringTable>
+    <Item>
+        <TextId>1000</TextId>
+        <Text>Elementplan</Text>
+    </Item>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>Plan</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>Seite</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Blatt</Text>
+    </Item>
+    <Item>
+        <TextId>1004</TextId>
+        <Text>Änderung</Text>
+    </Item>
+    <Item>
+        <TextId>1005</TextId>
+        <Text>Maßstab</Text>
+    </Item>
+    <Item>
+        <TextId>1006</TextId>
+        <Text>Rahmengröße</Text>
+    </Item>
+    <Item>
+        <TextId>1007</TextId>
+        <Text>Automatische Auswahl</Text>
+    </Item>
+    <Item>
+        <TextId>1008</TextId>
+        <Text>Maximale Größe</Text>
+    </Item>
+    <Item>
+        <TextId>1009</TextId>
+        <Text>Fixiert</Text>
+    </Item>
+</Element>

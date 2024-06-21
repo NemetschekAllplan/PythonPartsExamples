@@ -1,0 +1,40 @@
+﻿<?xml version="1.0"?>
+<Element>
+    <StringTable>Allplan PythonParts stringtable</StringTable>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>London</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>München</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Paris</Text>
+    </Item>
+    <Item>
+        <TextId>1004</TextId>
+        <Text>PictureComboBox|Wert=0|Wert=1|Wert=2</Text>
+    </Item>
+    <Item>
+        <TextId>1005</TextId>
+        <Text>PictureResourceComboBox</Text>
+    </Item>
+    <Item>
+        <TextId>1006</TextId>
+        <Text>Wert=0</Text>
+    </Item>
+    <Item>
+        <TextId>1007</TextId>
+        <Text>Wert=1</Text>
+    </Item>
+    <Item>
+        <TextId>1008</TextId>
+        <Text>Wert=2</Text>
+    </Item>
+    <Item>
+        <TextId>1009</TextId>
+        <Text>Wert=3</Text>
+    </Item>
+</Element>

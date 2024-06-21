@@ -1,0 +1,8 @@
+﻿<?xml version="1.0"?>
+<Element>
+    <StringTable>Allplan PythonParts stringtable</StringTable>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Distance from: </Text>
+    </Item>
+</Element>

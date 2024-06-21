@@ -1,0 +1,32 @@
+﻿<?xml version="1.0"?>
+<Element>
+    <StringTable>Allplan PythonParts stringtable</StringTable>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>Cuboid #</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>left</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>right</Text>
+    </Item>
+    <Item>
+        <TextId>1004</TextId>
+        <Text>Coordinates</Text>
+    </Item>
+    <Item>
+        <TextId>1005</TextId>
+        <Text>X-coordinate #</Text>
+    </Item>
+    <Item>
+        <TextId>1006</TextId>
+        <Text>Y-coordinate #</Text>
+    </Item>
+    <Item>
+        <TextId>1007</TextId>
+        <Text>Number of coordinates</Text>
+    </Item>
+</Element>
