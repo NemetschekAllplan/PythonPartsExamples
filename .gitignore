@@ -3,8 +3,11 @@
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[codi]
+*.py[cod]
 *$py.class
+
+# Type hinting files
+*.pyi
 
 # C extensions
 *.so
@@ -21,6 +24,9 @@ build/
 
 # Compiled Python files
 *.pyc
+
+# ___pyp__ files
+___pyp__
 
 # Virtual environment
 venv/
