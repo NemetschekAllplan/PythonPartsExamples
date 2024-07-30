@@ -1,0 +1,18 @@
+<Include>
+    <Parameter>
+        <Name>XCoord</Name>
+        <Text>X coordinate #</Text>
+        <TextId>1005</TextId>
+        <Value>0</Value>
+        <ValueType>Length</ValueType>
+        <Visible>CoordCount >= $</Visible>
+    </Parameter>
+    <Parameter>
+        <Name>YCoord</Name>
+        <Text>Y coordinate #</Text>
+        <TextId>1006</TextId>
+        <Value>0</Value>
+        <ValueType>Length</ValueType>
+        <Visible>CoordCount >= $</Visible>
+    </Parameter>
+</Include>

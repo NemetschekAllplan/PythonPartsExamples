@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>GeneralModificationsInteractor</Title>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Data</Text>
+
+        <Parameter>
+            <Name>RefPntX</Name>
+            <Text>Reference point x</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>RefPntY</Name>
+            <Text>Reference point y</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>RefPntZ</Name>
+            <Text>Reference point z</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+
+        <Parameter>
+            <Name>Expander1</Name>
+            <Text>Rotate</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>RotationAngle</Name>
+                <Text>Rotation angle</Text>
+                <Value>45</Value>
+                <ValueType>Angle</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>RotateButton</Name>
+                <Text>Rotate the elements</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>RotateButton</Name>
+                    <Text>Execute</Text>
+                    <EventId>1001</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>Expander2</Name>
+            <Text>Scale</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>ScaleX</Name>
+                <Text>Scale factor in x direction</Text>
+                <Value>2</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>ScaleY</Name>
+                <Text>Scale factor in y direction</Text>
+                <Value>3</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>ScaleZ</Name>
+                <Text>Scale factor in z direction</Text>
+                <Value>4</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>ScaleButton</Name>
+                <Text>Scale the elements</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>ScaleButton</Name>
+                    <Text>Execute</Text>
+                    <EventId>1002</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+    </Page>
+</Element>

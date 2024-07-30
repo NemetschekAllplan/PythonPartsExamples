@@ -1,0 +1,36 @@
+﻿
+%B{%U{Simple text without formatting%U}%B}
+Abc
+
+%B{%U{Text using specific formatting string%U}%B}
+%F{Courier New|%B for bold                  %F} %B{abc%B}
+%F{Courier New|%U for underline             %F} %U{abc%U}
+%F{Courier New|%I for italic                %F} %I{abc%I}
+%F{Courier New|%I for strike                %F} %D{abc%D}
+%F{Courier New|bold/underline/italic        %F} %U{%B{%I{abc%I}%B}%U}
+%F{Courier New|%C for color ID              %F} %C{1|a%C} %C{2|b%C} %C{3|c%C} %C{4|d%C} %C{5|e%C} %C{6|f%C} %C{7|g%C} %C{8|h%C} %C{9|i%C} %C{10|j%C} %C{11|k%C} %C{12|l%C} %C{13|m%C} %C{14|n%C} %C{15|o%C}
+%F{Courier New|% EA/EE for squared brackets %F} %EA abcdefg %EE
+%F{Courier New|% RA/RE for round brackets   %F} %RA abcdefg %RE
+
+%B{%U{Unicode text%U}%B}
+bg: Здравей, свят
+el: Γεια σου κόσμε
+pl: Cześć ludzie
+cs: Ahoj světe
+zh: 你好世界
+ja: 今日は
+ru: Всем привет
+uk: Привіт, народ
+ko: 전세계여러분안녕하세요
+ro: bună oameni buni
+
+%B{%U{Different fonts%U}%B}
+%F{Courier New|Courier New        %F} %F{Courier New|Courier New%F}
+%F{Courier New|AR Berkley         %F} %F{AR BERKLEY|AR Berkley%F}
+%F{Courier New|Agency FB          %F} %F{Agency FB|Agency FB%F}
+%F{Courier New|Bauhaus 93         %F} %F{Bauhaus 93|Bauhaus 93%F}
+%F{Courier New|Ariel              %F} %F{21|Ariel%F}
+%F{Courier New|MS Gothic          %F} %F{MS Gothic|MS Gothic%F}
+%F{Courier New|Bookshelf Symbol 7 %F} %F{Bookshelf Symbol 7|abcdefghijklmnopqrstuvwxyz%F}
+%F{Courier New|MS Outlook         %F} %F{MS Outlook|ABCDEFGHIJKLMN%F}
+%F{Courier New|Symbol             %F} %F{Symbol|abcdefghijklmnopqrstuvwxyz%F}

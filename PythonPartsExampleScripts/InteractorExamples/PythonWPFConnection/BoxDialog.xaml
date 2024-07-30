@@ -1,0 +1,18 @@
+<Window x:Class="PythonWPFConnection.BoxDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PythonWPFConnection"
+        mc:Ignorable="d"
+        Title="C# WPF Dialog" Height="166.071" Width="268.304" Topmost="True" ShowInTaskbar="False">
+    <Grid Height="142" VerticalAlignment="Top">
+        <Label x:Name="label" Content="Length" HorizontalAlignment="Left" Margin="34,29,0,0" VerticalAlignment="Top" Width="84"/>
+        <Label x:Name="label_Copy" Content="Width" HorizontalAlignment="Left" Margin="34,60,0,0" VerticalAlignment="Top" Width="84"/>
+        <Label x:Name="label_Copy1" Content="Height" HorizontalAlignment="Left" Margin="34,91,0,0" VerticalAlignment="Top" Width="84"/>
+        <TextBox x:Name="textBoxLength" HorizontalAlignment="Left" Height="23" Margin="123,33,0,0" VerticalAlignment="Top" Width="120" Text="{Binding BoxLength, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox x:Name="textBoxWidth" HorizontalAlignment="Left" Height="23" Margin="123,64,0,0" VerticalAlignment="Top" Width="120" Text="{Binding BoxWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox x:Name="textBoxHeight" HorizontalAlignment="Left" Height="23" Margin="123,95,0,0" VerticalAlignment="Top" Width="120" Text="{Binding BoxHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+    </Grid>
+</Window>

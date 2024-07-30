@@ -1,0 +1,23 @@
+<?xml version="1.0"?><Element>
+    <StringTable>FixtureGroup Stringtable</StringTable>
+    <Item>
+        <TextId>1000</TextId>
+        <Text>Fixture group</Text>
+    </Item>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>Name</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>Dynamic</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Group leading</Text>
+    </Item>
+	<Item>
+        <TextId>1004</TextId>
+        <Text>Reference point</Text>
+    </Item>
+</Element>

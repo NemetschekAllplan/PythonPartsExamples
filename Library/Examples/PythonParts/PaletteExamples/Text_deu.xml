@@ -1,0 +1,16 @@
+﻿<?xml version="1.0"?>
+<Element>
+    <StringTable>Allplan PythonParts stringtable</StringTable>
+    <Item>
+        <TextId>1001</TextId>
+        <Text>Hallo</Text>
+    </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>Guten Tag</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Position: </Text>
+    </Item>
+</Element>

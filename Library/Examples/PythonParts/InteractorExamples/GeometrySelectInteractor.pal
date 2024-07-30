@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>GeometrySelectInteractor</Title>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Geometry</Text>
+
+        <Parameter>
+            <Name>ElementType</Name>
+            <Text>Geometry type</Text>
+            <Value></Value>
+            <ValueType>String</ValueType>
+            <Enable>False</Enable>
+        </Parameter>
+
+        <Parameter>
+            <Name>Element</Name>
+            <Text> </Text>
+            <Value></Value>
+            <ValueType>Polygon2D</ValueType>
+        </Parameter>
+    </Page>
+</Element>

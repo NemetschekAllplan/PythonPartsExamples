@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Name>ContentExamples\Table1.py</Name>
+        <Title>Table1</Title>
+        <Version>1.0</Version>
+        <ReadLastInput>True</ReadLastInput>
+    </Script>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Geometry</Text>
+
+        <Parameter>
+            <Name>TableLength</Name>
+            <Text>Length</Text>
+            <Value>2000.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>TableWidth</Name>
+            <Text>Width</Text>
+            <Value>1000.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>TableHeight</Name>
+            <Text>Height</Text>
+            <Value>800.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>BoardThickness</Name>
+            <Text>Panel thickness</Text>
+            <Value>20.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>ExcessLength</Name>
+            <Text>Overlap</Text>
+            <Value>100.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>LegWidth</Name>
+            <Text>Table leg width</Text>
+            <Value>40.</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+    </Page>
+</Element>

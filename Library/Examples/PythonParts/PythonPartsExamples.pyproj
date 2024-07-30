@@ -1,0 +1,336 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>6f07eca3-d4bb-48fb-96c4-bf317d8cde6b</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>PythonPartsExamples</Name>
+    <RootNamespace>PythonPartsExamples</RootNamespace>
+    <SccProjectName />
+    <SccProvider />
+    <SccAuxPath />
+    <SccLocalPath />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ItemGroup>
+    <Folder Include="BasisExamples\" />
+    <Folder Include="ContentExamples\" />
+    <Folder Include="GeometryExamples\" />
+    <Folder Include="InteractorExamples\" />
+    <Folder Include="PaletteExamples\" />
+    <Folder Include="ReinforcementExamples\" />
+    <Folder Include="ToolsAndStartExamples\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BasisExamples\Attributes.png" />
+    <Content Include="BasisExamples\Attributes.pyp" />
+    <Content Include="BasisExamples\BitmapArea.png" />
+    <Content Include="BasisExamples\BitmapArea.pyp" />
+    <Content Include="BasisExamples\CurveElements.png" />
+    <Content Include="BasisExamples\CurveElements.pyp" />
+    <Content Include="BasisExamples\Dimensioning.png" />
+    <Content Include="BasisExamples\Dimensioning.pyp" />
+    <Content Include="BasisExamples\ElementGroup.png" />
+    <Content Include="BasisExamples\ElementGroup.pyp" />
+    <Content Include="BasisExamples\FaceStyle.png" />
+    <Content Include="BasisExamples\FaceStyle.pyp" />
+    <Content Include="BasisExamples\Filling.png" />
+    <Content Include="BasisExamples\Filling.pyp" />
+    <Content Include="BasisExamples\FixturePointPlacement.png" />
+    <Content Include="BasisExamples\FixturePointPlacement.pyp" />
+    <Content Include="BasisExamples\Hatch.png" />
+    <Content Include="BasisExamples\Hatch.pyp" />
+    <Content Include="BasisExamples\LibraryElement.png" />
+    <Content Include="BasisExamples\LibraryElement.pyp" />
+    <Content Include="BasisExamples\MacroColumn.png" />
+    <Content Include="BasisExamples\MacroColumn.pyp" />
+    <Content Include="BasisExamples\MacroGroup.png" />
+    <Content Include="BasisExamples\MacroGroup.pyp" />
+    <Content Include="BasisExamples\MacroPlacements.png" />
+    <Content Include="BasisExamples\MacroPlacements.pyp" />
+    <Content Include="BasisExamples\MultiLine.png" />
+    <Content Include="BasisExamples\MultiLine.pyp" />
+    <Content Include="BasisExamples\Pattern.png" />
+    <Content Include="BasisExamples\Pattern.pyp" />
+    <Content Include="BasisExamples\RotationAngles.IncPyp" />
+    <Content Include="BasisExamples\Symbol2D.png" />
+    <Content Include="BasisExamples\Symbol2D.pyp" />
+    <Content Include="BasisExamples\Symbol3D.png" />
+    <Content Include="BasisExamples\Symbol3D.pyp" />
+    <Content Include="BasisExamples\Symbol3DCloud.png" />
+    <Content Include="BasisExamples\Symbol3DCloud.pyp" />
+    <Content Include="BasisExamples\Text.png" />
+    <Content Include="BasisExamples\Text.pyp" />
+    <Content Include="BasisExamples\TextFile.png" />
+    <Content Include="BasisExamples\TextFile.pyp" />
+    <Content Include="BasisExamples\TextureMapping.png" />
+    <Content Include="BasisExamples\TextureMapping.pyp" />
+    <Content Include="BasisExamples\UVTexture.png" />
+    <Content Include="BasisExamples\UVTexture.surf" />
+    <Content Include="BasisExamples\UVTextureMapping.png" />
+    <Content Include="BasisExamples\UVTextureMapping.pyp" />
+    <Content Include="BasisExamples\StructuredContainer.png" />
+    <Content Include="BasisExamples\StructuredContainer.pyp" />
+    <Content Include="ContentExamples\Beam1.png" />
+    <Content Include="ContentExamples\Beam1.pyp" />
+    <Content Include="ContentExamples\Chair.png" />
+    <Content Include="ContentExamples\Chair.pyp" />
+    <Content Include="ContentExamples\Column1.png" />
+    <Content Include="ContentExamples\Column1.pyp" />
+    <Content Include="ContentExamples\SleeveFoundation1.png" />
+    <Content Include="ContentExamples\SleeveFoundation1.pyp" />
+    <Content Include="ContentExamples\SleeveFoundation_geom1.png" />
+    <Content Include="ContentExamples\Table.png" />
+    <Content Include="ContentExamples\Table.pyp" />
+    <Content Include="ContentExamples\Table1.png" />
+    <Content Include="ContentExamples\Table1.pyp" />
+    <Content Include="ContentExamples\Table2.png" />
+    <Content Include="ContentExamples\Table2.pyp" />
+    <Content Include="ContentExamples\Table2Description.png" />
+    <Content Include="ContentExamples\TableChairGroup.png" />
+    <Content Include="ContentExamples\TableChairGroup.pyp" />
+    <Content Include="GeometryExamples\Arc3D.png" />
+    <Content Include="GeometryExamples\Arc3D.pyp" />
+    <Content Include="GeometryExamples\BoolOp.png" />
+    <Content Include="GeometryExamples\BoolOp.pyp" />
+    <Content Include="GeometryExamples\Brep3DBuilderElements.png" />
+    <Content Include="GeometryExamples\Brep3DBuilderElements.pyp" />
+    <Content Include="GeometryExamples\Chamfer.png" />
+    <Content Include="GeometryExamples\Chamfer.pyp" />
+    <Content Include="GeometryExamples\Cone.png" />
+    <Content Include="GeometryExamples\Cone.pyp" />
+    <Content Include="GeometryExamples\CreateBrep3DService.png" />
+    <Content Include="GeometryExamples\CreateBrep3DService.pyp" />
+    <Content Include="GeometryExamples\CreatePolyhedron1.png" />
+    <Content Include="GeometryExamples\CreatePolyhedron1.pyp" />
+    <Content Include="GeometryExamples\CreatePolyhedron2.png" />
+    <Content Include="GeometryExamples\CreatePolyhedron2.pyp" />
+    <Content Include="GeometryExamples\DivisionPoints.png" />
+    <Content Include="GeometryExamples\DivisionPoints.pyp" />
+    <Content Include="GeometryExamples\Fillet.png" />
+    <Content Include="GeometryExamples\Fillet.pyp" />
+    <Content Include="GeometryExamples\Fillet2.png" />
+    <Content Include="GeometryExamples\Fillet2.pyp" />
+    <Content Include="GeometryExamples\Fillet3.png" />
+    <Content Include="GeometryExamples\Fillet3.pyp" />
+    <Content Include="GeometryExamples\GeometryElements.png" />
+    <Content Include="GeometryExamples\GeometryElements.pyp" />
+    <Content Include="GeometryExamples\OffsetCurves.png" />
+    <Content Include="GeometryExamples\OffsetCurves.pyp" />
+    <Content Include="GeometryExamples\RailSwept.png" />
+    <Content Include="GeometryExamples\RailSwept.pyp" />
+    <Content Include="InteractorExamples\arrowdown.png" />
+    <Content Include="InteractorExamples\arrowup.png" />
+    <Content Include="InteractorExamples\Cuboid.pal" />
+    <Content Include="InteractorExamples\Cylinder.pal" />
+    <Content Include="InteractorExamples\DrawingFileDataInteractor.pyp" />
+    <Content Include="InteractorExamples\DrawingLayoutFileInteractor.pal" />
+    <Content Include="InteractorExamples\DrawingLayoutFileInteractor.png" />
+    <Content Include="InteractorExamples\DrawingLayoutFileInteractor.pyp" />
+    <Content Include="InteractorExamples\Elements3DInteractor.png" />
+    <Content Include="InteractorExamples\Elements3DInteractor.pyp" />
+    <Content Include="InteractorExamples\Elements3DSelect.pal" />
+    <Content Include="InteractorExamples\ExportImportInteractor.pal" />
+    <Content Include="InteractorExamples\ExportImportInteractor.png" />
+    <Content Include="InteractorExamples\ExportImportInteractor.pyp" />
+    <Content Include="InteractorExamples\FillingInteractor.pal" />
+    <Content Include="InteractorExamples\FillingInteractor.png" />
+    <Content Include="InteractorExamples\FillingInteractor.pyp" />
+    <Content Include="InteractorExamples\GeneralModificationsInteractor.pal" />
+    <Content Include="InteractorExamples\GeneralModificationsInteractor.png" />
+    <Content Include="InteractorExamples\GeneralModificationsInteractor.pyp" />
+    <Content Include="InteractorExamples\GeometrySelectInteractor.pal" />
+    <Content Include="InteractorExamples\GeometrySelectInteractor.png" />
+    <Content Include="InteractorExamples\GeometrySelectInteractor.pyp" />
+    <Content Include="InteractorExamples\GetObjectAttributesInteractor.png" />
+    <Content Include="InteractorExamples\GetObjectAttributesInteractor.pyp" />
+    <Content Include="InteractorExamples\Line2DInteractor.pal" />
+    <Content Include="InteractorExamples\Line2DInteractor.png" />
+    <Content Include="InteractorExamples\Line2DInteractor.pyp" />
+    <Content Include="InteractorExamples\LineData.txt" />
+    <Content Include="InteractorExamples\LinesFromFileInteractor.pyp" />
+    <Content Include="InteractorExamples\Polyline3DInteractor.pal" />
+    <Content Include="InteractorExamples\Polyline3DInteractor.png" />
+    <Content Include="InteractorExamples\Polyline3DInteractor.pyp" />
+    <Content Include="InteractorExamples\ProjectAttributesInteractor.pyp" />
+    <Content Include="InteractorExamples\ReinfULinkPlacementInteractor.pal" />
+    <Content Include="InteractorExamples\ReinfULinkPlacementInteractor.png" />
+    <Content Include="InteractorExamples\ReinfULinkPlacementInteractor.pyp" />
+    <Content Include="InteractorExamples\SelectAllPythonPartsInteractor.pyp" />
+    <Content Include="InteractorExamples\UsingClrInteractor.png" />
+    <Content Include="InteractorExamples\UsingClrInteractor.pyp" />
+    <Content Include="InteractorExamples\ViewFromPythonPartInteractor.pyp" />
+    <Content Include="InteractorExamples\WallGeometryInteractor.png" />
+    <Content Include="InteractorExamples\WallGeometryInteractor.pyp" />
+    <Content Include="InteractorExamples\WallInteractor.png" />
+    <Content Include="InteractorExamples\WallInteractor.pyp" />
+    <Content Include="PaletteExamples\AllControls.png" />
+    <Content Include="PaletteExamples\AllControls.pyp" />
+    <Content Include="PaletteExamples\AllControls_deu.xml" />
+    <Content Include="PaletteExamples\AllControls_eng.xml" />
+    <Content Include="PaletteExamples\AttributeValueControlByRuntime.png" />
+    <Content Include="PaletteExamples\ButtonImageReset16.png" />
+    <Content Include="PaletteExamples\ButtonList.png" />
+    <Content Include="PaletteExamples\ButtonList.pyp" />
+    <Content Include="PaletteExamples\Buttons.png" />
+    <Content Include="PaletteExamples\Buttons.pyp" />
+    <Content Include="PaletteExamples\Combobox.png" />
+    <Content Include="PaletteExamples\Combobox.pyp" />
+    <Content Include="PaletteExamples\ComboboxLocalisedStringValues.png" />
+    <Content Include="PaletteExamples\ComboboxLocalisedStringValues.pyp" />
+    <Content Include="PaletteExamples\ComboboxLocalisedStringValues_deu.xml" />
+    <Content Include="PaletteExamples\ComboboxLocalisedStringValues_eng.xml" />
+    <Content Include="PaletteExamples\CommonStyleControls.png" />
+    <Content Include="PaletteExamples\CommonStyleControls.pyp" />
+    <Content Include="PaletteExamples\CommonStyleControls_deu.xml" />
+    <Content Include="PaletteExamples\CommonStyleControls_eng.xml" />
+    <Content Include="PaletteExamples\Expander.png" />
+    <Content Include="PaletteExamples\Expander.pyp" />
+    <Content Include="PaletteExamples\GeometryElementsInput.png" />
+    <Content Include="PaletteExamples\GeometryElementsInput.pyp" />
+    <Content Include="PaletteExamples\IncludeControls.incpyp" />
+    <Content Include="PaletteExamples\IncludeControls.png" />
+    <Content Include="PaletteExamples\IncludeControls.pyp" />
+    <Content Include="PaletteExamples\IncludeControlsCount.incpyp" />
+    <Content Include="PaletteExamples\IncludeControls_deu.xml" />
+    <Content Include="PaletteExamples\IncludeControls_eng.xml" />
+    <Content Include="PaletteExamples\MaterialButtons.png" />
+    <Content Include="PaletteExamples\MaterialButtons.pyp" />
+    <Content Include="PaletteExamples\AttributeValueControlByRuntime.pyp" />
+    <Content Include="PaletteExamples\NamedTuple.pyp" />
+    <Content Include="PaletteExamples\param01.png" />
+    <Content Include="PaletteExamples\param02.png" />
+    <Content Include="PaletteExamples\param03.png" />
+    <Content Include="PaletteExamples\Picture.png" />
+    <Content Include="PaletteExamples\Picture.pyp" />
+    <Content Include="PaletteExamples\PictureForPalette.png" />
+    <Content Include="PaletteExamples\RadioButtons.png" />
+    <Content Include="PaletteExamples\RadioButtons.pyp" />
+    <Content Include="PaletteExamples\Row.png" />
+    <Content Include="PaletteExamples\Row.pyp" />
+    <Content Include="PaletteExamples\Text.png" />
+    <Content Include="PaletteExamples\Text.pyp" />
+    <Content Include="PaletteExamples\Text_deu.xml" />
+    <Content Include="PaletteExamples\Text_eng.xml" />
+    <Content Include="PaletteExamples\TkinterWindow.PNG" />
+    <Content Include="PaletteExamples\TkinterWindow.pyp" />
+    <Content Include="PaletteExamples\ValueList.png" />
+    <Content Include="PaletteExamples\ValueList.pyp" />
+    <Content Include="PaletteExamples\Visibility.png" />
+    <Content Include="PaletteExamples\Visibility.pyp" />
+    <Content Include="ReinforcementExamples\AreaMeshPlacement.png" />
+    <Content Include="ReinforcementExamples\AreaPlacementExpand.png" />
+    <Content Include="ReinforcementExamples\AreaPlacementExpand.pyp" />
+    <Content Include="ReinforcementExamples\BarCoupler.pyp" />
+    <Content Include="ReinforcementExamples\CircularArea.png" />
+    <Content Include="ReinforcementExamples\CircularArea.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_135_Deg_Hooks.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_135_Deg_Hooks.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_90_Deg_Hooks.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_90_Deg_Hooks.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Diamond.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Diamond.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Freeform.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Freeform.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_FullCircle.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_FullCircle.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_L_Freeform.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_L_Freeform.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Spiral.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Spiral.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Torsion.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_Torsion.pyp" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_T_Freeform.png" />
+    <Content Include="ReinforcementExamples\ClosedStirrup_T_Freeform.pyp" />
+    <Content Include="ReinforcementExamples\ColumnGroup.png" />
+    <Content Include="ReinforcementExamples\ColumnGroup.pyp" />
+    <Content Include="ReinforcementExamples\ColumnMacro.png" />
+    <Content Include="ReinforcementExamples\ColumnMacro.pyp" />
+    <Content Include="ReinforcementExamples\DimensionLine.png" />
+    <Content Include="ReinforcementExamples\DimensionLine.pyp" />
+    <Content Include="ReinforcementExamples\FolderContent_ReinforcementExamples.deu" />
+    <Content Include="ReinforcementExamples\FolderContent_ReinforcementExamples.eng" />
+    <Content Include="ReinforcementExamples\GeneralShapeCreation.png" />
+    <Content Include="ReinforcementExamples\GeneralShapeCreation.pyp" />
+    <Content Include="ReinforcementExamples\GetBarShapeCodes.pyp" />
+    <Content Include="ReinforcementExamples\HookLengthConstraint.png" />
+    <Content Include="ReinforcementExamples\HookLengthConstraint.pyp" />
+    <Content Include="ReinforcementExamples\Labeling.png" />
+    <Content Include="ReinforcementExamples\Labeling.pyp" />
+    <Content Include="ReinforcementExamples\LocalGlobalShapeCreation.png" />
+    <Content Include="ReinforcementExamples\LocalGlobalShapeCreation.pyp" />
+    <Content Include="ReinforcementExamples\MultiRebarPlacementWithFan.png" />
+    <Content Include="ReinforcementExamples\OpenStirrupWithArc.png" />
+    <Content Include="ReinforcementExamples\OpenStirrup_135_Deg_Hooks.png" />
+    <Content Include="ReinforcementExamples\OpenStirrup_135_Deg_Hooks.pyp" />
+    <Content Include="ReinforcementExamples\OpenStirrup_180_Deg_Hooks.png" />
+    <Content Include="ReinforcementExamples\OpenStirrup_180_Deg_Hooks.pyp" />
+    <Content Include="ReinforcementExamples\OpenStirrup_90_Deg_Hooks.png" />
+    <Content Include="ReinforcementExamples\OpenStirrup_90_Deg_Hooks.pyp" />
+    <Content Include="ReinforcementExamples\OpenStirrupWithArc.pyp" />
+    <Content Include="ReinforcementExamples\OpenStirrup_NoHooks.png" />
+    <Content Include="ReinforcementExamples\OpenStirrup_NoHooks.pyp" />
+    <Content Include="ReinforcementExamples\AreaMeshPlacement.pyp" />
+    <Content Include="ReinforcementExamples\PlaneMeshPlacement.pyp" />
+    <Content Include="ReinforcementExamples\PolygonalPlacement.png" />
+    <Content Include="ReinforcementExamples\PolygonalPlacement.pyp" />
+    <Content Include="ReinforcementExamples\MultiRebarPlacementWithFan.pyp" />
+    <Content Include="ReinforcementExamples\RebarPlacement.png" />
+    <Content Include="ReinforcementExamples\RebarPlacement.pyp" />
+    <Content Include="ReinforcementExamples\RotationalPlacement.png" />
+    <Content Include="ReinforcementExamples\RotationalPlacement.pyp" />
+    <Content Include="ReinforcementExamples\SectionsAndViews.png" />
+    <Content Include="ReinforcementExamples\SectionsAndViews.pyp" />
+    <Content Include="ReinforcementExamples\Spiral.png" />
+    <Content Include="ReinforcementExamples\Spiral.pyp" />
+    <Content Include="ToolsAndStartExamples\AllplanSettings.png" />
+    <Content Include="ToolsAndStartExamples\AllplanSettings.pyp" />
+    <Content Include="ToolsAndStartExamples\CheckNodeExamples.pyp" />
+    <Content Include="ToolsAndStartExamples\CompatibilizeVisualScript.png" />
+    <Content Include="ToolsAndStartExamples\CompatibilizeVisualScript.pyp" />
+    <Content Include="ToolsAndStartExamples\CreateVisualStudioCodeWorkspace.png" />
+    <Content Include="ToolsAndStartExamples\CreateVisualStudioCodeWorkspace.pyp" />
+    <Content Include="ToolsAndStartExamples\HelloWorld.png" />
+    <Content Include="ToolsAndStartExamples\HelloWorld.pyp" />
+    <Content Include="ToolsAndStartExamples\HelloWorldAllLanguages.png" />
+    <Content Include="ToolsAndStartExamples\HelloWorldAllLanguages.pyp" />
+    <Content Include="ToolsAndStartExamples\MessageBox.png" />
+    <Content Include="ToolsAndStartExamples\MessageBox.pyp" />
+    <Content Include="ToolsAndStartExamples\NodeLibraryExcelUpdate.png" />
+    <Content Include="ToolsAndStartExamples\NodeLibraryExcelUpdate.pyp" />
+    <Content Include="ToolsAndStartExamples\SetTraceLevel.png" />
+    <Content Include="ToolsAndStartExamples\SetTraceLevel.pyp" />
+    <Content Include="ToolsAndStartExamples\StartErrorLogWindow.png" />
+    <Content Include="ToolsAndStartExamples\StartErrorLogWindow.pyp" />
+    <Content Include="ToolsAndStartExamples\StartPythonDebug.png" />
+    <Content Include="ToolsAndStartExamples\StartPythonDebug.pyp" />
+    <Content Include="ToolsAndStartExamples\StepByStep.png" />
+    <Content Include="ToolsAndStartExamples\StepByStep.pyp" />
+    <Content Include="ToolsAndStartExamples\Version_1.png" />
+    <Content Include="ToolsAndStartExamples\Version_1.pyp" />
+    <Content Include="ToolsAndStartExamples\Version_2.png" />
+    <Content Include="ToolsAndStartExamples\Version_2.pyp" />
+  </ItemGroup>
+</Project>

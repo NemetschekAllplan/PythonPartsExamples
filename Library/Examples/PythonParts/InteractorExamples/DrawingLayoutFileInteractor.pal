@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Title>DrawingLayoutFileInteractor</Title>
+    </Script>
+    <Page>
+        <Name>Drawing</Name>
+        <Text>Drawing</Text>
+
+        <Parameter>
+            <Name>Expander1</Name>
+            <Text>Drawing file</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>BoxLength</Name>
+                <Text>Box length</Text>
+                <Value>2000</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>BoxWidth</Name>
+                <Text>Box width</Text>
+                <Value>1000</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>BoxHeight</Name>
+                <Text>Box height</Text>
+                <Value>5000</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>BoxDistance</Name>
+                <Text>Box distance</Text>
+                <Value>5000</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>BoxYDistance</Name>
+                <Text>Box y distance</Text>
+                <Value>5000</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingRotationAngle</Name>
+                <Text>Rotation angle</Text>
+                <Value>20</Value>
+                <ValueType>Angle</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>DrawingFileNumber</Name>
+                <Text>File number</Text>
+                <Value>10</Value>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+        </Parameter>
+        <Parameter>
+            <Name>DeleteDrawingDocument</Name>
+            <Text>Delete content from the loaded drawing file</Text>
+            <Value>True</Value>
+            <ValueType>Checkbox</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>DrawingFileButton1</Name>
+            <Text>Create element in the drawing file</Text>
+            <ValueType>Row</ValueType>
+
+            <Parameter>
+                <Name>DrawingFileButton1</Name>
+                <Text>Execute</Text>
+                <EventId>1001</EventId>
+                <ValueType>Button</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>DrawingFileButton2</Name>
+            <Text>Create bending schedule in the drawing file</Text>
+            <ValueType>Row</ValueType>
+
+            <Parameter>
+                <Name>DrawingFileButton2</Name>
+                <Text>Execute</Text>
+                <EventId>1002</EventId>
+                <ValueType>Button</ValueType>
+            </Parameter>
+        </Parameter>
+        <Parameter>
+            <Name>XCoord</Name>
+            <Text>X-coordinate</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>YCoord</Name>
+            <Text>Y-coordinate</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+        </Parameter>
+    </Page>
+
+    <Page>
+        <Name>Layout</Name>
+        <Text>Layout</Text>
+        
+        <Parameter>
+            <Name>Expander2</Name>
+            <Text>Placement</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>LayoutFileNumber</Name>
+                <Text>File number</Text>
+                <Value>10</Value>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>PlacePntX</Name>
+                <Text>Placement point x(mm)</Text>
+                <Value>25</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>PlacePntY</Name>
+                <Text>Placement point y(mm)</Text>
+                <Value>25</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>RotationAngle</Name>
+                <Text>Rotation angle</Text>
+                <Value>-20</Value>
+                <ValueType>Angle</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>UseRefPnt</Name>
+                <Text>Insert by reference point</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>RefPntX</Name>
+                <Text>Reference point</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+                <Enable>UseRefPnt</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>RefPntY</Name>
+                <Text>Reference point y</Text>
+                <Value>0</Value>
+                <ValueType>Length</ValueType>
+                <Enable>UseRefPnt</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>Scale</Name>
+                <Text>Scale</Text>
+                <Value>50</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>TextFactor</Name>
+                <Text>Text factor</Text>
+                <Value>1</Value>
+                <ValueType>Double</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>ClippingExpander</Name>
+            <Text>Clipping</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+            
+            <Parameter>
+                <Name>Clipping</Name>
+                <Text>Clipping of the drawing file</Text>
+                <Value>True</Value>
+                <ValueType>CheckBox</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>ClipLeft</Name>
+                <Text>Clipping left</Text>
+                <Value>5000</Value>
+                <ValueType>Double</ValueType>
+                <Enable>Clipping == True</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>ClipBottom</Name>
+                <Text>Clipping bottom</Text>
+                <Value>5000</Value>
+                <ValueType>Double</ValueType>
+                <Enable>Clipping == True</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>ClipRight</Name>
+                <Text>Clipping right</Text>
+                <Value>16000</Value>
+                <ValueType>Double</ValueType>
+                <Enable>Clipping == True</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>ClipTop</Name>
+                <Text>Clipping top</Text>
+                <Value>11000</Value>
+                <ValueType>Double</ValueType>
+                <Enable>Clipping == True</Enable>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>LayerExpander</Name>
+            <Text>Layer</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+            
+            <Parameter>
+                <Name>ShowAllLayer</Name>
+                <Text>Show all layer</Text>
+                <Value>True</Value>
+                <ValueType>CheckBox</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>Layer3700</Name>
+                <Text>Layer 3700</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+                <Enable>ShowAllLayer == False</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>Layer3701</Name>
+                <Text>Layer 3701</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+                <Enable>ShowAllLayer == False</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>Layer3702</Name>
+                <Text>Layer 3702</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+                <Enable>ShowAllLayer == False</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>Layer3703</Name>
+                <Text>Layer 3703</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+                <Enable>ShowAllLayer == False</Enable>
+            </Parameter>
+            <Parameter>
+                <Name>PrintProfile</Name>
+                <Text>File name of the print profile</Text>
+                <Value></Value>
+                <ValueType>String</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>PageExpander</Name>
+            <Text>Page</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>PageWidth</Name>
+                <Text>Page width</Text>
+                <Value>1000</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>PageHeight</Name>
+                <Text>Page height</Text>
+                <Value>500</Value>
+                <ValueType>Length</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>ExecuteExpander</Name>
+            <Text>Execute</Text>
+            <Value>False</Value>
+            <ValueType>Expander</ValueType>
+            
+            <Parameter>
+                <Name>DeleteLayoutDocument</Name>
+                <Text>Delete content from the loaded layout file</Text>
+                <Value>True</Value>
+                <ValueType>Checkbox</ValueType>
+            </Parameter>
+            
+            <Parameter>
+                <Name>LayoutFileButton1</Name>
+                <Text>Create layout file from drawing file</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>LayoutFileButton1</Name>
+                    <Text>Execute</Text>
+                    <EventId>2001</EventId>
+                    <ValueType>Button</ValueType>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+    </Page>
+</Element>

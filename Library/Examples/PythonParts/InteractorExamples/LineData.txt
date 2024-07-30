@@ -1,0 +1,10 @@
+Line1, Vertical, 0, 0, 0, 1000
+Line3, Vertical, 200, 0, 200, 1200
+Line5, Vertical, 550, 0, 550, 1500
+Line7, Vertical, 700, 0, 700, 100
+Line9, Vertical, 860, 0, 860, 800
+Line2, Horizontal, 0, 100, 1000, 100
+Line4, Horizontal, 0, 400, 800, 400
+Line6, Horizontal, 0, 600, 2000, 600
+Line8, Horizontal, 0, 820, 300, 820
+Line10, Horizontal, 0, 1000, 600, 1000
