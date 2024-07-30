@@ -7,5 +7,20 @@
     <Item>
         <TextId>1001</TextId>
         <Text>Create MWS group with elementplan</Text>
+    </Item><Item>
+        <TextId>1002</TextId>
+        <Text>Position</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Drawing file</Text>
+    </Item>
+    <Item>
+        <TextId>1004</TextId>
+        <Text>Position of the elementplan</Text>
+    </Item>
+    <Item>
+        <TextId>1005</TextId>
+        <Text>Destination drawing file of the elementplan</Text>
     </Item>
 </Element>

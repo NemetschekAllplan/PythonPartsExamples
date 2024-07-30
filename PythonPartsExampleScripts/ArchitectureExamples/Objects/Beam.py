@@ -10,9 +10,8 @@ import NemAll_Python_BaseElements as AllplanBaseElements
 import NemAll_Python_BasisElements as AllplanBasisElements
 import NemAll_Python_Geometry as AllplanGeometry
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from ScriptObjectInteractors.LineInteractor import LineInteractor, LineInteractorResult
 from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResult
@@ -57,19 +56,19 @@ def create_preview(build_ele: BuildingElement,
     return CreateElementResult([AllplanBasisElements.ModelElement3D(common_props, beam_geo)])
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return BeamScript(build_ele, coord_input)
+    return BeamScript(build_ele, script_object_data)
 
 
 class BeamScript(BaseScriptObject):
@@ -80,18 +79,17 @@ class BeamScript(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele  : BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
-        """Initialize the beam script object
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
+        """ Initialize the beam script object
 
         Args:
-            build_ele:      the building element with parameter properties from the property palette
-            coord_input:    the object representing the coordinate input done by the user inside Allplan viewport
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        super().__init__(coord_input)
+        super().__init__(script_object_data)
 
-        self.doc                      = coord_input.GetInputViewDocument()
         self.axis_input_result        = LineInteractorResult()
         self.build_ele                = build_ele
         self.reverse_offset_direction = False

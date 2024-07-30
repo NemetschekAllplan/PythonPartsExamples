@@ -13,7 +13,7 @@ import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_IFW_Input as AllplanIFW
 import NemAll_Python_Utility as AllplanUtil
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElementListService import BuildingElementListService
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
@@ -29,7 +29,7 @@ from TypeCollections.ModelEleList import ModelEleList
 from Utils import LibraryBitmapPreview
 from Utils.HandleCreator import HandleCreator
 from Utils.HideElementsService import HideElementsService
-from Utils.SelectionQueryUtil import SelectionQueryUtil
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.PolygonalGeneralOpeningBuildingElement \
@@ -72,19 +72,19 @@ def create_preview(_build_ele: BuildingElement,
                                r"Examples\PythonParts\ArchitectureExamples\Objects\PolygonalGeneralOpening.png"))
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return PolygonalGeneralOpening(build_ele, coord_input)
+    return PolygonalGeneralOpening(build_ele, script_object_data)
 
 
 class PolygonalGeneralOpening(BaseScriptObject):
@@ -92,16 +92,16 @@ class PolygonalGeneralOpening(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele  : BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            build_ele:   building element with the parameter properties
-            coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        super().__init__(coord_input)
+        super().__init__(script_object_data)
 
         self.build_ele = build_ele
 
@@ -131,7 +131,9 @@ class PolygonalGeneralOpening(BaseScriptObject):
                                                               z_coord_input       = False,
                                                               multi_polygon_input = False)
         else:
-            self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result, "Placement point", self.draw_placement_preview)
+            self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
+                                                                ArchitectureElementsQueryUtil.create_arch_axis_elements_query(),
+                                                                "Placement point", self.draw_placement_preview)
 
         build_ele.InputMode.value = self.build_ele.POLYGON_INPUT
 
@@ -160,7 +162,7 @@ class PolygonalGeneralOpening(BaseScriptObject):
         arch_ele = AllplanIFW.SelectElementsService.SelectByPolygon(self.document, self.opening_polygon,
                                                                     self.coord_input.GetViewWorldProjection(),
                                                                     AllplanIFW.SelectElementsService.eSelectCondition.SELECT_ALL,
-                                                                    SelectionQueryUtil.arch_axis_elements_query(), True)
+                                                                    ArchitectureElementsQueryUtil.create_arch_axis_elements_query(), True)
 
         if not arch_ele:
             AllplanUtil.ShowMessageBox("Opening is outside the wall", AllplanUtil.MB_OK)

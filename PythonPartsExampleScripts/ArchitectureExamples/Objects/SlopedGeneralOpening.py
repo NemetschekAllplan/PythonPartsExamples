@@ -14,7 +14,7 @@ import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_IFW_Input as AllplanIFW
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElementListService import BuildingElementListService
 from CreateElementResult import CreateElementResult
 
@@ -26,7 +26,7 @@ from ScriptObjectInteractors.PointInteractor import PointInteractor, PointIntera
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
-from Utils.SelectionQueryUtil import SelectionQueryUtil
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 from Utils.Architecture.GeneralOpeningSlopedBRepUtil import GeneralOpeningSlopedBRepUtil
 from Utils.Architecture.GeneralOpeningSlopedPolyhedronUtil import GeneralOpeningSlopedPolyhedronUtil
 
@@ -71,19 +71,19 @@ def create_preview(_build_ele: BuildingElement,
                                r"Examples\PythonParts\ArchitectureExamples\Objects\SlopedGeneralOpening.png"))
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return SlopedGeneralOpening(build_ele, coord_input)
+    return SlopedGeneralOpening(build_ele, script_object_data)
 
 
 class SlopedGeneralOpening(BaseScriptObject):
@@ -91,16 +91,16 @@ class SlopedGeneralOpening(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele  : BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            build_ele:   building element with the parameter properties
-            coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        super().__init__(coord_input)
+        super().__init__(script_object_data)
 
         self.build_ele = build_ele
 
@@ -113,7 +113,7 @@ class SlopedGeneralOpening(BaseScriptObject):
         self.hide_ele        = False
         self.undo_service    = None
 
-        self.sel_query = SelectionQueryUtil.arch_axis_elements_query()
+        self.sel_query = ArchitectureElementsQueryUtil.create_arch_axis_elements_query()
 
         self.opening_bottom_plane_surfaces : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D)] = []
         self.opening_top_plane_surfaces    : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D)] = []

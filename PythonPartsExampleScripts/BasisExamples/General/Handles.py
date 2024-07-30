@@ -11,7 +11,7 @@ import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_Input as AllplanIFW
 import NemAll_Python_BasisElements as AllplanBasisEle
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from HandleDirection import HandleDirection
 from HandleParameterData import HandleParameterData
@@ -45,19 +45,19 @@ def check_allplan_version(_build_ele: BuildingElement,
     return True
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return Handles(build_ele, coord_input)
+    return Handles(build_ele, script_object_data)
 
 
 class Handles(BaseScriptObject):
@@ -65,16 +65,16 @@ class Handles(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele  : BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            build_ele:   building element with the parameter properties
-            coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        super().__init__(coord_input)
+        super().__init__(script_object_data)
 
         self.build_ele = build_ele
 

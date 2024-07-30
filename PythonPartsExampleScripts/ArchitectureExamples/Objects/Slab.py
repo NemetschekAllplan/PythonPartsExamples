@@ -10,9 +10,8 @@ import NemAll_Python_BaseElements as AllplanBaseElements
 import NemAll_Python_BasisElements as AllplanBasisElements
 import NemAll_Python_Geometry as AllplanGeometry
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResult
 from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
@@ -76,19 +75,19 @@ def create_preview(_build_ele: BuildingElement,
     return CreateElementResult([AllplanBasisElements.ModelElement3D(common_props, slab_geo)])
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return SlabScript(build_ele, coord_input)
+    return SlabScript(build_ele, script_object_data)
 
 
 class SlabScript(BaseScriptObject):
@@ -96,19 +95,20 @@ class SlabScript(BaseScriptObject):
 
     This script objects prompts the user to input the outline by drawing a 2D-polygon and
     subsequently creates a slab
-
-    Args:
-        build_ele:      the building element with parameter properties from the property palette
-        coord_input:    the object representing the coordinate input done by the user inside Allplan viewport
     """
 
     def __init__(self,
-                 build_ele: BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
+        """ function description
 
-        super().__init__(coord_input)
+        Args:
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
+        """
 
-        self.doc                      = coord_input.GetInputViewDocument()
+        super().__init__(script_object_data)
+
         self.outline_input_result     = PolygonInteractorResult()
         self.build_ele                = build_ele
 

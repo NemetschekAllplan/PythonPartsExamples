@@ -10,10 +10,9 @@ from typing import TYPE_CHECKING, cast
 import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
 import NemAll_Python_Geometry as AllplanGeo
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
 
@@ -64,19 +63,19 @@ def create_preview(_build_ele: BuildingElement,
                                r"Examples\PythonParts\ArchitectureExamples\Objects\Joint.png"))
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return Joint(build_ele, coord_input) # type: ignore
+    return Joint(build_ele, script_object_data) # type: ignore
 
 
 class Joint(OpeningBase):

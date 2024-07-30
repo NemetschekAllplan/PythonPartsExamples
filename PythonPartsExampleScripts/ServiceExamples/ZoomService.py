@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING, Any
 import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeometry
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
-from BaseScriptObject import BaseScriptObject
+
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from ScriptObjectInteractors.MultiElementSelectInteractor import MultiElementSelectInteractor, MultiElementSelectInteractorResult
 from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectInteractor, SingleElementSelectResult
@@ -58,19 +58,19 @@ def create_preview(build_ele : BuildingElement,
     return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview(str(thumbnail_path)))
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return ZoomToElementInteractor(build_ele, coord_input)
+    return ZoomToElementInteractor(build_ele, script_object_data)
 
 
 class ZoomToElementInteractor(BaseScriptObject):
@@ -82,16 +82,17 @@ class ZoomToElementInteractor(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele: BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
-        """Default constructor
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
+        """ Default constructor
 
         Args:
-            build_ele:      building element with parameter values from the property palette
-            coord_input:    object representing the coordinate input inside the viewport
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
-        super().__init__(coord_input)
-        self.build_ele = build_ele
+        super().__init__(script_object_data)
+
+        self.build_ele                 = build_ele
         self.build_ele.InputMode.value = self.build_ele.ZOOM
 
         # create empty containers for the selection results and initialize the zoom service

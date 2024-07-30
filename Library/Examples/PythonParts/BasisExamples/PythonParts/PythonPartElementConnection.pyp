@@ -2,11 +2,22 @@
 <Element>
     <Script>
         <Title>ModelPolygonExtrudeInteractor.py</Title>
-        <Name>InteractorExamples\General\ModelPolygonExtrudeInteractor.py</Name>
+        <Name>BasisExamples\PythonParts\PythonPartElementConnection.py</Name>
         <Version>1.0</Version>
-        <Interactor>True</Interactor>
         <ReadLastInput>True</ReadLastInput>
     </Script>
+    <Constants>
+        <Constant>
+            <Name>ELEMENT_SELECT</Name>
+            <Value>1</Value>
+            <ValueType>Integer</ValueType>
+        </Constant>
+        <Constant>
+            <Name>PARAMETER_MODIFICATION</Name>
+            <Value>2</Value>
+            <ValueType>Integer</ValueType>
+        </Constant>
+    </Constants>
     <Page>
         <Name>Page1</Name>
         <Text>Geometry</Text>
@@ -16,6 +27,7 @@
             <Text>Extrusion vector</Text>
             <Value>Vector3D(0,0,2000)</Value>
             <ValueType>Vector3D</ValueType>
+            <Visible>InputMode == PARAMETER_MODIFICATION</Visible>
         </Parameter>
     </Page>
     <Page>
@@ -26,14 +38,20 @@
             <ValueType>String</ValueType>
         </Parameter>
         <Parameter>
-            <Name>PolygonUUID</Name>
+            <Name>GeometryElementUUID</Name>
             <Value></Value>
             <ValueType>String</ValueType>
         </Parameter>
         <Parameter>
-            <Name>Polygon</Name>
+            <Name>GeometryElement</Name>
             <Value></Value>
-            <ValueType>Polygon2D</ValueType>
+            <ValueType>GeometryObject</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>InputMode</Name>
+            <Text>Input mode</Text>
+            <Value></Value>
+            <ValueType>Integer</ValueType>
         </Parameter>
     </Page>
 </Element>

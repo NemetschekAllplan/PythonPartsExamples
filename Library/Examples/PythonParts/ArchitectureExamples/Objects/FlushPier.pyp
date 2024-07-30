@@ -96,6 +96,26 @@
         </Parameter>
 
         <Parameter>
+            <Name>FormatPropertiesExpander</Name>
+            <Text>Format properties</Text>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>SetFormatProperties</Name>
+                <Text>Set format properties</Text>
+                <Value>True</Value>
+                <ValueType>CheckBox</ValueType>                    
+            </Parameter>
+
+            <Parameter>
+                <Name>CommonProp</Name>
+                <Text></Text>
+                <Value></Value>
+                <ValueType>CommonProperties</ValueType>
+            </Parameter>
+        </Parameter>
+        
+        <Parameter>
             <Name>SurfaceElementsExp</Name>
             <Text>Surface elements</Text>
             <ValueType>Expander</ValueType>

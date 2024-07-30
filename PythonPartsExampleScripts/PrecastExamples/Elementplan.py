@@ -10,6 +10,7 @@ import NemAll_Python_BasisElements as AllplanBasisElements          # pylint: di
 
 from PythonPartTransaction import PythonPartTransaction
 from BuildingElement import BuildingElement
+from ControlPropertiesUtil import ControlPropertiesUtil
 from .MWSPlacement import RebarPlacement
 
 # Print some information
@@ -55,6 +56,22 @@ def create_preview(_build_ele: BuildingElement,
 
     return (model_ele_list, [])
 
+def initialize_control_properties(build_ele     : BuildingElement,
+                                  ctrl_prop_util: ControlPropertiesUtil,
+                                  _doc          : AllplanElementAdapter.DocumentAdapter) -> None:
+    """ initialize the control properties
+
+    Args:
+        build_ele     : building element
+        ctrl_prop_util: control properties utility
+        _doc          : document
+    """
+    del ctrl_prop_util
+    del _doc
+
+    build_ele.DrawingFile.value = AllplanBaseElements.DrawingFileService.GetActiveFileNumber()
+
+
 def create_element(_build_ele: BuildingElement,
                    _doc      : AllplanElementAdapter.DocumentAdapter) -> tuple:
     """ Creation of element
@@ -66,7 +83,6 @@ def create_element(_build_ele: BuildingElement,
     Returns:
             created Elementplan tuple with elements and handles.
     """
-
     python_elementplan = PythonElementplan(_build_ele, _doc)
 
     return python_elementplan.create_element()
@@ -142,8 +158,8 @@ class PythonElementplan:
         """
         # Plan
         plan = MultiMaterialPlan.Plan(self.doc)#, AllplanElementAdapter.BaseElementAdapterList([self.create_mws_group()]))
-        plan.Offset = AllplanGeo.Point2D(8000.0, 0.0)
-        # plan.DrawingFile = 27
+        plan.Offset = AllplanGeo.Point2D(self.build_ele.PositionX.value, self.build_ele.PositionY.value)
+        plan.DrawingFile = self.build_ele.DrawingFile.value
 
         # Page
         page = MultiMaterialPlan.Page(doc=self.doc,

@@ -15,7 +15,7 @@ import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_IFW_Input as AllplanIFW
 import NemAll_Python_Palette as AllplanPalette
 
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElementListService import BuildingElementListService
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
@@ -30,6 +30,7 @@ from TypeCollections.ModelEleList import ModelEleList
 
 from Utils.HandleCreator import HandleCreator
 from Utils.HideElementsService import HideElementsService
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.GeneralOpeningBuildingElement import GeneralOpeningBuildingElement as BuildingElement  # type: ignore
@@ -42,18 +43,18 @@ class OpeningBase(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele  : BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
+                 build_ele         : Any,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            build_ele:   building element with the parameter properties
-            coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        super().__init__(coord_input)
+        super().__init__(script_object_data)
 
-        self.build_ele = build_ele
+        self.build_ele = cast(BuildingElement, build_ele)
 
         self.arch_pnt_result = ArchPointInteractorResult()
 
@@ -86,6 +87,7 @@ class OpeningBase(BaseScriptObject):
         """
 
         self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
+                                                            ArchitectureElementsQueryUtil.create_arch_axis_elements_query(),
                                                             "Set properties or click a component line",
                                                             self.draw_placement_preview)
 

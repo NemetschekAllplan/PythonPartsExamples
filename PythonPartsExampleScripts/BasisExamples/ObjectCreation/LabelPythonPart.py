@@ -9,10 +9,9 @@ import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_BasisElements as AllplanBasisEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
 
 from AnyValueByType import AnyValueByType
-from BaseScriptObject import BaseScriptObject
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 
 from ParameterUtils.TextPropertiesParameterUtil import TextPropertiesParameterUtil
@@ -68,19 +67,19 @@ def create_preview(_build_ele: BuildingElement,
                                r"Examples\PythonParts\BasisExamples\ObjectCreation\LabelPythonPart.png"))
 
 
-def create_script_object(build_ele  : BuildingElement,
-                         coord_input: AllplanIFW.CoordinateInput) -> BaseScriptObject:
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
     """ Creation of the script object
 
     Args:
-        build_ele:   building element with the parameter properties
-        coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
         created script object
     """
 
-    return LabelPythonPart(build_ele, coord_input)
+    return LabelPythonPart(build_ele, script_object_data)
 
 
 class LabelPythonPart(BaseScriptObject):
@@ -88,16 +87,16 @@ class LabelPythonPart(BaseScriptObject):
     """
 
     def __init__(self,
-                 build_ele  : BuildingElement,
-                 coord_input: AllplanIFW.CoordinateInput):
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            build_ele:   building element with the parameter properties
-            coord_input: API object for the coordinate input, element selection, ... in the Allplan view
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        super().__init__(coord_input)
+        super().__init__(script_object_data)
 
         self.build_ele = build_ele
 

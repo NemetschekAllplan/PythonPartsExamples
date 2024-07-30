@@ -8,4 +8,20 @@
         <TextId>1001</TextId>
         <Text>MSA-Gruppe mit Elementplan erzeugen</Text>
     </Item>
+    <Item>
+        <TextId>1002</TextId>
+        <Text>Position</Text>
+    </Item>
+    <Item>
+        <TextId>1003</TextId>
+        <Text>Teilbildnummer</Text>
+    </Item>
+    <Item>
+        <TextId>1004</TextId>
+        <Text>Position des Elementplans</Text>
+    </Item>
+    <Item>
+        <TextId>1005</TextId>
+        <Text>Zielteilbild des Elementplans</Text>
+    </Item>
 </Element>

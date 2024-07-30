@@ -10,7 +10,8 @@ import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_Reinforcement as AllplanReinf
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
-from CreateElementResult import CreateElementResult, ReinforcementRearrange
+from CreateElementResult import CreateElementResult
+from PythonPartTransaction import ReinforcementRearrange
 from PythonPartUtil import PythonPartUtil
 
 from TypeCollections import ModelEleList

@@ -11,7 +11,66 @@
         <Text>Elementplan</Text>
 
         <Parameter>
-            <Name>Row1</Name>
+            <Name>RowPosition</Name>
+            <Text>Position</Text>
+            <TextId>1002</TextId>
+            <ValueType>Row</ValueType>
+
+            <Parameter>
+                <Name>Info1</Name>
+                <Text>Position of the elementplan</Text>
+                <TextId>1004</TextId>
+                <Value>images/info.svg</Value>
+                <ValueType>Picture</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>PositionXText</Name>
+                <Value>X:</Value>
+                <ValueType>Text</ValueType>
+                <WidthInRow>5</WidthInRow>
+            </Parameter>
+            <Parameter>
+                <Name>PositionX</Name>
+                <ValueType>Length</ValueType>
+            </Parameter>
+            <Parameter>
+                <Name>PositionYText</Name>
+                <Value>Y:</Value>
+                <ValueType>Text</ValueType>
+                <WidthInRow>5</WidthInRow>
+            </Parameter>
+            <Parameter>
+                <Name>PositionY</Name>
+                <ValueType>Length</ValueType>
+            </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>RowDrawingFile</Name>
+            <Text>Drawing file</Text>
+            <TextId>1003</TextId>
+            <ValueType>Row</ValueType>
+
+            <Parameter>
+                <Name>Info2</Name>
+                <Text>Destination drawing file of the elementplan</Text>
+                <TextId>1005</TextId>
+                <Value>images/info.svg</Value>
+                <ValueType>Picture</ValueType>
+            </Parameter>
+
+            <Parameter>
+                <Name>DrawingFile</Name>
+                <Text>Drawing file</Text>
+                <TextId>1003</TextId>
+                <MinValue>1</MinValue>
+                <MaxValue>9999</MaxValue>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+        </Parameter>
+        <Parameter>
+            <Name>RowButton</Name>
             <Text> </Text>
             <ValueType>Row</ValueType>
 
