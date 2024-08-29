@@ -2,7 +2,6 @@
 Example Script for StructuredContainer
 """
 
-import math
 import uuid
 
 from BuildingElement import BuildingElement
@@ -12,16 +11,12 @@ import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_BaseElements as AllplanBaseElements
 import NemAll_Python_BasisElements as AllplanBasisElements
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
-import NemAll_Python_ArchElements as AllplanArchEle
-import GeometryValidate as GeometryValidate
 
 from BuildingElementAttributeList import BuildingElementAttributeList
-
-# from HandleDirection import HandleDirection
-# from HandleParameterData import HandleParameterData
-# from HandleParameterType import HandleParameterType
 from HandleProperties import HandleProperties
 from PythonPartUtil import PythonPartUtil
+
+from Utilities.AttributeIdEnums import AttributeIdEnums
 
 print('Load StructuredContainer_Room_and_columns.py')
 
@@ -102,7 +97,7 @@ class StructuredContainerExampleRoomColumns():
         self.handle_list    = []
         self.structured_container_attrs = {}
         self.document       = doc
-        
+
 
     @staticmethod
     def __create_cube3d(location: AllplanGeo.Point2D,
@@ -157,8 +152,8 @@ class StructuredContainerExampleRoomColumns():
 
         for ind in range (0, count):
             column = self.create_column(com_prop,
-                                        AllplanGeo.Point2D((side_length + padding) * ind + 10, (side_length + padding) * ind + 10), 
-                                        side_length, 
+                                        AllplanGeo.Point2D((side_length + padding) * ind + 10, (side_length + padding) * ind + 10),
+                                        side_length,
                                         height)
 
             # creating an UUID for every column.
@@ -170,20 +165,20 @@ class StructuredContainerExampleRoomColumns():
             ele.SetParentID(StructuredContainerExampleRoomColumns.obj_room_uuid) # <-- every column has parent (obj_room_uuid)
 
             sub_element_attr_list = BuildingElementAttributeList()
-            sub_element_attr_list.add_attribute(507, name)
-            sub_element_attr_list.add_attribute(508, name + " Material ")
+            sub_element_attr_list.add_attribute(AttributeIdEnums.NAME, name)
+            sub_element_attr_list.add_attribute(AttributeIdEnums.MATERIAL, name + " Material ")
 
             self.structured_container_attrs[obj_uuid] = sub_element_attr_list
 
             self.model_ele_list.append(ele)
-        
+
 
     def create_room(self, com_prop, length, height):
         path = self.__create_cube3d(AllplanGeo.Point2D(0, 0), length, height)
         room_ele = AllplanBasisElements.ModelElement3D(com_prop, path)
 
         sub_element_attr_list = BuildingElementAttributeList()
-        sub_element_attr_list.add_attribute(507, "Room")
+        sub_element_attr_list.add_attribute(AttributeIdEnums.NAME, "Room")
 
         self.structured_container_attrs[StructuredContainerExampleRoomColumns.obj_room_uuid] = sub_element_attr_list
 
@@ -200,9 +195,9 @@ class StructuredContainerExampleRoomColumns():
         Args:
             build_ele:  the building element.
         """
-        
+
         #------------------ Define common properties, take global Allplan settings
-        
+
         com_prop = AllplanBaseElements.CommonProperties()
         com_prop.GetGlobalProperties()
 

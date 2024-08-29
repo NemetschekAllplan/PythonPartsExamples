@@ -68,7 +68,7 @@
             <Parameter>
                 <Name>DynamicAttributeList</Name>
                 <Text>Attributes</Text>
-                <Value>[(1398,A1);(0,)]</Value>
+                <Value>[(AttributeIdEnums.FIRE_RISK_FACTOR,A1);(0,)]</Value>
                 <ValueType>AttributeIdValue</ValueType>
                 <ValueDialog>AttributeSelection</ValueDialog>
             </Parameter>

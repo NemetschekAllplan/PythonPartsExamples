@@ -18,6 +18,11 @@ from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResul
 
 from Utils import LibraryBitmapPreview
 
+from ParameterUtils.ShapeGeometryPropertiesParameterUtil import ShapeGeometryPropertiesParameterUtil
+from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
+import NemAll_Python_Geometry as AllplanGeo
+import NemAll_Python_ArchElements as AllplanArchEle
+
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.ColumnBuildingElement import ColumnBuildingElement as BuildingElement  # type: ignore
 else:
@@ -91,20 +96,25 @@ class ColumnScript(BaseScriptObject):
 
         super().__init__(script_object_data)
 
-        self.pnt_result  = PointInteractorResult()
+        self.pnt_result               = PointInteractorResult()
         self.build_ele                = build_ele
+        self.shape_geo_param_util     = ShapeGeometryPropertiesParameterUtil(build_ele, "")
+        self.polygon_result           = PolygonInteractorResult()
 
 
     def start_input(self):
         """Starts the column axis input at the beginning of the script runtime"""
 
-        self.script_object_interactor = PointInteractor(self.pnt_result, True, "Place the element", self.draw_preview)
+        if self.build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
+            self.script_object_interactor = PolygonInteractor(self.polygon_result, self.build_ele.CommonProp.value, False, False)
+        else:
+            self.script_object_interactor = PointInteractor(self.pnt_result, True, "Place the element", self.draw_preview)
 
 
     def start_next_input(self):
         """Terminate the input after successful input of start point"""
 
-        if self.pnt_result != PointInteractorResult():
+        if self.pnt_result != PointInteractorResult() or  self.polygon_result  != PolygonInteractorResult():
             self.script_object_interactor = None
 
 
@@ -150,9 +160,9 @@ class ColumnScript(BaseScriptObject):
 
         #--------- Define properties specific to a column
 
-        column_prop.PlaneReferences           = self.build_ele.PlaneReferences.value
-        column_prop.Width                     = self.build_ele.Width.value
-        column_prop.Depth= self.build_ele.Width.value
+        column_prop.PlaneReferences = self.build_ele.PlaneReferences.value
+        self.shape_geo_param_util.create_shape_geo_properties(self.build_ele, column_prop,
+                                                              AllplanGeo.ConvertTo2D(self.polygon_result.input_polygon)[1])
 
         #--------- Define standard architecture attributes
 
@@ -183,3 +193,35 @@ class ColumnScript(BaseScriptObject):
         """
 
         return AllplanArchElements.ColumnElement(self.create_column_properties(), self.pnt_result.input_point)
+
+    def modify_element_property(self,
+                                name : str,
+                                value: Any) -> bool:
+        """ modify the element property
+
+        Args:
+            name:  name
+            value: value
+
+        Returns:
+            update palette state
+        """
+
+        build_ele = self.build_ele
+
+        match name:
+            case "Shape":
+                if build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
+                   self.script_object_interactor = PolygonInteractor(self.polygon_result, build_ele.CommonProp.value, False, False)
+                else:
+                    self.script_object_interactor = PointInteractor(self.pnt_result, True, "Place the element", self.draw_preview)
+
+                if self.script_object_interactor:
+                    self.script_object_interactor.start_input(self.coord_input)
+
+                return True
+
+        return False
+
+
+

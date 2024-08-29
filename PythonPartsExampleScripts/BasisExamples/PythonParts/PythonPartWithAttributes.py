@@ -21,6 +21,8 @@ from PythonPart import PythonPart
 from PythonPartUtil import PythonPartUtil
 from TypeCollections.ModelEleList import ModelEleList
 
+from Utilities.AttributeIdEnums import AttributeIdEnums
+
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.PythonPartWithAttributesBuildingElement import \
         PythonPartWithAttributesBuildingElement as BuildingElement  # type: ignore
@@ -75,9 +77,9 @@ def create_pythonpart(build_ele: BuildingElement) -> PythonPart:
 
     if build_ele.AppendGeometryAttributes.value:
         geometry_attributes = BuildingElementAttributeList()
-        geometry_attributes.add_attribute(220, build_ele.Dimensions.value.X / 1000)
-        geometry_attributes.add_attribute(221, build_ele.Dimensions.value.Y / 1000)
-        geometry_attributes.add_attribute(222, build_ele.Dimensions.value.Z / 1000)
+        geometry_attributes.add_attribute_by_unit(AttributeIdEnums.LENGTH, build_ele.Dimensions.value.X)
+        geometry_attributes.add_attribute_by_unit(AttributeIdEnums.THICKNESS, build_ele.Dimensions.value.Y)
+        geometry_attributes.add_attribute_by_unit(AttributeIdEnums.HEIGHT, build_ele.Dimensions.value.Z)
 
         python_part_util.add_attribute_list(geometry_attributes)
 

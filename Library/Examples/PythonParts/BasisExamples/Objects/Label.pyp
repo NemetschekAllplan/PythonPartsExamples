@@ -85,7 +85,7 @@
             <Parameter>
                 <Name>AttributeList</Name>
                 <Text>Attributes</Text>
-                <Value>[(498,Box);(0,)]</Value>
+                <Value>[(AttributeIdEnums.OBJECT_NAME,Box);(0,)]</Value>
                 <ValueType>AttributeIdValue</ValueType>
                 <ValueDialog>AttributeSelectionInsert</ValueDialog>
             </Parameter>

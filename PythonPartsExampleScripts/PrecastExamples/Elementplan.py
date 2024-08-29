@@ -1,12 +1,12 @@
 """ Elementplan example """
 
-import NemAll_Python_AllplanSettings as AllplanSettings             # pylint: disable=import-error
-import NemAll_Python_IFW_Input as AllplanIFW                        # pylint: disable=import-error
-import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter    # pylint: disable=import-error
-import NemAll_Python_Precast as MultiMaterialPlan                   # pylint: disable=import-error
-import NemAll_Python_Geometry as AllplanGeo                         # pylint: disable=import-error
-import NemAll_Python_BaseElements as AllplanBaseElements            # pylint: disable=import-error
-import NemAll_Python_BasisElements as AllplanBasisElements          # pylint: disable=import-error
+import NemAll_Python_AllplanSettings as AllplanSettings
+import NemAll_Python_IFW_Input as AllplanIFW
+import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
+import NemAll_Python_Precast as MultiMaterialPlan
+import NemAll_Python_Geometry as AllplanGeo
+import NemAll_Python_BaseElements as AllplanBaseElements
+import NemAll_Python_BasisElements as AllplanBasisElements
 
 from PythonPartTransaction import PythonPartTransaction
 from BuildingElement import BuildingElement
@@ -158,7 +158,7 @@ class PythonElementplan:
         """
         # Plan
         plan = MultiMaterialPlan.Plan(self.doc)#, AllplanElementAdapter.BaseElementAdapterList([self.create_mws_group()]))
-        plan.Offset = AllplanGeo.Point2D(self.build_ele.PositionX.value, self.build_ele.PositionY.value)
+        plan.Position = AllplanGeo.Point2D(self.build_ele.PositionX.value, self.build_ele.PositionY.value)
         plan.DrawingFile = self.build_ele.DrawingFile.value
 
         # Page
@@ -182,37 +182,39 @@ class PythonElementplan:
                                        cellId=2,
                                        direction=MultiMaterialPlan.Direction.eDirectionIV,
                                        rotation=MultiMaterialPlan.Rotation.eRotation270)
+        view2.SetProps(MultiMaterialPlan.ViewProperties())
         page.add_cell(view2)
+
         view3 = MultiMaterialPlan.View(doc=self.doc,
                                        cellId=3,
                                        direction=MultiMaterialPlan.Direction.eDirectionV,
-                                       rotation=MultiMaterialPlan.Rotation.eRotation90)
+                                       rotation=MultiMaterialPlan.Rotation.eRotation90,
+                                       viewProps=MultiMaterialPlan.ViewProperties())
         page.add_cell(view3)
 
         # Legend
+        legend = MultiMaterialPlan.Legend(cellId=4)#,
+                                        #   conditionTemplate="@507@ = \"Legend\"")
         legend_props = MultiMaterialPlan.LegendProperties()
         legend_props.FileEntryPath = MultiMaterialPlan.FileEntryPath.eFileEntryPathStandard
         legend_props.FileNr = 19
         legend_props.EntryNr = 42
         legend_props.MaxHeight = 150.0
         legend_props.MaxWidth = 100.0
-        legend = MultiMaterialPlan.Legend(doc=self.doc,
-                                          cellId=4,
-                                          legendProps=legend_props)#,
-                                        #   conditionTemplate="@507@ = \"Legend\"")
+        legend.SetProps(legend_props)
         page.add_cell(legend)
 
-
         # LabelStyle
+        label_style = MultiMaterialPlan.LabelStyle(cellId=5,
+                                                   allowOverlapping=False)#,
+                                                #    conditionTemplate="@507@ = \"LabelStyle\"")
+
         label_style_props = MultiMaterialPlan.LabelStyleProperties()
         label_style_props.FileEntryPath = MultiMaterialPlan.FileEntryPath.eFileEntryPathStandard
         label_style_props.FileNr = 8
         label_style_props.EntryNr = 18
-        label_style = MultiMaterialPlan.LabelStyle(self.doc,
-                                                   cellId=5,
-                                                   labelStyleProps=label_style_props,
-                                                   allowOverlapping=False)#,
-                                                #    conditionTemplate="@507@ = \"LabelStyle\"")
+        label_style.SetProps(label_style_props)
+
         page.add_cell(label_style)
 
         # Anchors

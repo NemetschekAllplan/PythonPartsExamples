@@ -6,43 +6,27 @@
         <Version>1.0</Version>
         <ReadLastInput>True</ReadLastInput>
     </Script>
-    
+
     <Page>
         <Name>Page</Name>
         <Text>Page</Text>
-        
         <Parameter>
-            <Name>GeometryExpander</Name>
-            <Text>Geometry</Text>
-            <ValueType>Expander</ValueType>
-
-            <Parameter>
-                <Name>Width</Name>
-                <Text>Width</Text>
-                <Value>400</Value>
-                <ValueType>Length</ValueType>
-            </Parameter>
-            <Parameter>
-                <Name>Depth</Name>
-                <Text>Depth</Text>
-                <Value>400</Value>
-                <ValueType>Length</ValueType>
-            </Parameter>
-            <Parameter>
-                <Name>PlaneReferences</Name>
-                <Text>Height</Text>
-                <Value></Value>
-                <ValueType>PlaneReferences</ValueType>
-                <ValueDialog>PlaneReferences</ValueDialog>
-            </Parameter>
+            <Name></Name>
+            <Text></Text>
+            <Value>etc\PythonPartsFramework\ParameterIncludes\ShapeGeometryProperties.incl</Value>
+            <ValueType>Include</ValueType>
         </Parameter>
-
-
+        <Parameter>
+            <Name>PlaneReferences</Name>
+            <Text>Height</Text>
+            <Value></Value>
+            <ValueType>PlaneReferences</ValueType>
+            <ValueDialog>PlaneReferences</ValueDialog>
+        </Parameter>
         <Parameter>
             <Name>FormatPropertiesExpander</Name>
             <Text>Format properties</Text>
             <ValueType>Expander</ValueType>
-
             <Parameter>
                 <Name>CommonProp</Name>
                 <Text></Text>
@@ -50,7 +34,6 @@
                 <ValueType>CommonProperties</ValueType>
             </Parameter>
         </Parameter>
-
         <Parameter>
             <Name>SurfaceElementsExp</Name>
             <Text>Surface elements</Text>
@@ -67,7 +50,7 @@
                 <Name>Separator</Name>
                 <ValueType>Separator</ValueType>
             </Parameter>
-            
+
             <Parameter>
                 <Name>SurfaceRow</Name>
                 <Text>Surface (Animation)</Text>
@@ -86,7 +69,7 @@
                 </Parameter>
             </Parameter>
         </Parameter>
-        
+
         <Parameter>
             <Name>AttributesExpander</Name>
             <Text>Attributes</Text>

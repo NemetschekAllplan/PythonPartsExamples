@@ -98,7 +98,7 @@
                 <EnumList2>AllplanSettings.PictResShapeType.eRectangle|
                            AllplanSettings.PictResShapeType.eArbitrary</EnumList2>
                 <ValueType>PictureResourceButtonList</ValueType>
-                <Enable>False</Enable>  <!-- For now only rectangular profile is available -->
+                <Enable>True</Enable>
             </Parameter>
 
             <Parameter>
@@ -106,6 +106,7 @@
                 <Text>Width</Text>
                 <Value>300</Value>
                 <ValueType>Length</ValueType>
+                <Visible>SectionType == AllplanArchEle.ShapeType.eRectangular</Visible>
             </Parameter>
             <Parameter>
                 <Name>PlaneReferences</Name>
@@ -114,8 +115,21 @@
                 <ValueType>PlaneReferences</ValueType>
                 <ValueDialog>PlaneReferences</ValueDialog>
             </Parameter>
-        </Parameter>
 
+            <Parameter>
+            <Name>ProfileRow</Name>
+            <Text>Select profile</Text>
+            <ValueType>Row</ValueType>
+                <Parameter>
+                <Name>Profile</Name>
+                <Text>Select Profile</Text>
+                <Value></Value>
+                <ValueType>String</ValueType>
+                <ValueDialog>SymbolDialog</ValueDialog>
+                </Parameter>
+            <Visible>SectionType == AllplanArchEle.ShapeType.eArbitrary</Visible>
+            </Parameter>
+        </Parameter>
 
         <Parameter>
             <Name>FormatPropertiesExpander</Name>
@@ -146,7 +160,7 @@
                 <Name>Separator</Name>
                 <ValueType>Separator</ValueType>
             </Parameter>
-            
+
             <Parameter>
                 <Name>SurfaceRow</Name>
                 <Text>Surface (Animation)</Text>
@@ -165,7 +179,7 @@
                 </Parameter>
             </Parameter>
         </Parameter>
-        
+
         <Parameter>
             <Name>AttributesExpander</Name>
             <Text>Attributes</Text>

@@ -45,14 +45,14 @@
                 <Text>Sequence number</Text>
                 <Value>1111</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>206</AttributeId>
+                <AttributeId>AttributeIdEnums.SEQUENCE_NUMBER</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>LayerThickness</Name>
                 <Text>Layer thickness</Text>
                 <Value>30</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>211</AttributeId>
+                <AttributeId>AttributeIdEnums.LAYER_THICKNESS</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>Material</Name>
@@ -61,56 +61,56 @@
                 <ValueList>Concrete|Steel|Wooden</ValueList>
                 <ValueType>StringComboBox</ValueType>
                 <ValueListFile>usr\tmp\PypComboSettings\Material.val</ValueListFile>
-                <AttributeId>508</AttributeId>
+                <AttributeId>AttributeIdEnums.MATERIAL</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>ApprovalDate</Name>
                 <Text>Approval date</Text>
                 <Value>date(2022,4,27)</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>386</AttributeId>
+                <AttributeId>AttributeIdEnums.APPROVAL_DATE</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>LoadBearing</Name>
                 <Text>Load bearing</Text>
                 <Value>1</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>573</AttributeId>
+                <AttributeId>AttributeIdEnums.LOAD_BEARING</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>CalculationMode</Name>
                 <Text>Calculation mode</Text>
                 <Value>2</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>120</AttributeId>
+                <AttributeId>AttributeIdEnums.CALCULATION_MODE</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>Unit</Name>
                 <Text>Unit</Text>
                 <Value>m</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>202</AttributeId>
+                <AttributeId>AttributeIdEnums.UNIT</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>LayoutFormat</Name>
                 <Text>Layout format</Text>
                 <Value>DIN A0</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>375</AttributeId>
+                <AttributeId>AttributeIdEnums.LAYOUT_FORMAT</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>IfCObjectType</Name>
                 <Text>IFC object type</Text>
                 <Value>IfcBeam</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>684</AttributeId>
+                <AttributeId>AttributeIdEnums.IFC_ENTITY</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>AreaTypeFloorSpace</Name>
                 <Text>Area type floor space</Text>
                 <Value>WO</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>233</AttributeId>
+                <AttributeId>AttributeIdEnums.AREA_TYPE_FLOOR_SPACE</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>Hatching</Name>
@@ -159,7 +159,7 @@
             <TextDyn>"$Attribute_Name"</TextDyn>
             <Value>["A1","F30",2]</Value>
             <ValueType>Attribute</ValueType>
-            <AttributeId>[1398, 935, 209]</AttributeId>
+            <AttributeId>[AttributeIdEnums.FIRE_RISK_FACTOR, AttributeIdEnums.FIRE_RATING, AttributeIdEnums.TRADE]</AttributeId>
         </Parameter>
     </Page>
 </Element>

@@ -162,7 +162,8 @@ class BeamScript(BaseScriptObject):
         beam_prop.SetAxis(self.axis_properties)
 
         beam_prop.PlaneReferences           = self.build_ele.PlaneReferences.value
-        beam_prop.ShapeType                 = AllplanArchElements.ShapeType.eRectangular    # for now only rectangular cross-section possible
+        beam_prop.ShapeType                 = self.build_ele.SectionType.value
+        beam_prop.ProfileFullName           = self.build_ele.Profile.value
         beam_prop.Width                     = self.build_ele.Width.value
         beam_prop.IsStartNewJoinedBeamGroup = True
 
