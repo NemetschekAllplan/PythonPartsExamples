@@ -9,7 +9,6 @@
     <Page>
         <Name>Page1</Name>
         <Text>Geometry</Text>
-
         <Parameter>
             <Name>ColumnWidth</Name>
             <Text>Width</Text>
