@@ -10,6 +10,20 @@
     <Page>
         <Name>Page</Name>
         <Text>Page</Text>
+
+        <Parameter>
+            <Name>PlacementPointExp</Name>
+            <Text>Placement point</Text>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>PlaceAtDockingPoint</Name>
+                <Text>Place at docking point</Text>
+                <Value>False</Value>
+                <ValueType>CheckBox</ValueType>
+            </Parameter>
+        </Parameter>
+
         <Parameter>
             <Name></Name>
             <Text></Text>
@@ -93,7 +107,7 @@
                 <Text>Calculation mode</Text>
                 <Value>2</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>120</AttributeId>
+                <AttributeId>AttributeIdEnums.CALCULATION_MODE</AttributeId>
                 </Parameter>
             <Parameter>
                 <Name>Factor</Name>
@@ -103,6 +117,16 @@
                 <MinValue>0.0</MinValue>
             </Parameter>
         </Parameter>
+    </Page>
+    <Page>
+        <Name>__HiddenPage__</Name>
+        <Text></Text>
 
+        <Parameter>
+            <Name>__PlacementPointConnection__</Name>
+            <Text>Placement point connection</Text>
+            <Value>False</Value>
+            <ValueType>PointConnection</ValueType>
+        </Parameter>
     </Page>
 </Element>

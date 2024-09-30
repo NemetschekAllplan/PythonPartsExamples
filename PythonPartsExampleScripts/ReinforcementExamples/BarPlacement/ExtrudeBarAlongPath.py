@@ -14,6 +14,7 @@ import NemAll_Python_BasisElements as AllplanBasisEle
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_Utility as AllplanUtil
 
+from BuildingElementAttributeList import BuildingElementAttributeList
 from CreateElementResult import CreateElementResult
 from PythonPartUtil import PythonPartUtil
 
@@ -217,6 +218,14 @@ class ExtrudeBarAlongPath():
 
         placement.Extrude()
 
+
+        #----------------- add the attributes
+
+        build_ele_attr_list = BuildingElementAttributeList()
+
+        build_ele_attr_list.add_attributes_from_parameters(build_ele)
+
+        build_ele_attr_list.set_attributes_to_element(placement)
 
         #----------------- Create PythonPart
 

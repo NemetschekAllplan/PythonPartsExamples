@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Element>
     <Script>
-        <Name>ArchitectureExamples\Objects\GeneralOpening.py</Name>
+        <Name>ArchitectureExamples\ModifyObjects\ModifyGeneralOpening.py</Name>
         <Title>General opening</Title>
         <Version>1.0</Version>
         <ReadLastInput>True</ReadLastInput>
@@ -21,6 +21,7 @@
     <Page>
         <Name>Page1</Name>
         <Text>Test</Text>
+        <Visible>InputMode == OPENING_INPUT</Visible>
 
         <Parameter>
             <Name>GeometryExp</Name>

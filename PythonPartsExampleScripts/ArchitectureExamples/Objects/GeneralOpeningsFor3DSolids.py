@@ -118,8 +118,6 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         self.opening_bottom_plane_surfaces : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D | None)] = []
         self.opening_top_plane_surfaces    : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D | None)] = []
 
-        self.preview_elements : ModelEleList = ModelEleList()
-
 
     def start_input(self):
         """ start the input
@@ -138,7 +136,7 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
 
         #----------------- get all axis elements from the document
 
-        sel_query = ArchitectureElementsQueryUtil.create_arch_axis_elements_query()
+        sel_query = ArchitectureElementsQueryUtil.create_arch_general_opening_elements_query()
 
         self.parent_ele.clear()
 
@@ -203,7 +201,7 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         return CreateElementResult(self.create_opening_element(), [],
                                    multi_placement = True,
                                    placement_point = AllplanGeo.Point3D(),
-                                   preview_elements = self.preview_elements)
+                                   as_static_preview = True)
 
 
     def modify_element_property(self,
@@ -279,6 +277,9 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         BuildingElementListService.write_to_default_favorite_file([build_ele])
 
         if build_ele.InputMode.value != build_ele.OPENING_INPUT:
+            if self.script_object_interactor is not None:
+                cast(MultiElementSelectInteractor, self.script_object_interactor).close_selection()
+
             return OnCancelFunctionResult.CANCEL_INPUT
 
         return OnCancelFunctionResult.CREATE_ELEMENTS
@@ -295,9 +296,6 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         build_ele = self.build_ele
 
         model_ele_list = ModelEleList()
-
-        self.preview_elements = ModelEleList()
-        self.preview_elements.set_color(5)
 
         progress_bar = AllplanUtil.ProgressBar()
 

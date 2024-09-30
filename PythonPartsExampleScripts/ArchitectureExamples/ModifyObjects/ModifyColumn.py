@@ -10,6 +10,7 @@ import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
+import NemAll_Python_IFW_Input as AllplanIFW
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElement import BuildingElement
@@ -28,6 +29,7 @@ from TypeCollections.ModelEleList import ModelEleList
 from Utils import LibraryBitmapPreview
 from Utils.HandleCreator import HandleCreator
 from Utils.HideElementsService import HideElementsService
+from Utils.General.AttributeUtil import AttributeUtil
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.ModifyColumnBuildingElement import ModifyColumnBuildingElement
@@ -164,8 +166,10 @@ class ModifyColumn(BaseScriptObject):
         build_ele.Priority.value        = column_properties.Priority
         build_ele.Factor.value          = column_properties.Factor
 
-        build_ele.Status.value          = AllplanBaseEle.AttributeService.GetEnumValueStringFromID(build_ele.Status.attribute_id, column_properties.Status)
-        build_ele.CalculationMode.value = AllplanBaseEle.AttributeService.GetEnumValueStringFromID(build_ele.CalculationMode.attribute_id, column_properties.CalculationMode)
+        build_ele.Status.value          = AttributeUtil.get_enum_value_string_from_id(build_ele.Status, column_properties.Status)
+        build_ele.CalculationMode.value = AttributeUtil.get_enum_value_string_from_id(build_ele.CalculationMode,
+                                                                                      column_properties.CalculationMode)
+
 
         #----------------- start the column modification
 
@@ -208,8 +212,8 @@ class ModifyColumn(BaseScriptObject):
         column_properties.Priority                 = build_ele.Priority.value
         column_properties.Factor                   = build_ele.Factor.value
 
-        column_properties.Status          = AllplanBaseEle.AttributeService.GetEnumIDFromValueString(build_ele.Status.attribute_id, build_ele.Status.value)
-        column_properties.CalculationMode = AllplanBaseEle.AttributeService.GetEnumIDFromValueString(build_ele.CalculationMode.attribute_id, build_ele.CalculationMode.value)
+        column_properties.Status          = AttributeUtil.get_enum_id_from_value_string(build_ele.Status)
+        column_properties.CalculationMode = AttributeUtil.get_enum_id_from_value_string(build_ele.CalculationMode)
 
         if build_ele.IsSurface.value:
             column_properties.Surface = build_ele.SurfaceName.value
@@ -218,7 +222,10 @@ class ModifyColumn(BaseScriptObject):
 
         #----------------- add the placement point and create the element
 
-        self.column_ele.PlacementPoint = self.placement_pnt.To2D - self.shape_geo_param_util.get_reference_point(build_ele)
+        if build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
+            self.column_ele.PlacementPoint = self.shape_polygon.GetStartPoint()
+        else:
+            self.column_ele.PlacementPoint = self.placement_pnt.To2D - self.shape_geo_param_util.get_reference_point(build_ele)
 
         model_ele_list = ModelEleList()
 
@@ -289,16 +296,18 @@ class ModifyColumn(BaseScriptObject):
 
         AllplanBaseEle.ModifyElements(self.document, self.create_column_element())
 
+        AllplanIFW.HandleService().RemoveHandles()
+
         return OnCancelFunctionResult.RESTART
 
     def modify_element_property(self,
-                                name : str,
-                                value: Any) -> bool:
+                                name  : str,
+                                _value: Any) -> bool:
         """ modify the element property
 
         Args:
-            name:  name
-            value: value
+            name:   name
+            _value: value
 
         Returns:
             update palette state

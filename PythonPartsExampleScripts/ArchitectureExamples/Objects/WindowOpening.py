@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, cast
 
 import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
+import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
@@ -15,9 +16,14 @@ from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
 from ValueListUtil import ValueListUtil
 
+from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor
+
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
+from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
+from Utils.Architecture.OpeningHandlesUtil import OpeningHandlesUtil
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
 from ParameterUtils.OpeningRevealPropertiesParameterUtil import OpeningRevealPropertiesParameterUtil
 from ParameterUtils.OpeningSymbolsPropertiesParameterUtil import OpeningSymbolsPropertiesParameterUtil
@@ -85,11 +91,23 @@ class WindowOpening(OpeningBase):
     """ Definition of class WindowOpening
     """
 
+    def start_input(self):
+        """ start the input
+        """
+
+        self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
+                                                            ArchitectureElementsQueryUtil.create_arch_door_window_opening_elements_query(),
+                                                            "Set properties or click a component line",
+                                                            self.draw_placement_preview)
+
+        self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
+
+
     def start_next_input(self):
         """ start the next input
         """
 
-        if self.placement_ele is None:
+        if self.placement_line is None:
             return
 
         build_ele = cast(WindowOpeningBuildingElement, self.build_ele)
@@ -138,9 +156,13 @@ class WindowOpening(OpeningBase):
 
         #----------------- create the opening
 
-        self.create_opening_points()
+        self.opening_end_pnt = OpeningPointsUtil.create_opening_end_point_for_axis_element(self.opening_start_pnt.To2D,
+                                                                                            build_ele.Width.value,
+                                                                                            self.placement_ele_axis,
+                                                                                            self.placement_ele_geo,
+                                                                                            self.placement_line).To3D
 
-        opening_ele = AllplanArchEle.WindowOpeningElement(opening_prop, self.general_ele,
+        opening_ele = AllplanArchEle.WindowOpeningElement(opening_prop, self.placement_ele,
                                                           self.opening_start_pnt.To2D,
                                                           self.opening_end_pnt.To2D,
                                                           build_ele.InputMode.value == build_ele.ELEMENT_SELECT)
@@ -159,8 +181,23 @@ class WindowOpening(OpeningBase):
             created handles
         """
 
+        build_ele = self.build_ele
+
         handle_list : list[HandleProperties] = []
 
-        self.create_opening_handles(handle_list)
+        bottom_pnt = AllplanGeo.Point3D(0, 0,
+                                        build_ele.HeightSettings.value.AbsBottomElevation - build_ele.HeightSettings.value.BottomElevation)
+
+        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt, self.opening_end_pnt, self.offset_start_pnt, self.offset_end_pnt,
+                                                  self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
+                                                  handle_list)
+
+        if (prop := build_ele.get_property("SmartSymbolGroup")) is not None and prop.value:
+            self.opening_tier_center, self.opening_tier_ref_pnt = \
+                OpeningHandlesUtil.create_opening_symbol_handles(self.opening_start_pnt, self.opening_end_pnt, build_ele.Width.value,
+                                                                build_ele.Depth.value, self.placement_ele, 1, False,
+                                                                build_ele.OpeningSymbolRefPntIndex.value,
+                                                                bottom_pnt, handle_list)
+
 
         return handle_list

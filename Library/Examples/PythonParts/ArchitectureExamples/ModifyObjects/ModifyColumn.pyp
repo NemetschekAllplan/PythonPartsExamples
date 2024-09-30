@@ -40,7 +40,7 @@
             <Name>GeometryExpander</Name>
             <Text>Geometry</Text>
             <ValueType>Expander</ValueType>
-            
+
             <Parameter>
                 <Name>PlaneReferences</Name>
                 <Text>Height</Text>
@@ -80,7 +80,7 @@
                 <Name>Separator</Name>
                 <ValueType>Separator</ValueType>
             </Parameter>
-            
+
             <Parameter>
                 <Name>SurfaceRow</Name>
                 <Text>Surface (Animation)</Text>
@@ -99,7 +99,7 @@
                 </Parameter>
             </Parameter>
         </Parameter>
-        
+
         <Parameter>
             <Name>AttributesExpander</Name>
             <Text>Attributes</Text>
@@ -122,7 +122,7 @@
                 <Text>Status</Text>
                 <Value>6</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>49</AttributeId>
+                <AttributeId>AttributeIdEnums.STATUS</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>Trade</Name>
@@ -142,7 +142,7 @@
                 <Text>Calculation mode</Text>
                 <Value>2</Value>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>120</AttributeId>
+                <AttributeId>AttributeIdEnums.CALCULATION_MODE</AttributeId>
                 </Parameter>
             <Parameter>
                 <Name>Factor</Name>
@@ -150,7 +150,7 @@
                 <Value>1.0</Value>
                 <ValueType>Double</ValueType>
                 <MinValue>0.0</MinValue>
-            </Parameter>            
+            </Parameter>
         </Parameter>
     </Page>
 

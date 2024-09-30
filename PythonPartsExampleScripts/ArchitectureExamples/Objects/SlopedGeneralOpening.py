@@ -113,7 +113,7 @@ class SlopedGeneralOpening(BaseScriptObject):
         self.hide_ele        = False
         self.undo_service    = None
 
-        self.sel_query = ArchitectureElementsQueryUtil.create_arch_axis_elements_query()
+        self.sel_query = ArchitectureElementsQueryUtil.create_arch_general_opening_elements_query()
 
         self.opening_bottom_plane_surfaces : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D)] = []
         self.opening_top_plane_surfaces    : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D)] = []

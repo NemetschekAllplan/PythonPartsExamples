@@ -132,7 +132,7 @@ class PolygonalGeneralOpening(BaseScriptObject):
                                                               multi_polygon_input = False)
         else:
             self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
-                                                                ArchitectureElementsQueryUtil.create_arch_axis_elements_query(),
+                                                                ArchitectureElementsQueryUtil.create_arch_general_opening_elements_query(),
                                                                 "Placement point", self.draw_placement_preview)
 
         build_ele.InputMode.value = self.build_ele.POLYGON_INPUT
@@ -159,17 +159,24 @@ class PolygonalGeneralOpening(BaseScriptObject):
         if not self.opening_polygon.IsValid():
             return
 
-        arch_ele = AllplanIFW.SelectElementsService.SelectByPolygon(self.document, self.opening_polygon,
-                                                                    self.coord_input.GetViewWorldProjection(),
-                                                                    AllplanIFW.SelectElementsService.eSelectCondition.SELECT_ALL,
-                                                                    ArchitectureElementsQueryUtil.create_arch_axis_elements_query(), True)
+        arch_ele = AllplanIFW.SelectElementsService.SelectByPolygon(
+                    self.document, self.opening_polygon,
+                    self.coord_input.GetViewWorldProjection(),
+                    AllplanIFW.SelectElementsService.eSelectCondition.SELECT_ALL,
+                    ArchitectureElementsQueryUtil.create_arch_general_opening_elements_query(), True)
 
         if not arch_ele:
             AllplanUtil.ShowMessageBox("Opening is outside the wall", AllplanUtil.MB_OK)
 
             return
 
-        self.general_ele = AllplanEleAdapter.BaseElementAdapterParentElementService.GetParentElement(arch_ele[0])
+
+        #----------------- in case of selected tier get the parent element
+
+        if (parent_ele := AllplanEleAdapter.BaseElementAdapterParentElementService.GetParentElement(arch_ele[0])) and parent_ele.IsNull():
+            self.general_ele = arch_ele[0]
+        else:
+            self.general_ele = parent_ele
 
         self.script_object_interactor = None
 

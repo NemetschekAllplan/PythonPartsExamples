@@ -16,10 +16,14 @@ from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
 
+from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor
+
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
-from Utils.HandleCreator import HandleCreator
+from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
+from Utils.Architecture.OpeningHandlesUtil import OpeningHandlesUtil
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
 from .OpeningBase import OpeningBase
 
@@ -82,6 +86,18 @@ class Joint(OpeningBase):
     """ Definition of class Joint
     """
 
+    def start_input(self):
+        """ start the input
+        """
+
+        self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
+                                                            ArchitectureElementsQueryUtil.create_arch_general_opening_elements_query(),
+                                                            "Set properties or click a component line",
+                                                            self.draw_placement_preview)
+
+        self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
+
+
     def create_opening_element(self) -> ModelEleList:
         """ create the opening element
 
@@ -100,12 +116,16 @@ class Joint(OpeningBase):
 
         #----------------- create the joint
 
-        self.create_opening_points()
+        self.opening_end_pnt = OpeningPointsUtil.create_opening_end_point_for_axis_element(self.opening_start_pnt.To2D,
+                                                                                           build_ele.Width.value,
+                                                                                           self.placement_ele_axis,
+                                                                                           self.placement_ele_geo,
+                                                                                           self.placement_line).To3D
 
-        joint_ele = AllplanArchEle.JointElement(joint_prop, self.general_ele,
-                                                           self.opening_start_pnt.To2D,
-                                                           self.opening_end_pnt.To2D,
-                                                           build_ele.InputMode.value == build_ele.ELEMENT_SELECT)
+        joint_ele = AllplanArchEle.JointElement(joint_prop, self.placement_ele,
+                                                self.opening_start_pnt.To2D,
+                                                self.opening_end_pnt.To2D,
+                                                build_ele.InputMode.value == build_ele.ELEMENT_SELECT)
 
         model_ele_list = ModelEleList()
         model_ele_list.append(joint_ele)
@@ -122,36 +142,20 @@ class Joint(OpeningBase):
 
         build_ele = self.build_ele
 
-        opening_start_pnt = self.opening_start_pnt
-        opening_end_pnt   = self.opening_end_pnt
-
         handle_list : list[HandleProperties] = []
 
-        #----------------- width input controls
-
-        HandleCreator.point_distance(handle_list, "Width", opening_end_pnt, opening_start_pnt,
-                                     show_handles = False, input_field_above = False)
-
-        x_start = AllplanGeo.TransformCoord.PointLocal(self.placement_ele, opening_start_pnt).X
+        bottom_pnt = AllplanGeo.Point3D()
 
         depth = build_ele.Depth.value or build_ele.ElementThickness.value
 
-        #----------------- depth handle for the circular axis
+        OpeningHandlesUtil.create_opening_depth_handle(self.opening_start_pnt, self.placement_ele_axis,
+                                                       self.placement_ele_geo, self.placement_line,
+                                                       self.placement_arc, bottom_pnt, depth, handle_list)
 
-        if self.general_ele == AllplanEleAdapter.CircularWall_TypeUUID:
-            depth_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele, AllplanGeo.Point2D(x_start, depth))
+        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt, self.opening_end_pnt, self.offset_start_pnt, self.offset_end_pnt,
+                                                  self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
+                                                  handle_list)
 
-            depth_ref_pnt = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, opening_start_pnt)[1]
-
-            HandleCreator.point_distance(handle_list, "Depth", depth_pnt, depth_ref_pnt)
-
-        #----------------- depth handle for the linear axis
-
-        else:
-            depth_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele, AllplanGeo.Point2D(x_start, depth))
-
-            HandleCreator.point_distance(handle_list, "Depth", depth_pnt, opening_start_pnt)
-
-        self.create_opening_handles(handle_list)
+        depth = build_ele.Depth.value or build_ele.ElementThickness.value
 
         return handle_list

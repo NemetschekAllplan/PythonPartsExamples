@@ -2,26 +2,26 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import NemAll_Python_AllplanSettings as AllplanSettings
-import NemAll_Python_ArchElements as AllplanArchElements
+import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_BaseElements as AllplanBaseEle
-import NemAll_Python_BasisElements as AllplanBasisElements
-import NemAll_Python_Geometry as AllplanGeometry
+import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
-from ScriptObjectInteractors.PointInteractor import PointInteractor, PointInteractorResult
+
+from ScriptObjectInteractors.DockingPointInteractor import DockingPointInteractor
 from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResult
+from ScriptObjectInteractors.PointInteractor import PointInteractor, PointInteractorResult
+from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
 from Utils import LibraryBitmapPreview
+from Utils.General.AttributeUtil import AttributeUtil
 
 from ParameterUtils.ShapeGeometryPropertiesParameterUtil import ShapeGeometryPropertiesParameterUtil
-from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
-import NemAll_Python_Geometry as AllplanGeo
-import NemAll_Python_ArchElements as AllplanArchEle
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.ColumnBuildingElement import ColumnBuildingElement as BuildingElement  # type: ignore
@@ -45,13 +45,13 @@ def check_allplan_version(_build_ele: BuildingElement,
     return True
 
 
-def create_preview(build_ele: BuildingElement,
-                   _doc: AllplanElementAdapter.DocumentAdapter) -> CreateElementResult:
-    """Create a simplified column representation for library preview
+def create_preview(_build_ele: BuildingElement,
+                   _doc      : AllplanElementAdapter.DocumentAdapter) -> CreateElementResult:
+    """ Create a simplified column representation for library preview
 
     Args:
-        build_ele:   building element with the parameter properties
-        _doc:        input document
+        _build_ele: building element with the parameter properties
+        _doc:       document of the Allplan drawing files
 
     Returns:
         Preview elements
@@ -105,8 +105,16 @@ class ColumnScript(BaseScriptObject):
     def start_input(self):
         """Starts the column axis input at the beginning of the script runtime"""
 
-        if self.build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
-            self.script_object_interactor = PolygonInteractor(self.polygon_result, self.build_ele.CommonProp.value, False, False)
+        build_ele = self.build_ele
+
+        build_ele.__PlacementPointConnection__.value.reset()
+
+        if build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
+            self.script_object_interactor = PolygonInteractor(self.polygon_result, build_ele.CommonProp.value, False, False)
+
+        elif build_ele.PlaceAtDockingPoint.value:
+            self.script_object_interactor = DockingPointInteractor(build_ele.__PlacementPointConnection__, self.draw_preview)
+
         else:
             self.script_object_interactor = PointInteractor(self.pnt_result, True, "Place the element", self.draw_preview)
 
@@ -114,7 +122,9 @@ class ColumnScript(BaseScriptObject):
     def start_next_input(self):
         """Terminate the input after successful input of start point"""
 
-        if self.pnt_result != PointInteractorResult() or  self.polygon_result  != PolygonInteractorResult():
+        if self.pnt_result     != PointInteractorResult() or \
+           self.polygon_result != PolygonInteractorResult() or \
+           self.build_ele.__PlacementPointConnection__.value.is_valid():
             self.script_object_interactor = None
 
 
@@ -125,15 +135,15 @@ class ColumnScript(BaseScriptObject):
             Result object with elements to create
         """
 
-        return CreateElementResult([self.column_element()], placement_point = AllplanGeometry.Point2D())
+        return CreateElementResult([self.create_column_element()], placement_point = AllplanGeo.Point3D(),  multi_placement = True)
 
 
     def draw_preview(self):
         """ draw the preview
         """
 
-        AllplanBaseEle.DrawElementPreview(self.document, AllplanGeometry.Matrix3D(),
-                                          [self.column_element()], False, None)
+        AllplanBaseEle.DrawElementPreview(self.document, AllplanGeo.Matrix3D(),
+                                          [self.create_column_element()], False, None)
 
 
     def on_cancel_function(self) -> OnCancelFunctionResult:
@@ -149,24 +159,25 @@ class ColumnScript(BaseScriptObject):
         return OnCancelFunctionResult.CREATE_ELEMENTS
 
 
-    def create_column_properties(self) -> AllplanArchElements.ColumnProperties:
+    def create_column_properties(self) -> AllplanArchEle.ColumnProperties:
         """Properties of the column element, based on the values from the property palette
 
         Returns:
             column properties
         """
 
-        column_prop = AllplanArchElements.ColumnProperties()
+        column_prop = AllplanArchEle.ColumnProperties()
 
         #--------- Define properties specific to a column
 
         column_prop.PlaneReferences = self.build_ele.PlaneReferences.value
+
         self.shape_geo_param_util.create_shape_geo_properties(self.build_ele, column_prop,
                                                               AllplanGeo.ConvertTo2D(self.polygon_result.input_polygon)[1])
 
         #--------- Define standard architecture attributes
 
-        column_prop.CalculationMode = AllplanBaseEle.AttributeService.GetEnumIDFromValueString(120, self.build_ele.CalculationMode.value)
+        column_prop.CalculationMode = AttributeUtil.get_enum_id_from_value_string(self.build_ele.CalculationMode)
         column_prop.Trade           = self.build_ele.Trade.value
         column_prop.Priority        = self.build_ele.Priority.value
         column_prop.Factor          = self.build_ele.Factor.value
@@ -185,23 +196,27 @@ class ColumnScript(BaseScriptObject):
         return column_prop
 
 
-    def column_element(self) -> AllplanArchElements.ColumnElement:
-        """Creates a ColumnElement based on axis (2d line)
+    def create_column_element(self) -> AllplanArchEle.ColumnElement:
+        """Creates a ColumnElement based on placement point
 
         Returns:
             Column element
         """
 
-        return AllplanArchElements.ColumnElement(self.create_column_properties(), self.pnt_result.input_point)
+        build_ele = self.build_ele
+
+        return AllplanArchEle.ColumnElement(self.create_column_properties(),
+                                            self.pnt_result.input_point if not build_ele.__PlacementPointConnection__.value.is_valid() \
+                                            else build_ele.__PlacementPointConnection__.value.point)
 
     def modify_element_property(self,
-                                name : str,
-                                value: Any) -> bool:
+                                name  : str,
+                                _value: Any) -> bool:
         """ modify the element property
 
         Args:
-            name:  name
-            value: value
+            name:   name
+            _value: value
 
         Returns:
             update palette state
@@ -210,9 +225,15 @@ class ColumnScript(BaseScriptObject):
         build_ele = self.build_ele
 
         match name:
+            case "PlaceAtDockingPoint":
+                self.start_input()
+
+                if self.script_object_interactor:
+                    self.script_object_interactor.start_input(self.coord_input)
+
             case "Shape":
                 if build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
-                   self.script_object_interactor = PolygonInteractor(self.polygon_result, build_ele.CommonProp.value, False, False)
+                    self.script_object_interactor = PolygonInteractor(self.polygon_result, build_ele.CommonProp.value, False, False)
                 else:
                     self.script_object_interactor = PointInteractor(self.pnt_result, True, "Place the element", self.draw_preview)
 
@@ -222,6 +243,3 @@ class ColumnScript(BaseScriptObject):
                 return True
 
         return False
-
-
-

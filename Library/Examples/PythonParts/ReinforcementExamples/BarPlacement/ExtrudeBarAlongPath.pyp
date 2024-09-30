@@ -300,4 +300,16 @@
             <ValueType>StringComboBox</ValueType>
         </Parameter>
     </Page>
+    <Page>
+        <Name>Attributes</Name>
+        <Text>Attributes</Text>
+
+        <Parameter>
+            <Name>Trade</Name>
+            <Text></Text>
+            <Value>13</Value>
+            <ValueType>Attribute</ValueType>
+            <AttributeId>AttributeIdEnums.TRADE</AttributeId>
+        </Parameter>
+    </Page>
 </Element>
