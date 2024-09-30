@@ -23,14 +23,14 @@ from HandlePropertiesService import HandlePropertiesService
 
 from ParameterUtils.VerticalOpeningGeometryPropertiesParameterUtil import VerticalOpeningGeometryPropertiesParameterUtil
 
-from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor, ArchPointInteractorResult
+from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractorResult
 from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResult
 
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils.HandleCreator import HandleCreator
 from Utils.HideElementsService import HideElementsService
-from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
+from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.GeneralOpeningBuildingElement import GeneralOpeningBuildingElement as BuildingElement  # type: ignore
@@ -64,12 +64,11 @@ class OpeningBase(BaseScriptObject):
         self.offset_end_pnt     = AllplanGeo.Point3D()
         self.opening_start_pnt  = AllplanGeo.Point3D()
         self.opening_end_pnt    = AllplanGeo.Point3D()
-        self.placement_polyline = AllplanGeo.Polyline2D()
 
-        self.opening_points   : list[AllplanGeo.Point2D]                       = []
-        self.placement_ele    : (AllplanGeo.Line2D | AllplanGeo.Arc2D)         = AllplanGeo.Line2D()
-        self.general_ele_geo  : (AllplanGeo.Polygon2D | AllplanGeo.Polyline2D) = AllplanGeo.Polygon2D()
-        self.general_ele_axis : (AllplanGeo.Line2D | AllplanGeo.Arc2D)         = AllplanGeo.Line2D()
+        self.placement_line     : AllplanGeo.Line2D                              = AllplanGeo.Line2D()
+        self.placement_arc      : AllplanGeo.Arc2D                               = AllplanGeo.Arc2D()
+        self.general_ele_geo    : (AllplanGeo.Polygon2D | AllplanGeo.Polyline2D) = AllplanGeo.Polygon2D()
+        self.general_ele_axis   : (AllplanGeo.Line2D | AllplanGeo.Arc2D)         = AllplanGeo.Line2D()
 
         self.general_ele = AllplanEleAdapter.BaseElementAdapter()
         self.hide_ele    = HideElementsService()
@@ -82,23 +81,11 @@ class OpeningBase(BaseScriptObject):
         self.input_field_above = False
 
 
-    def start_input(self):
-        """ start the input
-        """
-
-        self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
-                                                            ArchitectureElementsQueryUtil.create_arch_axis_elements_query(),
-                                                            "Set properties or click a component line",
-                                                            self.draw_placement_preview)
-
-        self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
-
-
     def start_next_input(self):
         """ start the next input
         """
 
-        if self.placement_ele is None:
+        if self.placement_line is None:
             return
 
         build_ele = self.build_ele
@@ -110,58 +97,60 @@ class OpeningBase(BaseScriptObject):
 
         #----------------- get the left and right point for the opening offset
 
-        created, start_offset, end_offset = \
-            AllplanArchEle.ArchitectureElementsGeometryService.GetOpeningOffsetPoints(self.general_ele,
-                                                                                      self.opening_start_pnt.To2D)
+        created, start_offset, end_offset = OpeningPointsUtil.get_opening_offset_points(self.general_ele,
+                                                                                        self.opening_start_pnt.To2D,
+                                                                                        self.placement_line)
 
         if created:
             self.offset_start_pnt = start_offset.To3D
             self.offset_end_pnt   = end_offset.To3D
 
-        if self.general_ele != AllplanEleAdapter.CircularWall_TypeUUID:
+        if isinstance(self.general_ele_axis, AllplanGeo.Line2D):
             return
 
 
-        #----------------- get the placement polyline and arc for the circular axis
+        #----------------- get the placement arc for the circular axis
 
-        self.placement_polyline = AllplanArchEle.ArchitectureElementsGeometryService.GetOuterPolyline(
-                                        cast(AllplanGeo.Polygon2D, self.general_ele_geo),
-                                        cast(AllplanGeo.Line2D, self.placement_ele), self.general_ele_axis)
-
-        self.placement_ele, place_at_bottom = \
-            AllplanArchEle.ArchitectureElementsGeometryService.CreatePlacementArc(self.general_ele,
-                                                                                  cast(AllplanGeo.Arc2D, self.general_ele_axis),
-                                                                                  self.opening_start_pnt.To2D,
-                                                                                  self.opening_end_pnt.To2D)
-
-        self.input_field_above = not place_at_bottom
+        if isinstance(self.general_ele_axis, AllplanGeo.Arc2D):
+            self.placement_arc, place_at_bottom = \
+                AllplanArchEle.ArchitectureElementsGeometryService.CreatePlacementArc(self.general_ele,
+                                                                                      self.general_ele_axis,
+                                                                                      self.opening_start_pnt.To2D,
+                                                                                      self.opening_end_pnt.To2D)
+            self.input_field_above = not place_at_bottom
 
 
     def draw_placement_preview(self):
         """ draw the placement preview
         """
 
+        build_ele = self.build_ele
+
         if self.arch_pnt_result.sel_model_ele.IsNull() or self.arch_pnt_result.sel_geo_ele is None:
             return
+
 
         #----------------- get the data from the selected element
 
         self.general_ele       = self.arch_pnt_result.sel_model_ele
         self.general_ele_geo   = self.arch_pnt_result.sel_model_ele_geo
-        self.placement_ele     = self.arch_pnt_result.sel_geo_ele
-        self.offset_start_pnt  = self.placement_ele.StartPoint.To3D
-        self.offset_end_pnt    = self.placement_ele.EndPoint.To3D
+        self.placement_line    = self.arch_pnt_result.sel_geo_ele
+        self.offset_start_pnt  = self.placement_line.StartPoint.To3D
+        self.offset_end_pnt    = self.placement_line.EndPoint.To3D
         self.opening_start_pnt = self.arch_pnt_result.input_point
 
 
         #----------------- draw the preview
 
-        general_axis_ele = AllplanEleAdapter.AxisElementAdapter(self.general_ele)
+        if not (general_axis_ele := AllplanEleAdapter.AxisElementAdapter(self.general_ele)).IsNull():
+            self.general_ele_axis = general_axis_ele.GetAxis()
 
-        self.general_ele_axis = cast(AllplanGeo.Arc2D, general_axis_ele.GetAxis())
+        build_ele.ElementThickness.value = general_axis_ele.GetThickness()
+        build_ele.ElementTierCount.value = max(1, general_axis_ele.GetTiersCount())
 
-        self.build_ele.ElementThickness.value = general_axis_ele.GetThickness()
-        self.build_ele.ElementTierCount.value = general_axis_ele.GetTiersCount()
+        if build_ele.get_property("OpeningSymbolTierIndex") is not None:
+            build_ele.OpeningSymbolTierIndex.value = min(build_ele.OpeningSymbolTierIndex.value,
+                                                            build_ele.ElementTierCount.value)
 
         AllplanBaseEle.DrawElementPreview(self.document, AllplanGeo.Matrix3D(),
                                           self.create_opening_element(), True, None)
@@ -197,58 +186,6 @@ class OpeningBase(BaseScriptObject):
         Returns:
             created handles
         """
-
-
-    def create_opening_points(self):
-        """ create the opening points
-        """
-
-        build_ele = self.build_ele
-
-
-        #----------------- opening points for a linear axis
-
-        if self.general_ele.GetElementAdapterType().GetGuid() not in {AllplanEleAdapter.CircularWall_TypeUUID,
-                                                                      AllplanEleAdapter.ElementWall_TypeUUID}:
-            start_pnt = self.opening_start_pnt.To2D
-
-            loc_start = AllplanGeo.TransformCoord.PointLocal(self.placement_ele, start_pnt).X
-
-            self.opening_end_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele, loc_start + build_ele.Width.value)
-
-
-        #----------------- opening points for a circular or spline axis
-
-        else:
-            if build_ele.InputMode.value == build_ele.ELEMENT_SELECT:
-                dir_ele = AllplanGeo.Line2D(cast(AllplanGeo.Line2D, self.placement_ele))
-
-            else:
-                _, dir_ele = AllplanGeo.Polyline2DUtil.GetPolyline2DSegment(self.placement_polyline,
-                                                                            self.opening_start_pnt.To2D)
-
-            dir_ele.TrimEnd(-100)
-
-            err, opening_end_pnt = \
-                AllplanGeo.Polygon2DUtil.FindPointOnPolygonWithDistance(AllplanGeo.Polygon2D(self.general_ele_geo.Points),
-                                                                        self.opening_start_pnt.To2D,
-                                                                        dir_ele.EndPoint,
-                                                                        self.general_ele_axis,
-                                                                        build_ele.Width.value)
-
-            if not err:
-                self.opening_end_pnt = opening_end_pnt.To3D
-
-
-        #----------------- get the opening points
-
-        base_line = AllplanGeo.Line2D(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D)
-
-        self.opening_points = [self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
-                               AllplanGeo.TransformCoord.PointGlobal(base_line, AllplanGeo.Point2D(build_ele.Width.value,
-                                                                                                   build_ele.ElementThickness.value)).To2D,
-                               AllplanGeo.TransformCoord.PointGlobal(base_line, AllplanGeo.Point2D(0,
-                                                                                                   build_ele.ElementThickness.value)).To2D]
 
 
     def hide_general_element(self):
@@ -303,36 +240,38 @@ class OpeningBase(BaseScriptObject):
 
         #----------------- handles for the circular axis
 
-        if self.general_ele == AllplanEleAdapter.CircularWall_TypeUUID:
-            axis_arc = cast(AllplanGeo.Arc2D, self.placement_ele)
-
-            if axis_arc.CounterClockwise:
-                start_offset_pnt1 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, self.offset_start_pnt)[1]
-                start_offset_pnt2 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, opening_start_pnt)[1]
-                end_offset_pnt1   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, opening_end_pnt)[1]
-                end_offset_pnt2   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, self.offset_end_pnt)[1]
+        if isinstance(self.general_ele_axis, AllplanGeo.Arc2D):
+            if self.placement_arc.CounterClockwise:
+                start_offset_pnt1 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, self.offset_start_pnt)[1]
+                start_offset_pnt2 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, opening_start_pnt)[1]
+                end_offset_pnt1   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, opening_end_pnt)[1]
+                end_offset_pnt2   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, self.offset_end_pnt)[1]
                 offset_start_pnt  = start_offset_pnt1
                 offset_end_pnt    = end_offset_pnt2
             else:
-                start_offset_pnt1 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, opening_start_pnt)[1]
-                start_offset_pnt2 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, self.offset_start_pnt)[1]
-                end_offset_pnt1   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, self.offset_end_pnt)[1]
-                end_offset_pnt2   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_ele, opening_end_pnt)[1]
+                start_offset_pnt1 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, opening_start_pnt)[1]
+                start_offset_pnt2 = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, self.offset_start_pnt)[1]
+                end_offset_pnt1   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, self.offset_end_pnt)[1]
+                end_offset_pnt2   = AllplanGeo.PerpendicularCalculus.Calculate(self.placement_arc, opening_end_pnt)[1]
                 offset_start_pnt  = start_offset_pnt2
                 offset_end_pnt    = end_offset_pnt1
 
-            HandleCreator.point_distance(handle_list, "StartPoint", start_offset_pnt1, start_offset_pnt2,
-                                         input_field_above = self.input_field_above,
-                                         center_point = axis_arc.Center.To3D)
-            HandleCreator.point_distance(handle_list, "EndPoint", opening_end_pnt, end_offset_pnt2, False,
-                                         center_point = axis_arc.Center.To3D)
-            HandleCreator.point_distance(handle_list, "EndOffset", end_offset_pnt1, end_offset_pnt2, show_handles = False,
-                                         input_field_above = self.input_field_above,
-                                         center_point = axis_arc.Center.To3D)
-            HandleCreator.point_distance(handle_list, "OffsetStartPoint", offset_start_pnt, end_offset_pnt1, False,
-                                         center_point = axis_arc.Center.To3D)
-            HandleCreator.point_distance(handle_list, "OffsetEndPoint", offset_end_pnt, start_offset_pnt2, False,
-                                         center_point = axis_arc.Center.To3D)
+            if abs(self.placement_arc.MinorRadius - self.placement_arc.MajorRadius) < 1.:
+                HandleCreator.point_distance(handle_list, "StartPoint", start_offset_pnt1, start_offset_pnt2,
+                                            input_field_above = self.input_field_above,
+                                            center_point = self.placement_arc.Center.To3D)
+                HandleCreator.point_distance(handle_list, "EndPoint", opening_end_pnt, end_offset_pnt2, False,
+                                            center_point = self.placement_arc.Center.To3D)
+                HandleCreator.point_distance(handle_list, "EndOffset", end_offset_pnt1, end_offset_pnt2, show_handles = False,
+                                            input_field_above = self.input_field_above,
+                                            center_point = self.placement_arc.Center.To3D)
+                HandleCreator.point_distance(handle_list, "OffsetStartPoint", offset_start_pnt, end_offset_pnt1, False,
+                                            center_point = self.placement_arc.Center.To3D)
+                HandleCreator.point_distance(handle_list, "OffsetEndPoint", offset_end_pnt, start_offset_pnt2, False,
+                                            center_point = self.placement_arc.Center.To3D)
+            else:
+                HandleCreator.move_xyz(handle_list, "StartPoint", start_offset_pnt1, start_offset_pnt2, False)
+                HandleCreator.move_xyz(handle_list, "EndPoint", opening_end_pnt, end_offset_pnt2, False)
 
 
         #----------------- handles for the linear axis
@@ -346,6 +285,10 @@ class OpeningBase(BaseScriptObject):
                 HandleCreator.point_distance(handle_list, "EndPoint", opening_end_pnt, offset_end_pnt)
                 HandleCreator.point_distance(handle_list, "OffsetStartPoint", offset_start_pnt, opening_end_pnt, False)
                 HandleCreator.point_distance(handle_list, "OffsetEndPoint", offset_end_pnt, opening_start_pnt, False)
+
+            else:
+                HandleCreator.point(handle_list, "StartPoint", opening_start_pnt)
+                HandleCreator.point(handle_list, "EndPoint", opening_end_pnt)
 
         if (prop := build_ele.get_property("SmartSymbolGroup")) is not None and prop.value:
             self.create_opening_symbol_handles(handle_list, bottom_pnt)
@@ -375,7 +318,13 @@ class OpeningBase(BaseScriptObject):
 
         symbol_ref_pnt = AllplanGeo.Point2D()
 
-        for index, tier_thickness in enumerate(AllplanEleAdapter.AxisElementAdapter(self.general_ele).GetTierThickness()):
+        if self.general_ele.GetElementAdapterType().IsTypeGroup(AllplanEleAdapter.ElementAdapterTypeGroup.eHYPERELEMENT_GROUP) and \
+           AllplanEleAdapter.BaseElementAdapterChildElementsService.GetTierElements(self.general_ele) != []:    # pylint: disable=consider-ternary-expression
+            tier_thickness = AllplanEleAdapter.AxisElementAdapter(self.general_ele).GetTierThickness()
+        else:
+            tier_thickness = [build_ele.Depth.value]
+
+        for index, tier_thickness in enumerate(tier_thickness):
             self.opening_tier_center.append(
                 AllplanGeo.TransformCoord.PointGlobal(opening_line,
                                                       AllplanGeo.Point2D(x_center, y_start + tier_thickness / 2)).To2D)
@@ -387,14 +336,17 @@ class OpeningBase(BaseScriptObject):
                      AllplanGeo.TransformCoord.PointGlobal(opening_line, AllplanGeo.Point2D(x_length, y_start)).To2D,
                      AllplanGeo.TransformCoord.PointGlobal(opening_line, AllplanGeo.Point2D(0, y_start)).To2D]
 
-                y_ref_pnt = y_start - 1000 if build_ele.OpeningSymbolRefPntIndex.value in {AllplanPalette.RefPointPosition.eTopLeft,
+                y_ref_pnt = y_start + 500 if build_ele.OpeningSymbolRefPntIndex.value in {AllplanPalette.RefPointPosition.eTopLeft,
                                                                                            AllplanPalette.RefPointPosition.eTopRight} else \
-                            y_start + tier_thickness + 1000
+                            y_start + tier_thickness - 500
 
-                symbol_ref_pnt = AllplanGeo.TransformCoord.PointGlobal(opening_line, AllplanGeo.Point2D(x_center, y_ref_pnt)).To2D
+                dx = 0 if build_ele.OpeningSymbolRefPntIndex.value in {AllplanPalette.RefPointPosition.eBottomLeft,
+                                                                       AllplanPalette.RefPointPosition.eTopLeft} else \
+                     self.build_ele.Width.value
+
+                symbol_ref_pnt = AllplanGeo.TransformCoord.PointGlobal(opening_line, AllplanGeo.Point2D(dx, y_ref_pnt)).To2D
 
             y_start += tier_thickness
-
 
         HandleCreator.move_in_direction(handle_list, "SymbolPlacement",
                                         self.opening_tier_center[opening_tier_index].To3D + bottom_pnt,
@@ -424,112 +376,23 @@ class OpeningBase(BaseScriptObject):
                 return True
 
             case "StartPoint":
-                self.modify_start_offset(value)
+                if (result := OpeningPointsUtil.get_start_point_from_start_offset(self.general_ele_axis, self.offset_start_pnt.To2D,
+                                                                                  self.placement_line, self.placement_arc,
+                                                                                  self.general_ele_geo, value)) and result[0]:
+                    self.opening_start_pnt = result[1].To3D
 
                 return True
 
             case "EndPoint" | "EndOffset":
-                self.modify_end_offset(value)
+                if (result := OpeningPointsUtil.get_start_point_from_end_offset(self.general_ele_axis, self.offset_end_pnt.To2D,
+                                                                                self.placement_line, self.placement_arc,
+                                                                                self.build_ele.Width.value,
+                                                                                self.general_ele_geo, value)) and result[0]:
+                    self.opening_start_pnt = result[1].To3D
 
                 return True
 
         return False
-
-
-    def modify_start_offset(self,
-                            offset: float):
-        """ modify the start offset
-
-        Args:
-            offset: offset from the offset start point
-        """
-
-        loc_start_pnt_dist = AllplanGeo.TransformCoord.PointLocal(self.placement_ele, self.offset_start_pnt).X
-
-
-        #----------------- calculate the new start point of the opening for a linear axis
-
-        if isinstance(self.placement_ele, AllplanGeo.Line2D):
-            self.opening_start_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele, loc_start_pnt_dist + offset)
-
-            return
-
-
-        #----------------- calculate the new start point of the opening for a circular axis
-
-        found, opening_start_pnt = self.calc_point_at_placement_poly(loc_start_pnt_dist + offset)
-
-        if found:
-            self.opening_start_pnt = opening_start_pnt
-
-
-    def modify_end_offset(self,
-                            offset: float):
-        """ modify the end offset
-
-        Args:
-            offset: offset from the offset end point
-        """
-
-        loc_end_pnt_dist = AllplanGeo.TransformCoord.PointLocal(self.placement_ele, self.offset_end_pnt).X
-
-
-        #----------------- calculate the new start point of the opening for a linear axis
-
-        if isinstance(self.placement_ele, AllplanGeo.Line2D):
-            start_pnt_dist = loc_end_pnt_dist - offset - self.build_ele.Width.value
-
-            self.opening_start_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele, start_pnt_dist)
-
-            return
-
-
-        #----------------- calculate the new start point of the opening for a circular axis
-
-        found, opening_end_pnt = self.calc_point_at_placement_poly(loc_end_pnt_dist - offset)
-
-        if not found:
-            return
-
-        self.opening_end_pnt = opening_end_pnt
-
-        _, dir_ele = AllplanGeo.Polyline2DUtil.GetPolyline2DSegment(self.placement_polyline,
-                                                                    self.opening_end_pnt.To2D)
-
-        dir_ele.TrimStart(-100)
-
-        err, opening_start_pnt = \
-            AllplanGeo.Polygon2DUtil.FindPointOnPolygonWithDistance(AllplanGeo.Polygon2D(self.general_ele_geo.Points),
-                                                                    self.opening_end_pnt.To2D,
-                                                                    dir_ele.StartPoint,
-                                                                    self.general_ele_axis,
-                                                                    self.build_ele.Width.value)
-
-        if not err:
-            self.opening_start_pnt = opening_start_pnt.To3D
-
-
-    def calc_point_at_placement_poly(self,
-                                     local_dist: float) -> tuple[bool, AllplanGeo.Point3D]:
-        """ calculate the point at the placement polyline for the arc
-
-        Args:
-            local_dist: local point distance at the placement arc
-
-        Returns:
-            found state, point at the polyline
-        """
-
-        ortho_start_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele,
-                                                                AllplanGeo.Point2D(local_dist, 1000))
-        ortho_end_pnt = AllplanGeo.TransformCoord.PointGlobal(self.placement_ele,
-                                                                AllplanGeo.Point2D(local_dist, -1000))
-
-        ortho_line = AllplanGeo.Line2D(ortho_start_pnt.To2D, ortho_end_pnt.To2D)
-
-        found, intersect_pnts = AllplanGeo.IntersectionCalculus(ortho_line, self.placement_polyline)
-
-        return (True, intersect_pnts[0]) if found else (False, AllplanGeo.Point3D())
 
 
     def move_handle(self,
@@ -547,16 +410,27 @@ class OpeningBase(BaseScriptObject):
 
         match handle_prop.handle_id:
             case "StartPoint":
-                dist = AllplanGeo.TransformCoord.PointLocal(self.placement_ele, input_pnt).X - \
-                       AllplanGeo.TransformCoord.PointLocal(self.placement_ele, self.offset_start_pnt).X
+                offset = OpeningPointsUtil.get_distance_from_offset_start_point(input_pnt, self.general_ele_axis,
+                                                                                self.offset_start_pnt.To2D,
+                                                                                self.placement_line, self.placement_arc,
+                                                                                self.general_ele_geo)
 
-                self.modify_start_offset(dist)
+                if (result := OpeningPointsUtil.get_start_point_from_start_offset(self.general_ele_axis, self.offset_start_pnt.To2D,
+                                                                                  self.placement_line, self.placement_arc,
+                                                                                  self.general_ele_geo, offset)) and result[0]:
+                    self.opening_start_pnt = result[1].To3D
 
             case "EndPoint":
-                dist = AllplanGeo.TransformCoord.PointLocal(self.placement_ele, self.offset_end_pnt).X - \
-                       AllplanGeo.TransformCoord.PointLocal(self.placement_ele, input_pnt).X
+                offset = OpeningPointsUtil.get_distance_from_offset_end_point(input_pnt, self.general_ele_axis,
+                                                                              self.offset_end_pnt.To2D,
+                                                                              self.placement_line, self.placement_arc,
+                                                                              self.general_ele_geo)
 
-                self.modify_end_offset(dist)
+                if (result := OpeningPointsUtil.get_start_point_from_end_offset(self.general_ele_axis, self.offset_end_pnt.To2D,
+                                                                                self.placement_line, self.placement_arc,
+                                                                                self.build_ele.Width.value,
+                                                                                self.general_ele_geo, offset)) and result[0]:
+                    self.opening_start_pnt = result[1].To3D
 
             case "OffsetStartPoint":
                 self.offset_start_pnt   = input_pnt
@@ -615,10 +489,10 @@ class OpeningBase(BaseScriptObject):
             if (dist := AllplanGeo.Vector2D(place_pnt, tier_ref_pnt).GetLength()) < min_dist:
                 min_dist = dist
 
-                build_ele.OpeningSymbolRefPntIndex.value = [AllplanPalette.RefPointPosition.eBottomLeft,
-                                                            AllplanPalette.RefPointPosition.eBottomRight,
+                build_ele.OpeningSymbolRefPntIndex.value = [AllplanPalette.RefPointPosition.eTopLeft,
                                                             AllplanPalette.RefPointPosition.eTopRight,
-                                                            AllplanPalette.RefPointPosition.eTopLeft][index]
+                                                            AllplanPalette.RefPointPosition.eBottomRight,
+                                                            AllplanPalette.RefPointPosition.eBottomLeft][index]
 
 
     def on_cancel_function(self) -> OnCancelFunctionResult:

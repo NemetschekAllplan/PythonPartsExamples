@@ -75,11 +75,23 @@
             </Parameter>
         </Parameter>
         <Parameter>
-            <Name>PreviewColor</Name>
-            <Text>Preview color</Text>
-            <Value>4</Value>
-            <ValueType>Color</ValueType>
-            <Persistent>FAVORITE</Persistent>
+            <Name>FormatExp</Name>
+            <Text>Format</Text>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>PreviewColor</Name>
+                <Text>Preview color</Text>
+                <Value>5</Value>
+                <ValueType>Color</ValueType>
+                <Persistent>FAVORITE</Persistent>
+            </Parameter>
+            <Parameter>
+                <Name>Layer</Name>
+                <Text>Layer</Text>
+                <Value>1</Value>
+                <ValueType>Layer</ValueType>
+            </Parameter>
         </Parameter>
     </Page>
 

@@ -117,8 +117,6 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         self.opening_bottom_plane_surfaces : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D | None)] = []
         self.opening_top_plane_surfaces    : list[(AllplanGeo.Polyhedron3D | AllplanGeo.BRep3D | None)] = []
 
-        self.preview_elements : ModelEleList = ModelEleList()
-
 
     def start_input(self):
         """ start the input
@@ -137,7 +135,7 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
 
         #----------------- get all axis elements from the document
 
-        sel_query = ArchitectureElementsQueryUtil.create_arch_axis_elements_query()
+        sel_query = ArchitectureElementsQueryUtil.create_arch_general_opening_elements_query()
 
         self.parent_ele.clear()
 
@@ -202,7 +200,7 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         return CreateElementResult(self.create_opening_element(), [],
                                    multi_placement = True,
                                    placement_point = AllplanGeo.Point3D(),
-                                   preview_elements = self.preview_elements)
+                                   as_static_preview = True)
 
 
     def modify_element_property(self,
@@ -294,9 +292,6 @@ class GeneralOpeningsFor3DSolids(BaseScriptObject):
         build_ele = self.build_ele
 
         model_ele_list = ModelEleList()
-
-        self.preview_elements = ModelEleList()
-        self.preview_elements.set_color(5)
 
         for opening_polygon, opening_parent_ele, bottom_surface, top_surface in zip(self.opening_polygons,
                                                                                     self.opening_parent_ele,

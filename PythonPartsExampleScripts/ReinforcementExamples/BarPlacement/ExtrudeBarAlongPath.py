@@ -172,6 +172,7 @@ class ExtrudeBarAlongPath():
         com_prop = AllplanSettings.AllplanGlobalSettings.GetCurrentCommonProperties()
 
         com_prop.Color = build_ele.PreviewColor.value
+        com_prop.Layer = build_ele.Layer.value
 
         placement.CommonProperties = com_prop
 
@@ -219,9 +220,9 @@ class ExtrudeBarAlongPath():
 
         #----------------- Create PythonPart
 
-        com_prop = AllplanSettings.AllplanGlobalSettings.GetCurrentCommonProperties()
-
         pyp_util = PythonPartUtil()
+
+        com_prop = AllplanSettings.AllplanGlobalSettings.GetCurrentCommonProperties()
 
         pyp_util.add_pythonpart_view_2d3d(AllplanBasisEle.ModelElement3D(com_prop, extruded_ele))
         pyp_util.add_reinforcement_elements(placement)

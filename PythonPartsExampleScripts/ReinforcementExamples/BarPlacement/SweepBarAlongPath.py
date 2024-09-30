@@ -207,6 +207,7 @@ class SweepBarAlongPath():
         com_prop = AllplanSettings.AllplanGlobalSettings.GetCurrentCommonProperties()
 
         com_prop.Color = build_ele.PreviewColor.value
+        com_prop.Layer = build_ele.Layer.value
 
         placement.CommonProperties = com_prop
 

@@ -15,9 +15,13 @@ from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
 from ValueListUtil import ValueListUtil
 
+from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor
+
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
+from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
 from ParameterUtils.OpeningRevealPropertiesParameterUtil import OpeningRevealPropertiesParameterUtil
 from ParameterUtils.OpeningSymbolsPropertiesParameterUtil import OpeningSymbolsPropertiesParameterUtil
@@ -85,11 +89,23 @@ class WindowOpening(OpeningBase):
     """ Definition of class WindowOpening
     """
 
+    def start_input(self):
+        """ start the input
+        """
+
+        self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
+                                                            ArchitectureElementsQueryUtil.create_arch_door_window_opening_elements_query(),
+                                                            "Set properties or click a component line",
+                                                            self.draw_placement_preview)
+
+        self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
+
+
     def start_next_input(self):
         """ start the next input
         """
 
-        if self.placement_ele is None:
+        if self.placement_line is None:
             return
 
         build_ele = cast(WindowOpeningBuildingElement, self.build_ele)
@@ -138,7 +154,11 @@ class WindowOpening(OpeningBase):
 
         #----------------- create the opening
 
-        self.create_opening_points()
+        self.opening_end_pnt = OpeningPointsUtil.create_opening_end_point_for_axis_element(self.opening_start_pnt.To2D,
+                                                                                            build_ele.Width.value,
+                                                                                            self.general_ele_axis,
+                                                                                            self.general_ele_geo,
+                                                                                            self.placement_line).To3D
 
         opening_ele = AllplanArchEle.WindowOpeningElement(opening_prop, self.general_ele,
                                                           self.opening_start_pnt.To2D,

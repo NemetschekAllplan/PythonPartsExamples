@@ -104,12 +104,10 @@ class GetBarShapeCode():
 
                 print("ACI placement rebar mark ",  AllplanReinf.ReinforcementService.GetACIPlacementBarMark(element, True))
 
-                def_element_vec = AllplanElementAdapter.BaseElementAdapterList()
+                placement_ele_vec = AllplanElementAdapter.BaseElementAdapterList()
 
-                def_element_vec.append(def_element)
+                placement_ele_vec.append(element)
 
-                bar_pos_data = AllplanReinf.ReinforcementService.GetBarPositionData(def_element_vec)
-
-                if bar_pos_data:
+                if (bar_pos_data := AllplanReinf.ReinforcementService.GetBarPositionData(placement_ele_vec)):
                     print(bar_pos_data)
                     print(AllplanReinf.ReinforcementSettings.GetBarWeight(bar_pos_data[0].SteelGrade, bar_pos_data[0].Diameter))

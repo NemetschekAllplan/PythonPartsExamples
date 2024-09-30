@@ -17,6 +17,8 @@ from TypeCollections.ModelEleList import ModelEleList
 
 from ParameterUtils.TextPropertiesParameterUtil import TextPropertiesParameterUtil
 
+from Utilities.AttributeIdEnums import AttributeIdEnums
+
 from Utils.LabelTextUtil import LabelTextUtil, LabelTextDimensionUnit, LabelTextFormat, LabelTextFrame
 
 if TYPE_CHECKING:
@@ -102,7 +104,7 @@ class Label(BaseScriptObject):
         label_util = LabelTextUtil()
 
         label_util.set_text_frame(cast(LabelTextFrame, build_ele.Frame.value))
-        label_util.set_pre_text(build_ele.ParameterName.value + "=")
+        label_util.set_pre_text(f"{build_ele.ParameterName.value}=")
         label_util.set_format(LabelTextFormat.FLOAT, 10, 2)
         label_util.set_dimension_unit(LabelTextDimensionUnit.M)
 
@@ -118,12 +120,10 @@ class Label(BaseScriptObject):
         #----------------- create and use an attribute
 
         else:
-            geo_attr_dict = {"Length": 220, "Width": 758, "Height": 222}
-
-            attribute_id    = geo_attr_dict[build_ele.ParameterName.value]
+            attribute_id    = int(getattr(AttributeIdEnums, build_ele.ParameterName.value.upper()))
             attribute_value = build_ele.get_existing_property(build_ele.ParameterName.value).value
 
-            build_ele_attr_list.add_attribute(attribute_id, attribute_value / 1000)
+            build_ele_attr_list.add_attribute_by_unit(attribute_id, attribute_value)
 
             label_util.add_attribute(self.document, attribute_id, attribute_value)
 

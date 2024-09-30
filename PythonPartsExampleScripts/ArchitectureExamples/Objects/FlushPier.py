@@ -16,10 +16,14 @@ from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
 
+from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor
+
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
 from Utils.HandleCreator import HandleCreator
+from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
+from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
 from .OpeningBase import OpeningBase
 
@@ -82,6 +86,18 @@ class FlushPier(OpeningBase):
     """ Definition of class FlushPier
     """
 
+    def start_input(self):
+        """ start the input
+        """
+
+        self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
+                                                            ArchitectureElementsQueryUtil.create_arch_door_window_opening_elements_query(),
+                                                            "Set properties or click a component line",
+                                                            self.draw_placement_preview)
+
+        self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
+
+
     def create_opening_element(self) -> ModelEleList:
         """ create the opening element
 
@@ -98,7 +114,11 @@ class FlushPier(OpeningBase):
 
         #----------------- create the Flush Pier
 
-        self.create_opening_points()
+        self.opening_end_pnt = OpeningPointsUtil.create_opening_end_point_for_axis_element(self.opening_start_pnt.To2D,
+                                                                                            build_ele.Width.value,
+                                                                                            self.general_ele_axis,
+                                                                                            self.general_ele_geo,
+                                                                                            self.placement_line).To3D
 
         flush_pier_ele = AllplanArchEle.FlushPierElement(self.flush_pier_prop, self.general_ele,
                                                            self.opening_start_pnt.To2D,

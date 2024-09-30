@@ -74,9 +74,9 @@
             <ValueType>String</ValueType>
         </Parameter>
         <Parameter>
-            <Name>GeometryElementUUID</Name>
+            <Name>OpeningConnection</Name>
             <Value></Value>
-            <ValueType>String</ValueType>
+            <ValueType>TimeStampConnection</ValueType>
         </Parameter>
         <Parameter>
             <Name>GeometryElement</Name>

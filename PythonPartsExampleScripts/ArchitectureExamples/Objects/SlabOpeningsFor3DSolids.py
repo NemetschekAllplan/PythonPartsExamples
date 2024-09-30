@@ -113,8 +113,6 @@ class SlabOpeningsFor3DSolids(BaseScriptObject):
         self.opening_bottom_plane_surfaces : list[(AllplanGeo.Polyhedron3D | None)]     = []
         self.opening_top_plane_surfaces    : list[(AllplanGeo.Polyhedron3D | None)]     = []
 
-        self.preview_elements : ModelEleList = ModelEleList()
-
 
     def start_input(self):
         """ start the input
@@ -188,7 +186,7 @@ class SlabOpeningsFor3DSolids(BaseScriptObject):
         return CreateElementResult(self.create_opening_element(), [],
                                    multi_placement = True,
                                    placement_point = AllplanGeo.Point3D(),
-                                   preview_elements = self.preview_elements)
+                                   as_static_preview = True)
 
 
     def modify_element_property(self,
