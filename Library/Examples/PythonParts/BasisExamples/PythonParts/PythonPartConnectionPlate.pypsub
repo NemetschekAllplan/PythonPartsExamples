@@ -2,7 +2,7 @@
 <Element>
     <Script>
         <Title>Plate</Title>
-        <Name>InteractorExamples\General\PythonPartConnectionPlate.py</Name>
+        <Name>BasisExamples\PythonParts\PythonPartConnectionPlate.py</Name>
     </Script>
     <Page>
         <Name>Parent:PythonPartConnection</Name>
@@ -61,9 +61,10 @@
         <Name>__HiddenPage__</Name>
 
         <Parameter>
-            <Name>__HoleConnectionUuidTimeStamp__</Name>
+            <Name>__HoleConnection__</Name>
             <Value>[]</Value>
-            <ValueType>Tuple(String,String)</ValueType>
+            <ValueType>TimeStampConnection</ValueType>
+            <Persistent>MODEL</Persistent>
         </Parameter>
     </Page>
 </Element>

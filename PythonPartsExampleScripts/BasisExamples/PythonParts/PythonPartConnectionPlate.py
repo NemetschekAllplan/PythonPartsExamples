@@ -6,7 +6,6 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING, cast
 
 import NemAll_Python_BaseElements as AllplanBaseEle
-import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_Input as AllplanIFW
 
@@ -51,7 +50,7 @@ class PythonPartConnectionPlate():
         self.modification_mode     = modification_ele_list.is_modification_element()
         self.ref_point_input       = not self.modification_mode
         self.model_ele_list        = ModelEleList()
-        self.placement_mat         = AllplanGeo.Matrix3D() if not self.modification_mode else self.build_ele_list[0].get_insert_matrix()
+        self.placement_mat         = self.build_ele_list[0].get_insert_matrix() if self.modification_mode else AllplanGeo.Matrix3D()
 
         self.coord_input.InitFirstPointInput(AllplanIFW.InputStringConvert("Reference point"))
 
@@ -130,36 +129,25 @@ class PythonPartConnectionPlate():
         """
 
         build_ele = self.build_ele
-        doc       = self.coord_input.GetInputViewDocument()
 
         plate = AllplanGeo.Polyhedron3D.CreateCuboid(build_ele.Length.value, build_ele.Width.value, build_ele.Height.value)
 
 
         #----------------- cut out the holes at the model position
 
-        uuid_time_stamp = []
-
-        if build_ele.__HoleConnectionUuidTimeStamp__.value:
+        if build_ele.__HoleConnection__.value:
             _, plate = AllplanGeo.CreateBRep3D(AllplanGeo.Transform(plate, self.placement_mat))
 
-            for uuid_str, _ in build_ele.__HoleConnectionUuidTimeStamp__.value:
-                hole_uuid = AllplanEleAdapter.GUID.FromString(uuid_str)
-
-                hole_ele = AllplanEleAdapter.BaseElementAdapter.FromGUID(hole_uuid, doc)
-
-                if hole_ele.IsNull():
+            for hole_connection in build_ele.__HoleConnection__.value:
+                if hole_connection.element.IsNull():
                     continue
 
-                uuid_time_stamp.append((uuid_str, hole_ele.GetTimeStamp()))
-
-                _, plate = AllplanGeo.MakeSubtraction(plate, hole_ele.GetModelGeometry()[0])
+                _, plate = AllplanGeo.MakeSubtraction(plate, hole_connection.element.GetModelGeometry()[0])
 
             rev_placement_mat = AllplanGeo.Matrix3D(self.placement_mat)
             rev_placement_mat.Reverse()
 
             plate = AllplanGeo.Transform(plate, rev_placement_mat)
-
-        build_ele.__HoleConnectionUuidTimeStamp__.value = uuid_time_stamp
 
         self.model_ele_list = ModelEleList(build_ele.CommonProp.value)
 

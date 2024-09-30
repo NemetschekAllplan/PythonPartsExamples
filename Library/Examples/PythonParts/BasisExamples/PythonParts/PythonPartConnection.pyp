@@ -2,7 +2,7 @@
 <Element>
     <Script>
         <Title>PythonPartConnection</Title>
-        <Name>InteractorExamples\General\PythonPartConnection.py</Name>
+        <Name>BasisExamples\PythonParts\PythonPartConnection.py</Name>
         <Version>1.0</Version>
         <Interactor>True</Interactor>
         <ReadLastInput>True</ReadLastInput>

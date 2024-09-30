@@ -2,7 +2,7 @@
 <Element>
     <Script>
         <Title>Hole</Title>
-        <Name>InteractorExamples\General\PythonPartConnectionHole.py</Name>
+        <Name>BasisExamples\PythonParts\PythonPartConnectionHole.py</Name>
     </Script>
     <Page>
         <Name>Parent:PythonPartConnection</Name>
@@ -43,7 +43,7 @@
                     <EventId>1000</EventId>
                     <ValueType>Button</ValueType>
                     <Visible>__is_input_mode()</Visible>
-                    <Enable>__PlateConnectionUUID__</Enable>
+                    <Enable>not __PlateConnection__.element.IsNull()</Enable>
                 </Parameter>
             </Parameter>
         </Parameter>
@@ -52,22 +52,11 @@
         <Name>__HiddenPage__</Name>
 
         <Parameter>
-            <Name>__PlateConnectionUUID__</Name>
+            <Name>__PlateConnection__</Name>
             <Text></Text>
-            <Value></Value>
-            <ValueType>String</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>PlateHeight</Name>
-            <Text>needed to create a hole update in case of plate height update</Text>
-            <Value></Value>
-            <ValueType>Length</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>PlatePlacementMatrix</Name>
-            <Text>needed to create a hole update in case of plate movement, ...</Text>
-            <Value></Value>
-            <ValueType>Matrix3D</ValueType>
+            <Value>Height,__PlacementMatrix__</Value>
+            <ValueType>ParameterConnection</ValueType>
+            <Persistent>MODEL</Persistent>
         </Parameter>
     </Page>
 </Element>

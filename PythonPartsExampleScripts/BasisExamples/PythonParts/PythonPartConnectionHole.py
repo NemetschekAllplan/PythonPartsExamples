@@ -54,7 +54,7 @@ class PythonPartConnectionHole():
         self.modification_mode     = modification_ele_list.is_modification_element()
         self.ref_point_input       = not self.modification_mode
         self.model_ele_list        = []
-        self.placement_mat         = AllplanGeo.Matrix3D() if not self.modification_mode else self.build_ele_list[0].get_insert_matrix()
+        self.placement_mat         = self.build_ele_list[0].get_insert_matrix() if self.modification_mode else AllplanGeo.Matrix3D()
         self.plate_uuid            = AllplanEleAdapter.GUID()
 
         self.coord_input.InitFirstPointInput(AllplanIFW.InputStringConvert("Select the plate"))
@@ -89,7 +89,7 @@ class PythonPartConnectionHole():
 
         pyp_transaction = PythonPartTransaction(self.coord_input.GetInputViewDocument(),
                                                 ConnectToPythonPart(self.plate_uuid,
-                                                                    "__HoleConnectionUuidTimeStamp__",
+                                                                    "__HoleConnection__",
                                                                     ConnectToPythonPartState.IS_PARENT_CHILD))
 
         pyp_transaction.execute(self.placement_mat,
@@ -99,8 +99,7 @@ class PythonPartConnectionHole():
                                                            type_display_name = "PythonPart Hole"),
                                 self.modification_ele_list)
 
-        self.ref_point_input                         = True
-        self.build_ele.__PlateConnectionUUID__.value = ""
+        self.ref_point_input = True
 
         self.palette_service.update_palette(-1, False)
 
@@ -121,20 +120,20 @@ class PythonPartConnectionHole():
         """
 
         if self.ref_point_input:
-            self.build_ele.__PlateConnectionUUID__.value = ""
-
             if not self.coord_input.SelectElement(mouse_msg, pnt, msg_info, True, True, True):
                 return True
 
             sel_plate = self.coord_input.GetSelectedElement()
 
+            self.plate_uuid = sel_plate.GetModelElementUUID()
+
             _, name, parameters = AllplanBaseEle.PythonPartService.GetParameter(sel_plate)
 
-            if name.lower().find("pythonpartconnection") == -1 or \
-                not next((True for parameter in parameters if parameter.find("__HoleConnectionUuidTimeStamp__") != -1), False):
+            if "pythonpartconnection" not in name.lower() or \
+                not next((True for parameter in parameters if parameter.find("__HoleConnection__") != -1), False):
                 return True
 
-            self.build_ele.__PlateConnectionUUID__.value = str(sel_plate.GetModelElementUUID())
+            self.build_ele.__PlateConnection__.value.element = sel_plate
 
         if not self.coord_input.IsMouseMove(mouse_msg):
             self.ref_point_input = False
@@ -152,12 +151,10 @@ class PythonPartConnectionHole():
 
         build_ele = self.build_ele
 
-        self.plate_uuid = AllplanEleAdapter.GUID.FromString(build_ele.__PlateConnectionUUID__.value)
-
-        plate = AllplanEleAdapter.BaseElementAdapter.FromGUID(self.plate_uuid, self.coord_input.GetInputViewDocument())
+        plate = build_ele.__PlateConnection__.value.element
 
         if plate.IsNull():
-            AllplanUtil.ShowMessageBox("Plate not found " + build_ele.__PlateConnectionUUID__.value, AllplanUtil.MB_OK)
+            AllplanUtil.ShowMessageBox("Plate not found",  AllplanUtil.MB_OK)
 
             return
 
@@ -165,8 +162,6 @@ class PythonPartConnectionHole():
         #------------- create the placement data of the hole
 
         _, plate_place_mat = AllplanBaseEle.PythonPartService.GetPlacementMatrix(plate)
-
-        build_ele.PlatePlacementMatrix.value = plate_place_mat
 
         axis_vec = AllplanGeo.Transform(AllplanGeo.Vector3D(0, 0, 1000), plate_place_mat)
 
@@ -188,8 +183,6 @@ class PythonPartConnectionHole():
 
         plate_height = BuildingElementParameterListUtil.get_value_double(plate_param, "Height")
 
-        build_ele.PlateHeight.value = plate_height  # needed for update of the Hole-PyP definition element after change
-
 
         #----------------- create the hole
 
@@ -206,7 +199,7 @@ class PythonPartConnectionHole():
         """ draw the preview
         """
 
-        if not self.build_ele.__PlateConnectionUUID__.value:
+        if self.build_ele.__PlateConnection__.value.element.IsNull():
             return
 
         self.create_hole()

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any, List, cast, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 
 import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
@@ -68,9 +68,9 @@ def create_preview(_build_ele: BuildingElement,
 def create_interactor(coord_input             : AllplanIFW.CoordinateInput,
                       pyp_path                : str,
                       global_str_table_service: StringTableService,
-                      build_ele_list          : List[BuildingElement],
+                      build_ele_list          : list[BuildingElement],
                       build_ele_composite     : BuildingElementComposite,
-                      control_props_list      : List[BuildingElementControlProperties],
+                      control_props_list      : list[BuildingElementControlProperties],
                       modification_ele_list   : ModificationElementList) -> PythonPartConnection:
     """ Create the interactor
 
@@ -92,7 +92,7 @@ def create_interactor(coord_input             : AllplanIFW.CoordinateInput,
 
 
 def execute_pre_element_delete(doc                   : AllplanEleAdapter.DocumentAdapter,
-                               build_ele_list        : List[BuildingElement],
+                               build_ele_list        : list[BuildingElement],
                                _modification_ele_list: ModificationElementList):
     """ execute the pre element delete
 
@@ -114,13 +114,9 @@ def execute_pre_element_delete(doc                   : AllplanEleAdapter.Documen
 
     del_elements = AllplanEleAdapter.BaseElementAdapterList()
 
-    for uuid_str, _ in build_ele.__HoleConnectionUuidTimeStamp__.value:
-        hole_uuid = AllplanEleAdapter.GUID.FromString(uuid_str)
-
-        hole_ele = AllplanEleAdapter.BaseElementAdapter.FromGUID(hole_uuid, doc)
-
-        if not hole_ele.IsNull():
-            del_elements.append(hole_ele)
+    for connection in build_ele.__HoleConnection__.value:
+        if not connection.element.IsNull():
+            del_elements.append(connection.element)
 
     AllplanBaseEle.DeleteElements(doc, del_elements)
 
@@ -133,9 +129,9 @@ class PythonPartConnection():
                  coord_input             : AllplanIFW.CoordinateInput,
                  pyp_path                : str,
                  global_str_table_service: StringTableService,
-                 build_ele_list          : List[BuildingElement],
+                 build_ele_list          : list[BuildingElement],
                  build_ele_composite     : BuildingElementComposite,
-                 control_props_list      : List[BuildingElementControlProperties],
+                 control_props_list      : list[BuildingElementControlProperties],
                  modification_ele_list   : ModificationElementList):
         """ initialize and start the input
 
