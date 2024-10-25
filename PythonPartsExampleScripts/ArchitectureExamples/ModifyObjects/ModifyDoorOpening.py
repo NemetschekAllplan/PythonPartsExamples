@@ -1,4 +1,4 @@
-﻿""" Example Script for the window opening
+﻿""" Example Script for the general opening
 """
 
 # pylint: disable=attribute-defined-outside-init
@@ -9,36 +9,38 @@ from typing import TYPE_CHECKING, cast
 
 import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
+import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
-from ValueListUtil import ValueListUtil
 
-from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor
+from ParameterUtils.OpeningDoorSwingPropertiesParameterUtil import OpeningDoorSwingPropertiesParameterUtil
+from ParameterUtils.OpeningTierOffsetPropertiesParameterUtil import OpeningTierOffsetPropertiesParameterUtil
+from ParameterUtils.OpeningRevealPropertiesParameterUtil import OpeningRevealPropertiesParameterUtil
+from ParameterUtils.OpeningSillPropertiesParameterUtil import OpeningSillPropertiesParameterUtil
+from ParameterUtils.OpeningSymbolsPropertiesParameterUtil import OpeningSymbolsPropertiesParameterUtil
+
+from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectInteractor
 
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
+
 from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
 from Utils.Architecture.OpeningHandlesUtil import OpeningHandlesUtil
-from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
 
-from ParameterUtils.OpeningRevealPropertiesParameterUtil import OpeningRevealPropertiesParameterUtil
-from ParameterUtils.OpeningSymbolsPropertiesParameterUtil import OpeningSymbolsPropertiesParameterUtil
-from ParameterUtils.OpeningSillPropertiesParameterUtil import OpeningSillPropertiesParameterUtil
-from ParameterUtils.OpeningTierOffsetPropertiesParameterUtil import OpeningTierOffsetPropertiesParameterUtil
-
-from .OpeningBase import OpeningBase
+from .ModifyOpeningBase import ModifyOpeningBase
 
 if TYPE_CHECKING:
-    from __BuildingElementStubFiles.WindowOpeningBuildingElement import WindowOpeningBuildingElement as BuildingElement  # type: ignore
+    from __BuildingElementStubFiles.ModifyDoorOpeningBuildingElement \
+        import ModifyDoorOpeningBuildingElement as BuildingElement  # type: ignore
 else:
     from BuildingElement import BuildingElement
 
-print('Load WindowOpening.py')
+print('Load ModifyDoorOpening.py')
 
 def check_allplan_version(_build_ele: BuildingElement,
                           _version  : str) -> bool:
@@ -69,8 +71,8 @@ def create_preview(_build_ele: BuildingElement,
     """
 
     return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview( \
-                               f"{AllplanSettings.AllplanPaths.GetPythonPartsEtcPath()}"
-                               r"Examples\PythonParts\ArchitectureExamples\Objects\WindowOpening.png"))
+                               AllplanSettings.AllplanPaths.GetPythonPartsEtcPath() +
+                               r"Examples\PythonParts\ArchitectureExamples\Objects\ModifyDoorOpening.png"))
 
 
 def create_script_object(build_ele         : BuildingElement,
@@ -85,21 +87,36 @@ def create_script_object(build_ele         : BuildingElement,
         created script object
     """
 
-    return WindowOpening(build_ele, script_object_data)
+    return ModifyDoorOpening(build_ele, script_object_data)
 
 
-class WindowOpening(OpeningBase):
-    """ Definition of class WindowOpening
+class ModifyDoorOpening(ModifyOpeningBase):
+    """ Definition of class ModifyDoorOpening
     """
+
+    def __init__(self,
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
+        """ Initialization
+
+        Args:
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
+        """
+
+        super().__init__(build_ele, script_object_data)
+
+        self.door_opening_ele = AllplanArchEle.DoorOpeningElement()
+
 
     def start_input(self):
         """ start the input
         """
 
-        self.script_object_interactor = ArchPointInteractor(self.arch_pnt_result,
-                                                            ArchitectureElementsQueryUtil.create_arch_door_window_opening_elements_query(),
-                                                            "Set properties or click a component line",
-                                                            self.draw_placement_preview)
+        self.script_object_interactor = SingleElementSelectInteractor(self.opening_sel_res,
+                                                                      [AllplanEleAdapter.DoorTier_TypeUUID,
+                                                                       AllplanEleAdapter.WindowDoorTier_TypeUUID],
+                                                                      "Select the door")
 
         self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
 
@@ -113,20 +130,31 @@ class WindowOpening(OpeningBase):
 
         build_ele = cast(BuildingElement, self.build_ele)
 
+
+        #----------------- get the data of the opening
+
+        self.door_opening_ele = cast(AllplanArchEle.DoorOpeningElement, AllplanBaseEle.GetElement(self.opening_sel_res.sel_element))
+
+        opening_prop = self.door_opening_ele.Properties
+
+        self.opening_geo_param_util.set_parameter_values(build_ele, opening_prop.GetGeometryProperties(), opening_prop.PlaneReferences)
+
+        OpeningSillPropertiesParameterUtil.set_parameter_values(build_ele, opening_prop.GetSillProperties(), "")
+        OpeningRevealPropertiesParameterUtil.set_parameter_values(build_ele, opening_prop.GetRevealProperties(), "")
+        OpeningDoorSwingPropertiesParameterUtil.set_parameter_values(build_ele, opening_prop.GetDoorSwingProperties(), "")
+        OpeningTierOffsetPropertiesParameterUtil.set_parameter_values(build_ele, opening_prop.GetTierOffsetProperties(), "")
+        OpeningSymbolsPropertiesParameterUtil.set_parameter_values(build_ele, opening_prop.GetOpeningSymbolsProperties(), "")
+
+        build_ele.HasIndependent2DInteraction.value = opening_prop.Independent2DInteraction
+        build_ele.IsFrenchWindow.value              = opening_prop.FrenchDoor
+
+        self.opening_start_pnt = self.door_opening_ele.StartPoint.To3D
+        self.opening_end_pnt   = self.door_opening_ele.EndPoint.To3D
+
         super().start_next_input()
 
 
-        #----------------- check the size of the offsets
-
-        tier_count = self.build_ele.ElementTierCount.value
-
-        ValueListUtil.resize_1_dim_list(build_ele.LeftOffsets.value, tier_count, 0.)
-        ValueListUtil.resize_1_dim_list(build_ele.RightOffsets.value, tier_count, 0.)
-        ValueListUtil.resize_1_dim_list(build_ele.BottomOffsets.value, tier_count, 0.)
-        ValueListUtil.resize_1_dim_list(build_ele.TopOffsets.value, tier_count, 0.)
-
-
-    def create_opening_element(self) -> ModelEleList:
+    def modify_opening_element(self) -> ModelEleList:
         """ create the opening element
 
 
@@ -139,15 +167,17 @@ class WindowOpening(OpeningBase):
 
         #----------------- create the properties
 
-        opening_prop = AllplanArchEle.WindowOpeningProperties()
+        opening_prop = self.door_opening_ele.Properties
 
         opening_prop.Independent2DInteraction = build_ele.HasIndependent2DInteraction.value
         opening_prop.PlaneReferences          = build_ele.HeightSettings.value
+        opening_prop.FrenchDoor               = build_ele.IsFrenchWindow.value
 
         self.opening_geo_param_util.create_opening_geo_properties(build_ele, opening_prop.GetGeometryProperties())
 
         OpeningSillPropertiesParameterUtil.create_sill_properties(build_ele, "", opening_prop.GetSillProperties())
         OpeningRevealPropertiesParameterUtil.create_reveal_properties(build_ele, "", opening_prop.GetRevealProperties())
+        OpeningDoorSwingPropertiesParameterUtil.create_door_swing_properties(build_ele, "", opening_prop.GetDoorSwingProperties())
         OpeningTierOffsetPropertiesParameterUtil.create_tier_offset_properties(build_ele, "", opening_prop.GetTierOffsetProperties())
         OpeningSymbolsPropertiesParameterUtil.create_opening_symbols_properties(build_ele, "", opening_prop.GetOpeningSymbolsProperties())
 
@@ -160,14 +190,13 @@ class WindowOpening(OpeningBase):
                                                                                             self.placement_ele_geo,
                                                                                             self.placement_line).To3D
 
-        opening_ele = AllplanArchEle.WindowOpeningElement(opening_prop, self.placement_ele,
-                                                          self.opening_start_pnt.To2D,
-                                                          self.opening_end_pnt.To2D,
-                                                          build_ele.InputMode.value == build_ele.ELEMENT_SELECT)
+        self.door_opening_ele.Properties = opening_prop
+        self.door_opening_ele.StartPoint = self.opening_start_pnt.To2D
+        self.door_opening_ele.EndPoint   = self.opening_end_pnt.To2D
 
         model_ele_list = ModelEleList()
 
-        model_ele_list.append(opening_ele)
+        model_ele_list.append(self.door_opening_ele)
 
         return model_ele_list
 
@@ -181,17 +210,17 @@ class WindowOpening(OpeningBase):
 
         build_ele = cast(BuildingElement, self.build_ele)
 
-        handle_list : list[HandleProperties] = []
-
         bottom_pnt = AllplanGeo.Point3D(0, 0,
                                         build_ele.HeightSettings.value.AbsBottomElevation - build_ele.HeightSettings.value.BottomElevation)
+
+        handle_list : list[HandleProperties] = []
 
         OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
                                                   self.offset_start_pnt, self.offset_end_pnt,
                                                   self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
                                                   handle_list)
 
-        if (prop := build_ele.get_property("SmartSymbolGroup")) is not None and prop.value:
+        if build_ele.SmartSymbolGroup.value:
             self.opening_tier_center, self.opening_tier_ref_pnt = \
                 OpeningHandlesUtil.create_opening_symbol_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
                                                                  build_ele.Width.value, build_ele.Depth.value, self.placement_ele,
@@ -199,6 +228,13 @@ class WindowOpening(OpeningBase):
                                                                  build_ele.OpeningSymbolRefPntIndex.value,
                                                                  bottom_pnt, handle_list)
 
+
+        #----------------- door swing handle
+
+        if not build_ele.SmartSymbolGroup.value and build_ele.DoorSwingSymbol.value:
+            OpeningHandlesUtil.create_door_swing_handle(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                        build_ele.Width.value, build_ele.ElementThickness.value,
+                                                        build_ele.DoorSwingBasePointIndex.value, handle_list)
 
         return handle_list
 
@@ -219,6 +255,12 @@ class WindowOpening(OpeningBase):
         build_ele = cast(BuildingElement, self.build_ele)
 
         match handle_prop.handle_id:
+            case "DoorSwing":
+
+                build_ele.DoorSwingBasePointIndex.value = \
+                    OpeningPointsUtil.calc_door_swing_base_point_index(self.opening_start_pnt.To2D, self.offset_end_pnt.To2D,
+                                                                       build_ele.Width.value, build_ele.ElementThickness.value, input_pnt)
+
             case "SymbolPlacement":
                 build_ele.OpeningSymbolTierIndex.value = OpeningPointsUtil.select_opening_tier(input_pnt, self.opening_tier_center)
 

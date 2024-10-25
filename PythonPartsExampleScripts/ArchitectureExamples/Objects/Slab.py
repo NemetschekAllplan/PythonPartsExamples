@@ -111,6 +111,7 @@ class SlabScript(BaseScriptObject):
 
         self.outline_input_result     = PolygonInteractorResult()
         self.build_ele                = build_ele
+        self.slab_element             = AllplanArchElements.SlabElement()
 
 
     def start_input(self):
@@ -140,7 +141,7 @@ class SlabScript(BaseScriptObject):
 
         _, outline = AllplanGeometry.ConvertTo2D(self.outline_input_result.input_polygon)
 
-        return CreateElementResult([self.slab_element(outline)],
+        return CreateElementResult([self.create_slab_element(outline)],
                                    placement_point = AllplanGeometry.Point2D())  # beam is already in the global coordinate system
 
 
@@ -170,29 +171,31 @@ class SlabScript(BaseScriptObject):
         #--------- Define properties specific to a slab
 
         slab_prop.PlaneReferences = self.build_ele.PlaneReferences.value
+        slab_prop.TierCount       = self.build_ele.TierCount.value
+        slab_prop.VariableTier    = self.build_ele.VariableTier.value
 
-        #--------- Define standard architecture attributes
+        calc_modes = ["m³","m²","m","Pcs","kg"]
 
-        slab_prop.CalculationMode = AllplanBaseElements.AttributeService.GetEnumIDFromValueString(120, self.build_ele.CalculationMode.value)
-        slab_prop.Trade           = self.build_ele.Trade.value
-        slab_prop.Priority        = self.build_ele.Priority.value
-        slab_prop.Factor          = self.build_ele.Factor.value
+        for tier_index in range(slab_prop.TierCount):
 
-        #--------- Define surface elements
+            slab_tier_prop                 = slab_prop.GetSlabTierProperties(tier_index)
+            slab_tier_prop.Priority        = self.build_ele.Priority.value[tier_index]
+            slab_tier_prop.Trade           = self.build_ele.Trade.value[tier_index]
+            slab_tier_prop.Factor          = self.build_ele.Factor.value[tier_index]
+            slab_tier_prop.CalculationMode = calc_modes.index(self.build_ele.CalculationMode.value[tier_index])
+            slab_tier_prop.Thickness       = self.build_ele.Thickness.value[tier_index]
 
-        slab_prop.SurfaceElementProperties = self.build_ele.SurfaceElemProp.value
+            slab_tier_prop.CommonProperties         = self.build_ele.CommonProp.value[tier_index]
+            slab_tier_prop.SurfaceElementProperties = self.build_ele.SurfaceElemProp.value[tier_index]
 
-        #--------- Define format properties
 
-        slab_prop.CommonProperties = self.build_ele.CommonProp.value
-
-        if self.build_ele.IsSurface.value:
-            slab_prop.Surface = self.build_ele.SurfaceName.value
+            if self.build_ele.IsSurface.value[tier_index]:
+                slab_tier_prop.Surface = self.build_ele.SurfaceName.value[tier_index]
 
         return slab_prop
 
 
-    def slab_element(self, outline: AllplanGeometry.Polygon2D) -> AllplanArchElements.SlabElement:
+    def create_slab_element(self, outline: AllplanGeometry.Polygon2D) -> AllplanArchElements.SlabElement:
         """Creates a SlabElement based on outline polygon
 
         Args:
@@ -205,7 +208,9 @@ class SlabScript(BaseScriptObject):
         if isinstance(outline, AllplanGeometry.Polygon3D):
             _, outline = AllplanGeometry.ConvertTo2D(outline)
 
-        return AllplanArchElements.SlabElement(self.slab_properties, outline)
+        self.slab_element = AllplanArchElements.SlabElement(self.slab_properties, outline)
+
+        return self.slab_element
 
 
     def create_preview_elements(self, polygon: AllplanGeometry.Polygon3D) -> list:
@@ -220,4 +225,76 @@ class SlabScript(BaseScriptObject):
 
         success, outline = AllplanGeometry.ConvertTo2D(polygon)
 
-        return [self.slab_element(outline)] if success and outline.Count() > 2 else []
+        return [self.create_slab_element(outline)] if success and outline.Count() > 2 else []
+
+    def modify_element_property(self,
+                                name : str,
+                                value: Any) -> bool:
+        """ modify the element property
+
+        Args:
+            name:  name
+            value: value
+
+        Returns:
+            update palette state
+        """
+        match name:
+            case "TierCount":
+
+                slab_props = AllplanArchElements.SlabProperties()
+                slab_props.PlaneReferences = self.build_ele.PlaneReferences.value
+
+                height = 0.0
+
+                for tier in range(value):
+                    height = height + self.build_ele.Thickness.value[tier]
+
+                plane_ref = slab_props.GetPlaneReferences()
+                plane_ref.SetHeight(height)
+
+                self.build_ele.PlaneReferences.value = plane_ref
+
+                return True
+            
+            case "VariableTier":
+
+                old_variable_tier = self.slab_element.GetProperties().GetVariableTier() -1
+                old_thickness    = self.build_ele.Thickness.value[value-1]
+
+                self.build_ele.Thickness.value[value-1] = self.build_ele.Thickness.value[old_variable_tier]
+                self.build_ele.Thickness.value[old_variable_tier] = old_thickness
+                return True
+              
+            case "PlaneReferences.Height":
+
+                height = 0.0
+                variable_tier = self.build_ele.VariableTier.value
+                tier_count = self.build_ele.TierCount.value
+
+                for tier in range(tier_count):
+                    if tier != variable_tier:
+                        height = height + self.build_ele.Thickness.value[tier]
+                        
+                self.build_ele.Thickness.value[variable_tier-1] = value - height
+
+                return True
+
+            case s if s.startswith('Thickness'):
+
+                height = 0.0
+
+                slab_props = AllplanArchElements.SlabProperties()
+                slab_props.PlaneReferences = self.build_ele.PlaneReferences.value
+
+                tier_count = self.build_ele.TierCount.value
+
+                for tier in range(tier_count):
+                    height = height + self.build_ele.Thickness.value[tier]
+
+                plane_ref = slab_props.GetPlaneReferences()
+                plane_ref.SetHeight(height)
+
+                self.build_ele.PlaneReferences.value = plane_ref
+
+        return False

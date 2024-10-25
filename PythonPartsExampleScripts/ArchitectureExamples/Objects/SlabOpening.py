@@ -152,6 +152,8 @@ class SlabOpening(BaseScriptObject):
 
             build_ele.InputMode.value = build_ele.OPENING_PLACEMENT
 
+            print(self.slab_adapter_ele)
+
             slab_ele = cast(AllplanArchEle.SlabElement, AllplanBaseEle.GetElement(self.slab_adapter_ele))
 
             self.slab_plane_ref = slab_ele.Properties.PlaneReferences
@@ -248,7 +250,7 @@ class SlabOpening(BaseScriptObject):
             handles
         """
 
-        handle_list = []
+        handle_list : list[HandleProperties] = []
 
         HandleCreator.move(handle_list, "PlacementPoint", self.placement_pnt)
 
@@ -290,12 +292,15 @@ class SlabOpening(BaseScriptObject):
             return OnCancelFunctionResult.CANCEL_INPUT
 
         if build_ele.InputMode.value == build_ele.OPENING_PLACEMENT:
+
             if self.script_object_interactor is not None and build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
                 self.script_object_interactor.on_cancel_function()
 
                 return OnCancelFunctionResult.CONTINUE_INPUT
 
             return OnCancelFunctionResult.RESTART
+
+        self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
 
         return OnCancelFunctionResult.CREATE_ELEMENTS
 
@@ -323,8 +328,7 @@ class SlabOpening(BaseScriptObject):
                 build_ele.InputMode.value = build_ele.OPENING_PLACEMENT
 
                 if build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
-                    self.script_object_interactor = PolygonInteractor(self.polygon_result, self.coord_input, self.common_prop,
-                                                                    False, False)
+                    self.script_object_interactor = PolygonInteractor(self.polygon_result, self.common_prop, False, False)
                 elif self.shape_type == AllplanArchEle.ShapeType.ePolygonal:
                     self.script_object_interactor = PointInteractor(self.opening_placement_result, True,
                                                                     "Placement point", self.draw_opening_preview)

@@ -150,7 +150,8 @@ class FlushPier(OpeningBase):
 
         handle_list : list[HandleProperties] = []
 
-        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt, self.opening_end_pnt, self.offset_start_pnt, self.offset_end_pnt,
+        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                  self.offset_start_pnt, self.offset_end_pnt,
                                                   self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
                                                   handle_list)
 

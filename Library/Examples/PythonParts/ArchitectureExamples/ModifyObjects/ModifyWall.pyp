@@ -55,7 +55,7 @@
             <ValueType>Expander</ValueType>
             <Parameter>
                 <Name>TierCountRow</Name>
-                <Text>Number of tiers</Text>
+                <Text>Number of layers</Text>
                 <ValueType>Row</ValueType>
                 <Parameter>
                     <Name>TierCount</Name>
@@ -83,7 +83,7 @@
             </Parameter>
             <Parameter>
                 <Name>AxisOnTier</Name>
-                <Text>Axis on tier</Text>
+                <Text>Axis on layer</Text>
                 <Value>1</Value>
                 <ValueType>Integer</ValueType>
                 <MinValue>1</MinValue>
@@ -117,12 +117,12 @@
 
         <Parameter>
             <Name>WallTiersExpander</Name>
-            <Text>Wall tiers</Text>
+            <Text>Wall layers</Text>
             <ValueType>Expander</ValueType>
 
             <Parameter>
                 <Name>TierIndex</Name>
-                <Text>Select tier</Text>
+                <Text>Select layer</Text>
                 <Value>1</Value>
                 <ValueType>MultiIndex</ValueType>
                 <MinValue>1</MinValue>

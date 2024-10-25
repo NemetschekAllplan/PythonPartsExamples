@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Element>
     <Script>
-        <Name>ArchitectureExamples\Objects\DoorOpening.py</Name>
-        <Title>Door opening</Title>
+        <Name>ArchitectureExamples\ModifyObjects\ModifyDoorOpening.py</Name>
+        <Title>Modify door opening</Title>
         <Version>1.0</Version>
         <ReadLastInput>True</ReadLastInput>
     </Script>
@@ -21,6 +21,7 @@
     <Page>
         <Name>Page1</Name>
         <Text>Test</Text>
+        <Visible>InputMode == OPENING_INPUT</Visible>
 
         <Parameter>
             <Name>GeometryExp</Name>

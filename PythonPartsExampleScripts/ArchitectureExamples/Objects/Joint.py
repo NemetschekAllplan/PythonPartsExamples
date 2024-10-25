@@ -148,14 +148,13 @@ class Joint(OpeningBase):
 
         depth = build_ele.Depth.value or build_ele.ElementThickness.value
 
-        OpeningHandlesUtil.create_opening_depth_handle(self.opening_start_pnt, self.placement_ele_axis,
+        OpeningHandlesUtil.create_opening_depth_handle(self.opening_start_pnt.To2D, self.placement_ele_axis,
                                                        self.placement_ele_geo, self.placement_line,
                                                        self.placement_arc, bottom_pnt, depth, handle_list)
 
-        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt, self.opening_end_pnt, self.offset_start_pnt, self.offset_end_pnt,
+        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                  self.offset_start_pnt, self.offset_end_pnt,
                                                   self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
                                                   handle_list)
-
-        depth = build_ele.Depth.value or build_ele.ElementThickness.value
 
         return handle_list

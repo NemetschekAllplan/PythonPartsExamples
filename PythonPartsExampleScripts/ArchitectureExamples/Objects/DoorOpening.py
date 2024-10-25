@@ -1,6 +1,8 @@
 ﻿""" Example Script for the window opening
 """
 
+# pylint: disable=attribute-defined-outside-init
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast
@@ -9,10 +11,8 @@ import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
-from BuildingElement import BuildingElement
 from CreateElementResult import CreateElementResult
 from HandleProperties import HandleProperties
 from ValueListUtil import ValueListUtil
@@ -22,7 +22,6 @@ from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractor
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
-from Utils.HandleCreator import HandleCreator
 from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
 from Utils.Architecture.OpeningHandlesUtil import OpeningHandlesUtil
 from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
@@ -36,9 +35,9 @@ from ParameterUtils.OpeningTierOffsetPropertiesParameterUtil import OpeningTierO
 from .OpeningBase import OpeningBase
 
 if TYPE_CHECKING:
-    from __BuildingElementStubFiles.DoorOpeningBuildingElement import DoorOpeningBuildingElement
+    from __BuildingElementStubFiles.DoorOpeningBuildingElement import DoorOpeningBuildingElement as BuildingElement  # type: ignore
 else:
-    DoorOpeningBuildingElement = BuildingElement
+    from BuildingElement import BuildingElement
 
 print('Load DoorOpening.py')
 
@@ -113,7 +112,7 @@ class DoorOpening(OpeningBase):
         if self.placement_line is None:
             return
 
-        build_ele = cast(DoorOpeningBuildingElement, self.build_ele)
+        build_ele = cast(BuildingElement, self.build_ele)
 
         super().start_next_input()
 
@@ -136,7 +135,7 @@ class DoorOpening(OpeningBase):
             list with the elements
         """
 
-        build_ele = cast(DoorOpeningBuildingElement, self.build_ele)
+        build_ele = cast(BuildingElement, self.build_ele)
 
 
         #----------------- create the properties
@@ -185,42 +184,30 @@ class DoorOpening(OpeningBase):
             created handles
         """
 
-        build_ele = cast(DoorOpeningBuildingElement, self.build_ele)
+        build_ele = cast(BuildingElement, self.build_ele)
 
         handle_list : list[HandleProperties] = []
 
         bottom_pnt = AllplanGeo.Point3D(0, 0,
                                         build_ele.HeightSettings.value.AbsBottomElevation - build_ele.HeightSettings.value.BottomElevation)
 
-        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt, self.opening_end_pnt, self.offset_start_pnt, self.offset_end_pnt,
+        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                  self.offset_start_pnt, self.offset_end_pnt,
                                                   self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
                                                   handle_list)
 
-        if (prop := build_ele.get_property("SmartSymbolGroup")) is not None and prop.value:
+        if build_ele.SmartSymbolGroup.value:
             self.opening_tier_center, self.opening_tier_ref_pnt = \
-                OpeningHandlesUtil.create_opening_symbol_handles(self.opening_start_pnt, self.opening_end_pnt, build_ele.Width.value,
-                                                                build_ele.Depth.value, self.placement_ele, 1, False,
-                                                                build_ele.OpeningSymbolRefPntIndex.value,
-                                                                bottom_pnt, handle_list)
+                OpeningHandlesUtil.create_opening_symbol_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                                 build_ele.Width.value, build_ele.Depth.value, self.placement_ele,
+                                                                 build_ele.OpeningSymbolTierIndex.value, True,
+                                                                 build_ele.OpeningSymbolRefPntIndex.value,
+                                                                 bottom_pnt, handle_list)
 
-
-        #----------------- door swing handle
-
-        opening_start_pnt = self.opening_start_pnt + bottom_pnt
-        opening_end_pnt   = self.opening_end_pnt + bottom_pnt
-
-        base_line = AllplanGeo.Line2D(opening_start_pnt.To2D, opening_end_pnt.To2D)
-
-        handle_pnt = AllplanGeo.TransformCoord.PointGlobal(base_line, AllplanGeo.Point2D(build_ele.Width.value / 2,
-                                                                                         -build_ele.Width.value / 2)) \
-                        if build_ele.DoorSwingBasePointIndex.value in {1, 2} else \
-                     AllplanGeo.TransformCoord.PointGlobal(base_line, AllplanGeo.Point2D(build_ele.Width.value / 2,
-                                                                                         build_ele.ElementThickness.value / 2 + \
-                                                                                         build_ele.Width.value / 2))
-
-        HandleCreator.point(handle_list, "DoorSwing", handle_pnt, info_text = "Door swing placement")
-
-        handle_list[-1].handle_type = AllplanIFW.ElementHandleType.HANDLE_ARROW
+        if not build_ele.SmartSymbolGroup.value and build_ele.DoorSwingSymbol.value:
+            OpeningHandlesUtil.create_door_swing_handle(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                        build_ele.Width.value, build_ele.ElementThickness.value,
+                                                        build_ele.DoorSwingBasePointIndex.value, handle_list)
 
         return handle_list
 
@@ -238,39 +225,19 @@ class DoorOpening(OpeningBase):
             created element result
         """
 
+        build_ele = cast(BuildingElement, self.build_ele)
+
         match handle_prop.handle_id:
             case "DoorSwing":
-                self.calc_door_swing_base_point_index(input_pnt)
+
+                build_ele.DoorSwingBasePointIndex.value = \
+                    OpeningPointsUtil.calc_door_swing_base_point_index(self.opening_start_pnt.To2D, self.offset_end_pnt.To2D,
+                                                                       build_ele.Width.value, build_ele.ElementThickness.value, input_pnt)
+
+            case "SymbolPlacement":
+                build_ele.OpeningSymbolTierIndex.value = OpeningPointsUtil.select_opening_tier(input_pnt, self.opening_tier_center)
 
             case _:
                 return super().move_handle(handle_prop, input_pnt)
 
         return self.execute()
-
-
-    def calc_door_swing_base_point_index(self,
-                                         input_pnt: AllplanGeo.Point3D):
-        """ calculate the door swing base point index
-
-        Args:
-            input_pnt: input point
-        """
-
-        build_ele = self.build_ele
-
-        input_pnt_2d = input_pnt.To2D
-
-        min_dist         = 1.0e10
-        base_point_index = 1
-
-        for index, pnt in enumerate(OpeningPointsUtil.create_opening_points_for_axis_element(self.opening_start_pnt.To2D,
-                                                                                             self.opening_end_pnt.To2D,
-                                                                                             build_ele.Width.value,
-                                                                                             build_ele.ElementThickness.value)):
-            if (dist := AllplanGeo.Vector2D(pnt, input_pnt_2d).GetLength()) < min_dist:
-                min_dist = dist
-                base_point_index = index + 1
-
-        build_ele = cast(DoorOpeningBuildingElement, self.build_ele)
-
-        build_ele.DoorSwingBasePointIndex.value = base_point_index

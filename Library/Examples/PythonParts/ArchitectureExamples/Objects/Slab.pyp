@@ -11,10 +11,28 @@
         <Text>Page</Text>
 
         <Parameter>
-            <Name>HeightExpander</Name>
-            <Text>Height</Text>
+            <Name>SlabExpander</Name>
+            <Text>Slab</Text>
             <ValueType>Expander</ValueType>
-
+            <Parameter>
+                <Name>TierCountRow</Name>
+                <Text>Number of layers</Text>
+                <ValueType>Row</ValueType>
+                <Parameter>
+                    <Name>TierCount</Name>
+                    <Text>Integer</Text>
+                    <Value>2</Value>
+                    <ValueType>Integer</ValueType>
+                    <MinValue>1</MinValue>
+                </Parameter>
+            </Parameter>
+            <Parameter>
+                    <Name>VariableTier</Name>
+                    <Text>Variable layer</Text>
+                    <Value>1</Value>
+                    <ValueType>Integer</ValueType>
+                    <MinValue>1</MinValue>
+                </Parameter>
             <Parameter>
                 <Name>PlaneReferences</Name>
                 <Text>Height</Text>
@@ -25,6 +43,30 @@
         </Parameter>
 
         <Parameter>
+            <Name>SlabTiersExpander</Name>
+            <Text>Slab tiers</Text>
+            <ValueType>Expander</ValueType>
+            <Parameter>
+                <Name>TierIndex</Name>
+                <Text>Select layer</Text>
+                <Value>1</Value>
+                <ValueType>MultiIndex</ValueType>
+                <MinValue>1</MinValue>
+                <MaxValue>TierCount</MaxValue>
+            </Parameter>
+            <Parameter>
+                <Name>Thickness</Name>
+                <Text>Thickness</Text>
+                <Value>[160,160]</Value>
+                <ValueType>Double</ValueType>
+                <MinValue>1.0</MinValue>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
+            </Parameter>
+        </Parameter>
+
+
+        <Parameter>
             <Name>FormatPropertiesExpander</Name>
             <Text>Format properties</Text>
             <ValueType>Expander</ValueType>
@@ -32,8 +74,10 @@
             <Parameter>
                 <Name>CommonProp</Name>
                 <Text></Text>
-                <Value></Value>
+                <Value>[;]</Value>
                 <ValueType>CommonProperties</ValueType>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
             </Parameter>
         </Parameter>
 
@@ -45,15 +89,17 @@
             <Parameter>
                 <Name>SurfaceElemProp</Name>
                 <Text></Text>
-                <Value></Value>
+                <Value>[;]</Value>
                 <ValueType>SurfaceElementProperties</ValueType>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
             </Parameter>
 
             <Parameter>
                 <Name>Separator</Name>
                 <ValueType>Separator</ValueType>
             </Parameter>
-            
+
             <Parameter>
                 <Name>SurfaceRow</Name>
                 <Text>Surface (Animation)</Text>
@@ -61,14 +107,18 @@
                 <Parameter>
                     <Name>IsSurface</Name>
                     <Text>Surface</Text>
-                    <Value>False</Value>
+                    <Value>[False,False]</Value>
                     <ValueType>CheckBox</ValueType>
+                    <Dimensions>TierCount</Dimensions>
+                    <ValueIndexName>TierIndex</ValueIndexName>
                 </Parameter>
                 <Parameter>
                     <Name>SurfaceName</Name>
                     <Text>Surface</Text>
-                    <Value></Value>
+                    <Value>["",""]</Value>
                     <ValueType>MaterialButton</ValueType>
+                    <Dimensions>TierCount</Dimensions>
+                    <ValueIndexName>TierIndex</ValueIndexName>
                 </Parameter>
             </Parameter>
         </Parameter>
@@ -81,31 +131,40 @@
             <Parameter>
                 <Name>Trade</Name>
                 <Text>Trade</Text>
-                <Value>0</Value>
+                <Value>[0,0]</Value>
                 <ValueType>Integer</ValueType>
                 <ValueDialog>Trade</ValueDialog>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
             </Parameter>
             <Parameter>
                 <Name>Priority</Name>
                 <Text>Priority</Text>
-                <Value>100</Value>
+                <Value>[100,100]</Value>
                 <ValueType>Integer</ValueType>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
             </Parameter>
             <Parameter>
                 <Name>CalculationMode</Name>
                 <Text>Calculation mode</Text>
-                <Value>2</Value>
-                <ValueType>Attribute</ValueType>
-                <AttributeId>120</AttributeId>
+                <Value>["m","m"]</Value>
+                <ValueList>m³|m²|m|Pcs|kg</ValueList>
+                <ValueType>StringComboBox</ValueType>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
             </Parameter>
             <Parameter>
                 <Name>Factor</Name>
                 <Text>Factor</Text>
-                <Value>1.0</Value>
+                <Value>[1.0,1.0]</Value>
                 <ValueType>Double</ValueType>
                 <MinValue>0.0</MinValue>
+                <Dimensions>TierCount</Dimensions>
+                <ValueIndexName>TierIndex</ValueIndexName>
             </Parameter>
         </Parameter>
+
 
     </Page>
 </Element>

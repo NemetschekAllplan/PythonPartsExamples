@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Element>
     <Script>
-        <Name>ArchitectureExamples\Objects\DoorOpening.py</Name>
-        <Title>Door opening</Title>
+        <Name>ArchitectureExamples\ModifyObjects\ModifyWindowOpening.py</Name>
+        <Title>Modify window opening</Title>
         <Version>1.0</Version>
         <ReadLastInput>True</ReadLastInput>
     </Script>
@@ -21,6 +21,7 @@
     <Page>
         <Name>Page1</Name>
         <Text>Test</Text>
+        <Visible>InputMode == OPENING_INPUT</Visible>
 
         <Parameter>
             <Name>GeometryExp</Name>
@@ -89,17 +90,8 @@
         <Parameter>
             <Name></Name>
             <Text></Text>
-            <Value>etc\PythonPartsFramework\ParameterIncludes\OpeningDoorSwingProperties.incl</Value>
-            <ValueType>Include</ValueType>
-            <Visible>len(SmartSymbolGroup) == 0</Visible>
-        </Parameter>
-
-        <Parameter>
-            <Name></Name>
-            <Text></Text>
             <Value>etc\PythonPartsFramework\ParameterIncludes\OpeningTierOffsetProperties.incl</Value>
             <ValueType>Include</ValueType>
-            <Visible>ElementTierCount &gt; 1</Visible>
         </Parameter>
 
         <Parameter>
@@ -114,12 +106,6 @@
             <Text>Attributes</Text>
             <ValueType>Expander</ValueType>
 
-            <Parameter>
-                <Name>IsFrenchWindow</Name>
-                <Text>French door</Text>
-                <Value>False</Value>
-                <ValueType>CheckBox</ValueType>
-            </Parameter>
             <Parameter>
                 <Name>HasIndependent2DInteraction</Name>
                 <Text>Above/below section plane</Text>
@@ -149,12 +135,6 @@
         <Parameter>
             <Name>ElementTierCount</Name>
             <Text>Element tier count</Text>
-            <Value>1</Value>
-            <ValueType>Integer</ValueType>
-        </Parameter>
-
-        <Parameter>
-            <Name>DoorSwingBasePointIndex</Name>
             <Value>1</Value>
             <ValueType>Integer</ValueType>
         </Parameter>

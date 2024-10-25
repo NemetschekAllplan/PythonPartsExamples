@@ -1,4 +1,4 @@
-﻿""" base class for the opening input
+﻿""" base class for the opening modification
 """
 
 from __future__ import annotations
@@ -21,13 +21,14 @@ from HandlePropertiesService import HandlePropertiesService
 
 from ParameterUtils.VerticalOpeningGeometryPropertiesParameterUtil import VerticalOpeningGeometryPropertiesParameterUtil
 
-from ScriptObjectInteractors.ArchPointInteractor import ArchPointInteractorResult
 from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResult
+from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectResult
 
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils.HideElementsService import HideElementsService
 from Utils.Architecture.OpeningPointsUtil import OpeningPointsUtil
+from Utils.Architecture.OpeningModificationUtil import OpeningModificationUtil
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.GeneralOpeningBuildingElement import GeneralOpeningBuildingElement as BuildingElement  # type: ignore
@@ -35,12 +36,12 @@ else:
     from BuildingElement import BuildingElement
 
 
-class OpeningBase(BaseScriptObject):
-    """ base class for the opening input
+class ModifyOpeningBase(BaseScriptObject):
+    """ base class for the opening modification
     """
 
     def __init__(self,
-                 build_ele         : Any,
+                 build_ele         : BuildingElement,
                  script_object_data: BaseScriptObjectData):
         """ Initialization
 
@@ -53,20 +54,20 @@ class OpeningBase(BaseScriptObject):
 
         self.build_ele = cast(BuildingElement, build_ele)
 
-        self.arch_pnt_result = ArchPointInteractorResult()
-
         build_ele.InputMode.value = build_ele.ELEMENT_SELECT
 
-        self.opening_start_pnt  = AllplanGeo.Point3D()
-        self.opening_end_pnt    = AllplanGeo.Point3D()
-        self.offset_start_pnt   = AllplanGeo.Point3D()
-        self.offset_end_pnt     = AllplanGeo.Point3D()
+        self.opening_sel_res   = SingleElementSelectResult()
+        self.opening_start_pnt = AllplanGeo.Point3D()
+        self.opening_end_pnt   = AllplanGeo.Point3D()
+        self.offset_start_pnt  = AllplanGeo.Point3D()
+        self.offset_end_pnt    = AllplanGeo.Point3D()
 
         self.placement_line     : AllplanGeo.Line2D                              = AllplanGeo.Line2D()
         self.placement_arc      : AllplanGeo.Arc2D                               = AllplanGeo.Arc2D()
         self.placement_ele_geo  : (AllplanGeo.Polygon2D | AllplanGeo.Polyline2D) = AllplanGeo.Polygon2D()
         self.placement_ele_axis : (AllplanGeo.Line2D | AllplanGeo.Arc2D)         = AllplanGeo.Line2D()
         self.placement_ele      : AllplanEleAdapter.BaseElementAdapter           = AllplanEleAdapter.BaseElementAdapter()
+        self.opening_ele        : AllplanEleAdapter.BaseElementAdapter           = AllplanEleAdapter.BaseElementAdapter()
 
         self.hide_ele = HideElementsService()
 
@@ -82,14 +83,22 @@ class OpeningBase(BaseScriptObject):
         """ start the next input
         """
 
-        if self.placement_line is None:
-            return
-
         build_ele = self.build_ele
 
         build_ele.InputMode.value = build_ele.OPENING_INPUT
 
         self.script_object_interactor = None
+
+        self.opening_ele = OpeningModificationUtil.get_opening_element(self.opening_sel_res.sel_element)
+
+
+        #----------------- get the parent data
+
+        self.placement_ele, self.placement_ele_geo, self.placement_line, self.placement_ele_axis = \
+            OpeningModificationUtil.get_placement_element(self.opening_ele, self.opening_start_pnt.To2D)
+
+        build_ele.ElementThickness.value = AllplanEleAdapter.AxisElementAdapter(self.placement_ele).GetThickness()
+        build_ele.ElementTierCount.value = max(1, AllplanEleAdapter.AxisElementAdapter(self.placement_ele).GetTiersCount())
 
 
         #----------------- get the left and right point for the opening offset
@@ -115,43 +124,6 @@ class OpeningBase(BaseScriptObject):
             self.input_field_above = not place_at_bottom
 
 
-    def draw_placement_preview(self):
-        """ draw the placement preview
-        """
-
-        build_ele = self.build_ele
-
-        if self.arch_pnt_result.sel_model_ele.IsNull() or self.arch_pnt_result.sel_geo_ele is None:
-            return
-
-
-        #----------------- get the data from the selected element
-
-        self.placement_ele     = self.arch_pnt_result.sel_model_ele
-        self.placement_ele_geo = self.arch_pnt_result.sel_model_ele_geo
-        self.placement_line    = self.arch_pnt_result.sel_geo_ele
-        self.offset_start_pnt  = self.placement_line.StartPoint.To3D
-        self.offset_end_pnt    = self.placement_line.EndPoint.To3D
-        self.opening_start_pnt = self.arch_pnt_result.input_point
-
-
-        #----------------- draw the preview
-
-        if not (general_axis_ele := AllplanEleAdapter.AxisElementAdapter(self.placement_ele)).IsNull():
-            self.placement_ele_axis = general_axis_ele.GetAxis()
-        else:
-            self.placement_ele_axis = self.placement_line
-
-        build_ele.ElementThickness.value = general_axis_ele.GetThickness()
-        build_ele.ElementTierCount.value = max(1, general_axis_ele.GetTiersCount())
-
-        if (prop := build_ele.get_property("OpeningSymbolTierIndex")) is not None:
-            prop.value = max(min(prop.value, build_ele.ElementTierCount.value), 1)
-
-        AllplanBaseEle.DrawElementPreview(self.document, AllplanGeo.Matrix3D(),
-                                          self.create_opening_element(), True, None)
-
-
     def execute(self) -> CreateElementResult:
         """ execute the script
 
@@ -161,12 +133,12 @@ class OpeningBase(BaseScriptObject):
 
         self.hide_placement_element()
 
-        return CreateElementResult(self.create_opening_element(), self.create_handles(),
+        return CreateElementResult(self.modify_opening_element(), self.create_handles(),
                                    multi_placement = True,
                                    placement_point = AllplanGeo.Point3D())
 
     @abc.abstractmethod
-    def create_opening_element(self) -> ModelEleList:
+    def modify_opening_element(self) -> ModelEleList:
         """ create the opening element
 
 
@@ -197,6 +169,8 @@ class OpeningBase(BaseScriptObject):
 
         if not has_independent_interaction and not self.hide_ele.hidden_elements:
             self.hide_ele.hide_arch_ground_view_elements(self.placement_ele)
+
+            self.hide_ele.hide_element(self.opening_ele)
 
         elif has_independent_interaction and self.hide_ele.hidden_elements:
             ele_list = AllplanEleAdapter.BaseElementAdapterList([self.placement_ele])
@@ -318,4 +292,11 @@ class OpeningBase(BaseScriptObject):
 
         self.hide_ele.show_elements()
 
-        return OnCancelFunctionResult.CREATE_ELEMENTS
+        AllplanIFW.HandleService().RemoveHandles()
+        AllplanIFW.BuildingElementInputControls().CloseControls()
+
+        AllplanBaseEle.ModifyElements(self.document, self.modify_opening_element())
+
+        AllplanIFW.HandleService().RemoveHandles()
+
+        return OnCancelFunctionResult.RESTART

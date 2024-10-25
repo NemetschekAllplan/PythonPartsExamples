@@ -211,18 +211,20 @@ class ModifyGeneralOpening(ModifyOpeningBase):
 
         depth = build_ele.Depth.value or build_ele.ElementThickness.value
 
-        OpeningHandlesUtil.create_opening_depth_handle(self.opening_start_pnt, self.placement_ele_axis, self.placement_ele_geo,
+        OpeningHandlesUtil.create_opening_depth_handle(self.opening_start_pnt.To2D, self.placement_ele_axis, self.placement_ele_geo,
                                                        self.placement_line, self.placement_arc, bottom_pnt, depth, handle_list)
 
-        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt, self.opening_end_pnt, self.offset_start_pnt, self.offset_end_pnt,
+        OpeningHandlesUtil.create_opening_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                  self.offset_start_pnt, self.offset_end_pnt,
                                                   self.placement_ele_axis, self.placement_arc, self.input_field_above, bottom_pnt,
                                                   handle_list)
 
         if (prop := build_ele.get_property("SmartSymbolGroup")) is not None and prop.value:
             self.opening_tier_center, self.opening_tier_ref_pnt = \
-                OpeningHandlesUtil.create_opening_symbol_handles(self.opening_start_pnt, self.opening_end_pnt, build_ele.Width.value,
-                                                                build_ele.Depth.value, self.placement_ele, 1, False,
-                                                                build_ele.OpeningSymbolRefPntIndex.value,
-                                                                bottom_pnt, handle_list)
+                OpeningHandlesUtil.create_opening_symbol_handles(self.opening_start_pnt.To2D, self.opening_end_pnt.To2D,
+                                                                 build_ele.Width.value,
+                                                                 build_ele.Depth.value, self.placement_ele, 1, False,
+                                                                 build_ele.OpeningSymbolRefPntIndex.value,
+                                                                 bottom_pnt, handle_list)
 
         return handle_list
