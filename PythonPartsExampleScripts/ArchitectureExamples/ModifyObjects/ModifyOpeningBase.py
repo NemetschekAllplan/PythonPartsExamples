@@ -162,22 +162,12 @@ class ModifyOpeningBase(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        has_independent_interaction = 0
+        has_independent_interaction = False
 
         if build_ele.get_property("HasIndependent2DInteraction") is not None:
             has_independent_interaction = build_ele.HasIndependent2DInteraction.value
 
-        if not has_independent_interaction and not self.hide_ele.hidden_elements:
-            self.hide_ele.hide_arch_ground_view_elements(self.placement_ele)
-
-            self.hide_ele.hide_element(self.opening_ele)
-
-        elif has_independent_interaction and self.hide_ele.hidden_elements:
-            ele_list = AllplanEleAdapter.BaseElementAdapterList([self.placement_ele])
-
-            AllplanIFW.VisibleService.ShowElements(ele_list, True)
-
-            self.hide_ele.clear()
+        self.hide_ele.hide_opening_parent_element(self.placement_ele, has_independent_interaction)
 
 
     def modify_element_property(self,

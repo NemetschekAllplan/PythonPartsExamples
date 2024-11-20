@@ -5,7 +5,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, cast
 
-import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
@@ -55,21 +54,20 @@ def check_allplan_version(_build_ele: BuildingElement,
     return True
 
 
-def create_preview(_build_ele: BuildingElement,
-                   _doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
+def create_preview(build_ele: BuildingElement,
+                   _doc     : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
     """ Creation of the element preview
 
     Args:
-        _build_ele: building element with the parameter properties
-        _doc:       document of the Allplan drawing files
+        build_ele: building element with the parameter properties
+        _doc:      document of the Allplan drawing files
 
     Returns:
         created elements for the preview
     """
 
-    return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview( \
-                               AllplanSettings.AllplanPaths.GetPythonPartsEtcPath() +
-                               r"Examples\PythonParts\ArchitectureExamples\Objects\PolygonalGeneralOpening.png"))
+    return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview(
+                               fr"{build_ele.pyp_file_path}\PolygonalGeneralOpening.png"))
 
 
 def create_script_object(build_ele         : BuildingElement,
@@ -110,8 +108,8 @@ class PolygonalGeneralOpening(BaseScriptObject):
 
         build_ele.InputMode.value = build_ele.POLYGON_INPUT
 
-        self.general_ele = AllplanEleAdapter.BaseElementAdapter()
-        self.hide_ele    = HideElementsService()
+        self.placement_ele = AllplanEleAdapter.BaseElementAdapter()
+        self.hide_ele      = HideElementsService()
 
         self.opening_polygon = AllplanGeo.Polygon2D()
         self.shape_pol       = AllplanGeo.Polygon2D()
@@ -145,7 +143,7 @@ class PolygonalGeneralOpening(BaseScriptObject):
         build_ele = self.build_ele
 
         if build_ele.Shape.value == AllplanArchEle.ShapeType.eProfile:
-            self.general_ele = self.arch_pnt_result.sel_model_ele
+            self.placement_ele = self.arch_pnt_result.sel_model_ele
 
             self.script_object_interactor = None
 
@@ -174,9 +172,9 @@ class PolygonalGeneralOpening(BaseScriptObject):
         #----------------- in case of selected tier get the parent element
 
         if (parent_ele := AllplanEleAdapter.BaseElementAdapterParentElementService.GetParentElement(arch_ele[0])) and parent_ele.IsNull():
-            self.general_ele = arch_ele[0]
+            self.placement_ele = arch_ele[0]
         else:
-            self.general_ele = parent_ele
+            self.placement_ele = parent_ele
 
         self.script_object_interactor = None
 
@@ -211,17 +209,7 @@ class PolygonalGeneralOpening(BaseScriptObject):
         BuildingElementListService.write_to_default_favorite_file([build_ele])
 
         if self.script_object_interactor is not None:
-            result = self.script_object_interactor.on_cancel_function()
-
-            if build_ele.Shape.value == AllplanArchEle.ShapeType.ePolygonal:
-                polygon = self.polygon_result.input_polygon
-
-                if polygon.Count() > 2 and not polygon.IsValid():
-                    AllplanUtil.ShowMessageBox("Invalid opening polygon!", AllplanUtil.MB_OK)
-
-                    return OnCancelFunctionResult.CONTINUE_INPUT
-
-            return result
+            return self.script_object_interactor.on_cancel_function()
 
         self.hide_ele.show_elements()
 
@@ -235,10 +223,10 @@ class PolygonalGeneralOpening(BaseScriptObject):
         build_ele = self.build_ele
 
         if not build_ele.HasIndependent2DInteraction.value and not self.hide_ele.hidden_elements:
-            self.hide_ele.hide_arch_ground_view_elements(self.general_ele)
+            self.hide_ele.hide_arch_ground_view_elements(self.placement_ele)
 
         elif build_ele.HasIndependent2DInteraction.value and self.hide_ele.hidden_elements:
-            ele_list = AllplanEleAdapter.BaseElementAdapterList([self.general_ele])
+            ele_list = AllplanEleAdapter.BaseElementAdapterList([self.placement_ele])
 
             AllplanIFW.VisibleService.ShowElements(ele_list, True)
 
@@ -271,7 +259,7 @@ class PolygonalGeneralOpening(BaseScriptObject):
 
         #----------------- create the opening
 
-        opening_ele = AllplanArchEle.GeneralOpeningElement(opening_prop, self.general_ele, self.opening_polygon, False)
+        opening_ele = AllplanArchEle.GeneralOpeningElement(opening_prop, self.placement_ele, self.opening_polygon, False)
 
         model_ele_list = ModelEleList()
 
@@ -287,7 +275,7 @@ class PolygonalGeneralOpening(BaseScriptObject):
             created handles
         """
 
-        handle_list = []
+        handle_list = list[HandleProperties]()
 
         HandleCreator.point_list_2d(handle_list, "OpeningPolygon", self.opening_polygon.Points[:-1])
 

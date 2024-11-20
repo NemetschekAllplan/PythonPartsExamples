@@ -33,19 +33,9 @@
     <Page>
         <Name>__HiddenPage__</Name>
         <Parameter>
-            <Name>PythonPartUUID</Name>
+            <Name>SourceElementHash</Name>
             <Value></Value>
             <ValueType>String</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>GeometryElementUUID</Name>
-            <Value></Value>
-            <ValueType>String</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>GeometryElement</Name>
-            <Value></Value>
-            <ValueType>GeometryObject</ValueType>
         </Parameter>
         <Parameter>
             <Name>InputMode</Name>

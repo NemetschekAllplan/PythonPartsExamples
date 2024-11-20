@@ -9,6 +9,7 @@ import NemAll_Python_BaseElements as AllplanBaseElements
 import NemAll_Python_BasisElements as AllplanBasisElements
 import NemAll_Python_Geometry as AllplanGeometry
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
+import NemAll_Python_Utility as AllplanUtil
 import PreviewSymbols
 
 from BuildingElementAttributeList import BuildingElementAttributeList
@@ -101,13 +102,22 @@ class StructuredPythonPart():
         base_pnts = [AllplanGeometry.Point3D(build_ele.Spacing.value * i, 0.0, 0.0) for i in range(build_ele.BoxCount.value)]
 
         # create a list of boxes
-        self.boxes = list(map(Box,
-                              range(build_ele.BoxCount.value),
-                              build_ele.Length.value,
-                              build_ele.Width.value,
-                              build_ele.Height.value,
-                              base_pnts,
-                              build_ele.CommonProps.value))
+        self.boxes = BoxList(map(Box,
+                                 range(build_ele.BoxCount.value),
+                                 build_ele.Length.value,
+                                 build_ele.Width.value,
+                                 build_ele.Height.value,
+                                 base_pnts,
+                                 build_ele.CommonProps.value))
+
+        # create nested structure
+        if self.build_ele.CreateNestedHierarchy.value:
+            self.create_nested_hierarchy()
+
+            if self.has_circular_reference():   # check for circular reference
+                self.build_ele.ParentElements.value = ["None"]*3
+                AllplanUtil.ShowMessageBox("You just created a circular hierarchy. Please define different parent <-> child relationships.",
+                                           AllplanUtil.MB_OK)
 
         # create list containing handles of only the selected boxes
         self.handles: list[HandleProperties] = []
@@ -146,6 +156,9 @@ class StructuredPythonPart():
         Returns:
             list of model elements representing a PythonPart
         """
+        if not self.boxes:
+            return []
+
         pyp_util = PythonPartUtil()
 
         #------- attributes
@@ -162,15 +175,17 @@ class StructuredPythonPart():
         else:
             pyp_util.add_pythonpart_view_2d3d([box.element_node for box in self.boxes])
 
-        #------- nested structure
-        if self.build_ele.CreateNestedHierarchy.value:
-            for box in self.boxes:
-                if (parent_box_id := eval(self.build_ele.ParentElements.value[box.id].replace("Box ", ""))) is None:
-                    continue
-
-                box.set_parent_box(self.boxes[parent_box_id])
-
         return pyp_util.create_pythonpart(self.build_ele)
+
+    def create_nested_hierarchy(self):
+        """Organize the boxes in a nested hierarchy based on the relationships set by the user
+        in the property palette
+        """
+        for box in self.boxes:
+            if (parent_box_id := eval(self.build_ele.ParentElements.value[box.id].replace("Box ", ""))) is None:
+                continue
+
+            box.set_parent_box(self.boxes[parent_box_id])
 
     def create_preview_texts(self) -> PreviewSymbols.PreviewSymbols:
         """Create preview texts showing the Box id in the middle of the box for a better identification
@@ -188,6 +203,34 @@ class StructuredPythonPart():
                                     color           = 6,
                                     rotation_angle  = AllplanGeometry.Angle())
         return preview_symbols
+
+    def has_circular_reference(self) -> bool:
+        """Check if there is a circular reference in the hierarchy of elements
+
+        Returns:
+            True if there is a circular reference, False otherwise
+        """
+        visited: set[Box] = set()  # track of visited elements to detect cycles
+
+        for current_box in self.boxes:
+            while current_box is not None:
+                if current_box in visited:
+                    # Circular hierarchy found
+                    return True
+
+                visited.add(current_box)
+
+                # Move up to the parent
+                try:
+                    parent_uuid = current_box.element_node.GetParentID()
+                    current_box = self.boxes.get_by_uuid(parent_uuid)
+                except KeyError:
+                    current_box = None
+
+            visited.clear()
+
+        # If we reach here, there is no circular hierarchy
+        return False
 
 
 
@@ -296,3 +339,24 @@ class Box():
             UUID of the box
         """
         return uuid.uuid5(uuid.NAMESPACE_OID, f'Box_{self.id}')
+
+class BoxList(list):
+    """List of boxes with additional methods for easier access to the boxes"""
+
+    def get_by_uuid(self, box_uuid: uuid.UUID) -> Box:
+        """Get the box with the given UUID
+
+        Args:
+            box_uuid: UUID of the box
+
+        Returns:
+            Box with the given UUID
+
+        Raises:
+            KeyError: if the box with the given UUID is not found
+        """
+        for box in self:
+            if box.uuid == box_uuid:
+                return box
+
+        raise KeyError(f"Box with UUID {box_uuid} not found")

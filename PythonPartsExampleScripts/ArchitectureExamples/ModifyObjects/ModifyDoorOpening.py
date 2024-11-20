@@ -72,7 +72,7 @@ def create_preview(_build_ele: BuildingElement,
 
     return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview( \
                                AllplanSettings.AllplanPaths.GetPythonPartsEtcPath() +
-                               r"Examples\PythonParts\ArchitectureExamples\Objects\ModifyDoorOpening.png"))
+                               r"Examples\PythonParts\ArchitectureExamples\ModifyObjects\ModifyDoorOpening.png"))
 
 
 def create_script_object(build_ele         : BuildingElement,

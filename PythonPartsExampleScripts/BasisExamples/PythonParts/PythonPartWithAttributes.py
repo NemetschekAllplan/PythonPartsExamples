@@ -60,7 +60,8 @@ def create_element(build_ele: BuildingElement,
     """
     python_part = create_pythonpart(build_ele)
 
-    return CreateElementResult(python_part.create())
+    return CreateElementResult(python_part.create(), multi_placement = True)
+
 
 def create_pythonpart(build_ele: BuildingElement) -> PythonPart:
     """Create a PythonPart containing cube geometry and some attributes

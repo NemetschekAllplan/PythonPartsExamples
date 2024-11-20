@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, cast
 
 import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_BaseElements as AllplanBaseEle
@@ -11,7 +11,7 @@ import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_IFW_Input as AllplanIFW
 
-from BaseInteractor import BaseInteractor
+from BaseInteractor import BaseInteractor, BaseInteractorData
 from BuildingElementComposite import BuildingElementComposite
 from BuildingElementControlProperties import BuildingElementControlProperties
 from BuildingElementPaletteService import BuildingElementPaletteService
@@ -66,29 +66,17 @@ def create_preview(_build_ele: BuildingElement,
                                AllplanSettings.AllplanPaths.GetPythonPartsEtcPath() +
                                r"Examples\PythonParts\BasisExamples\PythonParts\ModifyPythonPart.png"))
 
-def create_interactor(coord_input              : AllplanIFW.CoordinateInput,
-                      _pyp_path                : str,
-                      _global_str_table_service: StringTableService,
-                      build_ele_list           : list[BuildingElement],
-                      build_ele_composite      : BuildingElementComposite,
-                      control_props_list       : list[BuildingElementControlProperties],
-                      _modify_uuid_list        : list) -> object:
+def create_interactor(interactor_data: BaseInteractorData) -> object:
     """ Create the interactor
 
     Args:
-        coord_input:               API object for the coordinate input, element selection, ... in the Allplan view
-        _pyp_path:                 path of the pyp file
-        _global_str_table_service: global string table service
-        build_ele_list:            list with the building elements
-        build_ele_composite:       building element composite with the building element constraints
-        control_props_list:        control properties list
-        _modify_uuid_list:         list with the UUIDs of the modified elements
+        interactor_data: interactor data
 
     Returns:
-          Created interactor object
+        Created interactor object
     """
 
-    return ModifyPythonPart(coord_input, build_ele_list, build_ele_composite, control_props_list)
+    return ModifyPythonPart(interactor_data)
 
 
 class ModifyPythonPart(BaseInteractor):
@@ -96,24 +84,16 @@ class ModifyPythonPart(BaseInteractor):
     """
 
     def __init__(self,
-                 coord_input        : AllplanIFW.CoordinateInput,
-                 build_ele_list     : list[BuildingElement],
-                 build_ele_composite: BuildingElementComposite,
-                 control_props_list : list[BuildingElementControlProperties]):
+                 interactor_data: BaseInteractorData):
         """ Create the interactor
 
         Args:
-            coord_input:         API object for the coordinate input, element selection, ... in the Allplan view
-            build_ele_list:      list with the building elements
-            build_ele_composite: building element composite with the building element constraints
-            control_props_list:  control properties list
+            interactor_data: interactor data
         """
 
-        self.coord_input         = coord_input
-        self.build_ele_list      = build_ele_list
-        self.build_ele           = build_ele_list[0]
-        self.control_props_list  = control_props_list
-        self.build_ele_composite = build_ele_composite
+        self.coord_input     = interactor_data.coord_input
+        self.build_ele       = cast(BuildingElement, interactor_data.build_ele_list[0])
+        self.interactor_data = interactor_data
 
         self.palette_service: BuildingElementPaletteService
 
@@ -126,9 +106,11 @@ class ModifyPythonPart(BaseInteractor):
         """ show the palette
         """
 
-        self.palette_service = BuildingElementPaletteService(self.build_ele_list, self.build_ele_composite, # type: ignore
+        interactor_data = self.interactor_data
+
+        self.palette_service = BuildingElementPaletteService(interactor_data.build_ele_list, interactor_data.build_ele_composite,
                                                              self.build_ele.script_name,
-                                                             self.control_props_list, self.build_ele.pyp_file_name)
+                                                             interactor_data.control_props_list, self.build_ele.pyp_file_name)
 
         self.palette_service.show_palette(self.build_ele.pyp_file_name)
 

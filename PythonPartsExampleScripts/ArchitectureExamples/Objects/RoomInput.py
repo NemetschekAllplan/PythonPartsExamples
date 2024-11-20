@@ -3,32 +3,26 @@
 
 from __future__ import annotations
 
-from typing import Any, List, TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
+import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
-import NemAll_Python_BaseElements as AllplanBaseEle
-import NemAll_Python_BasisElements as AllplanBasisEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
-import NemAll_Python_AllplanSettings as AllplanSettings
 
 from AttributeIdValue import AttributeIdValue
-from BaseInteractor import BaseInteractor
-from BuildingElement import BuildingElement
-from BuildingElementComposite import BuildingElementComposite
-from BuildingElementControlProperties import BuildingElementControlProperties
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData, OnCancelFunctionResult
 from BuildingElementListService import BuildingElementListService
-from BuildingElementPaletteService import BuildingElementPaletteService
 from CreateElementResult import CreateElementResult
-from StringTableService import StringTableService
+
+from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
 from Utils import LibraryBitmapPreview, ElementPropertiesAttributeUtil
 
 if TYPE_CHECKING:
-    from __BuildingElementStubFiles.RoomInputBuildingElement import RoomInputBuildingElement
+    from __BuildingElementStubFiles.RoomInputBuildingElement import RoomInputBuildingElement as BuildingElement
 else:
-    RoomInputBuildingElement = BuildingElement
+    from BuildingElement import BuildingElement
 
 print('Load RoomInput.py')
 
@@ -61,57 +55,49 @@ def create_preview(_build_ele: BuildingElement,
         created elements for the preview
     """
 
+    print(_build_ele.pyp_file_path)
+
     return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview( \
                                AllplanSettings.AllplanPaths.GetPythonPartsEtcPath() +
                                r"Examples\PythonParts\ArchitectureExamples\Objects\RoomInput.png"))
 
-def create_interactor(coord_input              : AllplanIFW.CoordinateInput,
-                      _pyp_path                : str,
-                      _global_str_table_service: StringTableService,
-                      build_ele_list           : List[BuildingElement],
-                      build_ele_composite      : BuildingElementComposite,
-                      control_props_list       : List[BuildingElementControlProperties],
-                      _modify_uuid_list        : list) -> object:
-    """ Create the interactor
+
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
+    """ Creation of the script object
 
     Args:
-        coord_input:               API object for the coordinate input, element selection, ... in the Allplan view
-        _pyp_path:                 path of the pyp file
-        _global_str_table_service: global string table service
-        build_ele_list:            list with the building elements
-        build_ele_composite:       building element composite with the building element constraints
-        control_props_list:        control properties list
-        _modify_uuid_list:         list with the UUIDs of the modified elements
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
-          Created interactor object
+        created script object
     """
 
-    return RoomInput(coord_input, build_ele_list, build_ele_composite, control_props_list)
+    return RoomScript(build_ele, script_object_data)
 
 
-class RoomInput(BaseInteractor):
-    """ Definition of class RoomInput
+class RoomScript(BaseScriptObject):
+    """Script object that realizes the creation of an architectural room
+
+    This script objects prompts the user to input the outline by drawing a 2D-polygon and
+    subsequently creates a room
     """
 
     def __init__(self,
-                 coord_input        : AllplanIFW.CoordinateInput,
-                 build_ele_list     : List[BuildingElement],
-                 build_ele_composite: BuildingElementComposite,
-                 control_props_list : List[BuildingElementControlProperties]):
-        """ Create the interactor
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
+        """ function description
 
         Args:
-            coord_input:         API object for the coordinate input, element selection, ... in the Allplan view
-            build_ele_list:      list with the building elements
-            build_ele_composite: building element composite with the building element constraints
-            control_props_list:  control properties list
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
         """
 
-        self.build_ele_list = build_ele_list
-        self.build_ele      = cast(RoomInputBuildingElement, build_ele_list[0])
-        self.polygon_input  = AllplanIFW.PolygonInput(coord_input, False, True)
-        self.room_prop      = AllplanArchEle.RoomProperties()
+        super().__init__(script_object_data)
+
+        self.polygon_result = PolygonInteractorResult()
+        self.build_ele      = build_ele
 
 
         #----------------- get the default attributes
@@ -122,159 +108,111 @@ class RoomInput(BaseInteractor):
 
         fav_attr = {attr.attribute_id for attr in usr_attr}
 
-        for attr_id, attr_value in self.room_prop.GetAttributes(coord_input.GetInputViewDocument(), True):
+        for attr_id, attr_value in AllplanArchEle.RoomProperties().GetAttributes(self.coord_input.GetInputViewDocument(), True):
             if attr_id not in room_attr and attr_id not in fav_attr:
                 usr_attr.insert(-1, AttributeIdValue(attr_id, attr_value))
 
-
-        #----------------- create the palette
-
-        self.palette_service = BuildingElementPaletteService(build_ele_list, build_ele_composite,
-                                                             self.build_ele.script_name,
-                                                             control_props_list, self.build_ele.pyp_file_name)
-
-        self.palette_service.show_palette(self.build_ele.pyp_file_name)
+        build_ele.InputMode.value = build_ele.POLYGON_INPUT
 
 
-    def modify_element_property(self,
-                                page : int,
-                                name : str,
-                                value: str):
-        """ Modify property of element
+    def start_input(self):
+        """Starts the slab outline input at the beginning of the script runtime"""
 
-        Args:
-            page:  page index of the modified property
-            name:  name of the modified property
-            value: new value
+        self.script_object_interactor = PolygonInteractor(self.polygon_result,
+                                                          z_coord_input       = False,
+                                                          multi_polygon_input = False,
+                                                          preview_function    = self.create_preview_elements)
+
+        self.build_ele.InputMode.value = self.build_ele.POLYGON_INPUT
+
+
+    def start_next_input(self):
+        """Terminate the outline input after successful input of a closed
+        polygon consisting of at least 3 vertices
         """
 
-        if self.palette_service.modify_element_property(page, name, value):
-            self.palette_service.update_palette(-1, False)
+        if not self.polygon_result.input_polygon.IsValid():
+            return
 
-        self.draw_preview(self.polygon_input.GetPolygon())
+        self.script_object_interactor = None
+
+        self.build_ele.InputMode.value = self.build_ele.POLYGON_INPUT
 
 
-    def on_control_event(self,
-                         event_id: int):
-        """ Handles on control event
-
-        Args:
-            event_id: event id of the clicked button control
-        """
-
-    def on_cancel_function(self) -> bool:
-        """ Handles the cancel function event (e.g. by ESC, ...)
+    def execute(self) -> CreateElementResult:
+        """Execute element creation
 
         Returns:
-            True/False for success.
+            Result object with elements to create
         """
 
-        _, room_polygon = AllplanGeo.ConvertTo2D(self.polygon_input.GetPolygon())
+        return CreateElementResult([self.create_room(self.polygon_result.input_polygon)],
+                                   placement_point = AllplanGeo.Point3D(), multi_placement = True)
 
-        if not room_polygon.IsValid():
-            self.palette_service.close_palette()
 
-            return True
+    def create_room(self,
+                    polygon: AllplanGeo.Polygon3D) -> AllplanArchEle.RoomElement:
+        """ create the room element
+
+        Args:
+            polygon: room polygon
+
+        Returns:
+            room element
+        """
+
+        _, room_polygon = AllplanGeo.ConvertTo2D(polygon)
 
         build_ele = self.build_ele
-        room_prop = self.room_prop
+        room_prop = AllplanArchEle.RoomProperties()
 
         room_prop.StoreyCode      = build_ele.StoreyCode.value
         room_prop.Name            = build_ele.Name.value
         room_prop.Function        = build_ele.Function.value
         room_prop.Factor          = build_ele.Factor.value
+        room_prop.PlaneReferences = build_ele.PlaneReferences.value
 
         for index, text in enumerate(build_ele.Texts.value):
             room_prop.SetText(text, index + 1)
 
-        ElementPropertiesAttributeUtil.set_attributes(self.polygon_input.GetActiveViewDocument(),
+        ElementPropertiesAttributeUtil.set_attributes(self.document,
                                                       room_prop, build_ele.UserAttributes.value)
 
         room_ele = AllplanArchEle.RoomElement(room_prop, room_polygon)
 
         room_ele.CommonProperties = build_ele.CommonProp.value
 
-        AllplanBaseEle.CreateElements(self.polygon_input.GetInputViewDocument(),
-                                      AllplanGeo.Matrix3D(), [room_ele], [], None)
+        return room_ele
 
-        self.polygon_input.StartNewInput()
 
-        return False
-
-    def on_preview_draw(self):
-        """ Handles the preview draw event
-        """
-
-        self.draw_preview(self.polygon_input.GetPreviewPolygon())
-
-    def on_mouse_leave(self):
-        """ Handles the mouse leave event
-        """
-
-        self.draw_preview(self.polygon_input.GetPolygon())
-
-    def on_value_input_control_enter(self) -> bool:
-        """ Handles the enter inside the value input control event
-
-        Returns:
-            True/False for success.
-        """
-
-        return True
-
-    def process_mouse_msg(self,
-                          mouse_msg: int,
-                          pnt      : AllplanGeo.Point2D,
-                          msg_info : Any) -> bool:
-        """ Process the mouse message event
+    def create_preview_elements(self, polygon: AllplanGeo.Polygon3D) -> list:
+        """Create the list of slab elements to preview based on 3d polygon
 
         Args:
-            mouse_msg: mouse message ID
-            pnt:       input point in Allplan view coordinates
-            msg_info:  additional mouse message info
+            polygon: input 3d polygon
 
         Returns:
-            True/False for success.
+            list of elements to preview - one slab element
         """
 
-        self.polygon_input.ExecuteInput(mouse_msg, pnt, msg_info)
+        if polygon.Count() <= 2 or not polygon.IsValid():       # pylint: disable=magic-value-comparison
+            return []
 
-        self.draw_preview(self.polygon_input.GetPreviewPolygon())
-
-        return True
+        return [self.create_room(polygon)]
 
 
-    def draw_preview(self,
-                     polygon: AllplanGeo.Polygon3D):
-        """ draw the preview
+    def on_cancel_function(self) -> OnCancelFunctionResult:
+        """ Handles the cancel function event (e.g. by ESC, ...)
 
-        Args:
-            polygon: input polygon
+        Returns:
+            True/False/None for success.
         """
 
         build_ele = self.build_ele
 
-        result, room_polygon = AllplanGeo.ConvertTo2D(polygon)
+        BuildingElementListService.write_to_default_favorite_file([build_ele])
 
-        if not result:
-            AllplanBaseEle.DrawElementPreview(self.polygon_input.GetInputViewDocument(),
-                                              AllplanGeo.Matrix3D(),
-                                              [AllplanBasisEle.ModelElement3D(build_ele.CommonProp.value, polygon)],
-                                              True, None)
+        if self.script_object_interactor is not None:
+            return self.script_object_interactor.on_cancel_function()
 
-            return
-
-        self.room_prop.PlaneReferences  = build_ele.PlaneReferences.value
-
-        room_ele = AllplanArchEle.RoomElement(self.room_prop, room_polygon)
-
-        room_ele.CommonProperties = build_ele.CommonProp.value
-
-        AllplanBaseEle.DrawElementPreview(self.polygon_input.GetInputViewDocument(),
-                                          AllplanGeo.Matrix3D(), [room_ele], True, None)
-
-
-    def __del__(self):
-        """ save the default favorite data """
-
-        BuildingElementListService.write_to_default_favorite_file(self.build_ele_list)
+        return OnCancelFunctionResult.CREATE_ELEMENTS

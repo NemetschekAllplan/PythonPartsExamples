@@ -127,5 +127,34 @@
                 </Parameter>
             </Parameter>
         </Parameter>
+        <Parameter>
+            <Name>RefPointButtonListExp</Name>
+            <Text>List of refrence point buttons</Text>
+            <ValueType>Expander</ValueType>
+
+            <Parameter>
+                <Name>RefPointButtonIndex</Name>
+                <Text>Select list index</Text>
+                <Value>2</Value>
+                <ValueType>MultiIndex</ValueType>
+                <MinValue>1</MinValue>
+                <MaxValue>3</MaxValue>
+            </Parameter>
+
+            <Parameter>
+                <Name>RefPointButtonListRow</Name>
+                <Text>RefPointButton</Text>
+                <ValueType>Row</ValueType>
+
+                <Parameter>
+                    <Name>RefPointIdList</Name>
+                    <Text>Reference point list</Text>
+                    <Value>[AllplanPalette.RefPointPosition.eCenterLeft,AllplanPalette.RefPointPosition.eCenterCenter,AllplanPalette.RefPointPosition.eCenterRight]</Value>
+                    <ValueType>RefPointButton</ValueType>
+                    <ValueIndexName>RefPointButtonIndex</ValueIndexName>
+                </Parameter>
+            </Parameter>
+        </Parameter>
+
     </Page>
 </Element>
