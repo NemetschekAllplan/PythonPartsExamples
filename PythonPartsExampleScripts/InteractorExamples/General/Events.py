@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, cast
 import NemAll_Python_Geometry as AllplanGeometry
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
 import NemAll_Python_IFW_Input as AllplanIFWInput
-from BaseInteractor import BaseInteractor
+from BaseInteractor import BaseInteractor, BaseInteractorData
 from BuildingElement import BuildingElement
 from BuildingElementComposite import BuildingElementComposite
 from BuildingElementControlProperties import BuildingElementControlProperties
@@ -62,13 +62,7 @@ def create_preview(build_ele:   BuildingElement,
     """
     return CreateElementResult(elements=[...])
 
-def create_interactor(coord_input:                 AllplanIFWInput.CoordinateInput,
-                      pyp_path:                    str,
-                      global_str_table_service:    StringTableService,
-                      build_ele_list:              list[BuildingElement],
-                      build_ele_composite:         BuildingElementComposite,
-                      control_props_list:          list[BuildingElementControlProperties],
-                      modify_uuid_list:            list[str]) -> "Interactor":
+def create_interactor(interactor_data: BaseInteractorData) -> Interactor:
     """Function for the interactor creation, called when PythonPart is initialized.
     When called, the PythonPart framework performs the following steps:
 
@@ -83,20 +77,13 @@ def create_interactor(coord_input:                 AllplanIFWInput.CoordinateInp
         PythonPart and assign them to the parameters in build_ele_list
 
     Args:
-        coord_input:               coordinate input
-        pyp_path:                  path of the pyp file
-        global_str_table_service:  global string table service for default strings
-        build_ele_list:            list with the building elements containing parameter properties
-        build_ele_composite:       building element composite
-        control_props_list:        control properties list
-        modify_uuid_list:          UUIDs of the existing elements in the modification mode
+        interactor_data: object with the data for the interactor creation
 
     Returns:
         Created interactor object
     """
 
-    return Interactor(coord_input, pyp_path, global_str_table_service, build_ele_list,
-                      build_ele_composite, control_props_list, modify_uuid_list)
+    return Interactor(interactor_data)
 
 
 class Interactor(BaseInteractor):
@@ -107,28 +94,22 @@ class Interactor(BaseInteractor):
     during the runtime of the PyhtonPart, like e.g. changing a page f the property palette
     """
 
-    def __init__(self,
-                 coord_input             : AllplanIFWInput.CoordinateInput,
-                 pyp_path                : str,
-                 global_str_table_service: StringTableService,
-                 build_ele_list          : list[BuildingElement],
-                 build_ele_composite     : BuildingElementComposite,
-                 control_props_list      : list[BuildingElementControlProperties],
-                 modify_uuid_list        : list[str])                            :
+    def __init__(self, interactor_data: BaseInteractorData):
         """Initialize the interactor"""
 
-        self.build_ele = cast(EventsBuildingElement,build_ele_list[0])
+        self.build_ele = cast(EventsBuildingElement, interactor_data.build_ele_list[0])
         self.esc_pressed = False
-        input_control_data = AllplanIFWInput.ValueInputControlData(AllplanIFWInput.eValueInputControlType.eTEXT_EDIT,
-                                                                   bDisableCoord= False)
 
-        coord_input.InitFirstPointValueInput(AllplanIFWInput.InputStringConvert("See infos printed in trace"),
-                                             input_control_data)
+        # initialize the point input
+        input_control_data = AllplanIFWInput.ValueInputControlData(AllplanIFWInput.eValueInputControlType.eTEXT_EDIT, False)
+        user_prompt = AllplanIFWInput.InputStringConvert("See infos printed in trace")
+        interactor_data.coord_input.InitFirstPointValueInput(user_prompt, input_control_data)
 
-        self.palette_service = BuildingElementPaletteService(build_ele_list,
-                                                             build_ele_composite,
+        # initialize the palette
+        self.palette_service = BuildingElementPaletteService(interactor_data.build_ele_list,
+                                                             interactor_data.build_ele_composite,
                                                              self.build_ele.script_name,
-                                                             control_props_list,
+                                                             interactor_data.control_props_list,
                                                              self.build_ele.pyp_file_name)
 
         self.palette_service.show_palette(self.build_ele.pyp_file_name)

@@ -156,10 +156,10 @@ class PythonPartElementConnection(BaseScriptObject):
 
         self.geo_ele = self.sel_result.sel_element.GetGeometry()
 
-        self.connection = ConnectToElements([str(self.sel_result.sel_element.GetModelElementUUID())])
-
         build_ele.SourceElementHash.value = hashlib.sha224(repr(self.geo_ele).encode()).hexdigest()
         build_ele.InputMode.value         = self.build_ele.PARAMETER_MODIFICATION
+
+        self.connection = ConnectToElements([str(self.sel_result.sel_element.GetModelElementUUID())])
 
 
     def execute(self) -> CreateElementResult:
@@ -217,13 +217,12 @@ class PythonPartElementConnection(BaseScriptObject):
 class CurrentDfFilter(BaseFilterObject):
     """ Definition of a filter, that filters only elements on the current drawing file"""
 
-    def __init__(self):
-        """ Initialization
-        """
-        self._active_df = AllplanBaseElements.DrawingFileService.GetActiveFileNumber()
+    # def __init__(self):
+    #     """ Initialization
+    #     """
+    #     self._active_df = AllplanBaseElements.DrawingFileService.GetActiveFileNumber()
 
-    def __call__(self,
-                 element: AllplanEleAdapter.BaseElementAdapter) -> bool:
+    def __call__(self, element: AllplanEleAdapter.BaseElementAdapter) -> bool:
         """ execute the filtering
 
         Args:
@@ -233,4 +232,4 @@ class CurrentDfFilter(BaseFilterObject):
             True, when element is a curve AND on the current drawing file
         """
 
-        return element.GetDrawingfileNumber() == self._active_df
+        return element.IsInActiveLayer()
