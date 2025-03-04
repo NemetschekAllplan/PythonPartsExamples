@@ -205,12 +205,14 @@ class ColumnScript(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        if self.script_object_interactor is not None and build_ele.PlaceAtDockingPoint.value == False:
-            self.pnt_result.input_point.X =  self.pnt_result.input_point.X - self.shape_geo_param_util.get_reference_point(build_ele).X
-            self.pnt_result.input_point.Y =  self.pnt_result.input_point.Y - self.shape_geo_param_util.get_reference_point(build_ele).Y
+        input_point = AllplanGeo.Point3D(self.pnt_result.input_point)
+
+        if build_ele.PlaceAtDockingPoint.value == False:
+            input_point.X = input_point.X - self.shape_geo_param_util.get_reference_point(build_ele).X
+            input_point.Y = input_point.Y - self.shape_geo_param_util.get_reference_point(build_ele).Y
 
         return AllplanArchEle.ColumnElement(self.create_column_properties(),
-                                            self.pnt_result.input_point if not build_ele.__PlacementPointConnection__.value.is_valid() \
+                                            input_point if not build_ele.__PlacementPointConnection__.value.is_valid() \
                                             else build_ele.__PlacementPointConnection__.value.point)
 
     def modify_element_property(self,

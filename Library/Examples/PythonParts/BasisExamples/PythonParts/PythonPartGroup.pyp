@@ -73,6 +73,7 @@
                 <Text>Layer thickness</Text>
                 <Value>300</Value>
                 <ValueType>Length</ValueType>
+                <MaxValue>min([vec.Z for vec in BoxDimensions]) - 10</MaxValue>
             </Parameter>
         </Parameter>
 

@@ -10,6 +10,19 @@
         <Text>Test</Text>
 
         <Parameter>
+            <Name>ShowInputControls</Name>
+            <Text>Show input controls</Text>
+            <Value>True</Value>
+            <ValueType>CheckBox</ValueType>
+        </Parameter>
+        <Parameter>
+            <Name>ShowHandles</Name>
+            <Text>Show handles</Text>
+            <Value>True</Value>
+            <ValueType>CheckBox</ValueType>
+        </Parameter>
+
+        <Parameter>
             <Name>CuboidExp</Name>
             <Text>Cuboid</Text>
             <ValueType>Expander</ValueType>
@@ -175,16 +188,6 @@
         <Parameter>
             <Name>MirrorCuboid</Name>
             <Value>False</Value>
-            <ValueType>CheckBox</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>ShowInputControls</Name>
-            <Value>True</Value>
-            <ValueType>CheckBox</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>ShowHandles</Name>
-            <Value>True</Value>
             <ValueType>CheckBox</ValueType>
         </Parameter>
     </Page>

@@ -74,7 +74,7 @@
                 <ValueList>LEFT|CENTER|RIGHT|FREE</ValueList>
                 <ValueTextList>Axis on the left|Axis in the center|Axis on the right|By offset</ValueTextList>
                 <ValueList2>11249|11247|11245|10119</ValueList2>
-                <ValueType>PictureButtonList</ValueType>
+                <ValueType>PictureResourceButtonList</ValueType>
             </Parameter>
             <Parameter>
                 <Name>AxisOnTier</Name>

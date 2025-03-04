@@ -37,7 +37,7 @@
 
             <Parameter>
                 <Name>1-20</Name>
-                <Value>etc\Examples\PythonParts\PaletteExamples\OptionalTags\IncludeParameterCount.incpyp</Value>
+                <Value>IncludeParameterCount.incpyp</Value>
                 <ValueType>Include</ValueType>
             </Parameter>
         </Parameter>

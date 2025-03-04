@@ -152,8 +152,6 @@ class SlabOpening(BaseScriptObject):
 
             build_ele.InputMode.value = build_ele.OPENING_PLACEMENT
 
-            print(self.slab_adapter_ele)
-
             slab_ele = cast(AllplanArchEle.SlabElement, AllplanBaseEle.GetElement(self.slab_adapter_ele))
 
             self.slab_plane_ref = slab_ele.Properties.PlaneReferences

@@ -18,7 +18,7 @@
             <Parameter>
                 <Name>UShape</Name>
                 <Text>,Diameter,Concrete cover,Top length,Bottom length</Text>
-                <Value>Param01.png|12|30|1000|2000</Value>     <!--Separate by |-->
+                <Value>..\Param01.png|12|30|1000|2000</Value>     <!--Separate by |-->
                 <ValueType>namedtuple(Picture,ReinfBarDiameter,ReinfConcreteCover,Length,Length)</ValueType>
                 <NamedTuple>
                     <TypeName>UShape</TypeName>
@@ -70,9 +70,9 @@
         <Parameter>
             <Name>UShapeList</Name>
             <Text>,Diameter,Concrete cover,Top length,Bottom length,"Group " + str($list_row + 1),Edit</Text>
-            <Value>[Param01.png|12|30|1000|2000|0;
-                    Param02.png|12|30|1000|2000|0;
-                    Param03.png|12|30|1000|2000|0]
+            <Value>[..\Param01.png|12|30|1000|2000|0;
+                    ..\Param02.png|12|30|1000|2000|0;
+                    ..\Param03.png|12|30|1000|2000|0]
             </Value>
             <EventId>0,0,0,0,0,1000,0</EventId>
             <ValueType>namedtuple(Picture,ReinfBarDiameter,ReinfConcreteCover,Length,Length,Button,Separator)</ValueType>

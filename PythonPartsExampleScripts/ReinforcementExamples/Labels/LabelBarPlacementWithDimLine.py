@@ -164,6 +164,9 @@ class LabelBarPlacementWithDimLine(BaseScriptObject):
         """ start the next input
         """
 
+        self.bars_rep_ele.clear()
+        self.is_bars_rep_line.clear()
+
         for bars_rep in AllplanBaseEle.GetElements(self.sel_result.sel_elements):
             bars_rep_util = BarsRepresentationUtil(bars_rep)
 
@@ -239,12 +242,6 @@ class LabelBarPlacementWithDimLine(BaseScriptObject):
 
         if not created:
             return
-
-        if (view_polyline := bars_rep.GetViewBoundingPolyline()).IsValid():
-            intersect, _ = AllplanGeo.IntersectionCalculus(dim_line, view_polyline)
-
-            if intersect:
-                return
 
         text_props.Alignment = text_align
 

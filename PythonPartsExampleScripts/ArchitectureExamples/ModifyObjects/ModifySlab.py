@@ -193,6 +193,9 @@ class ModifySlab(BaseScriptObject):
             slab_props.GetSlabTierProperties(tier).CalculationMode          = calc_modes.index(self.build_ele.CalculationMode.value[tier])
             slab_props.GetSlabTierProperties(tier).Factor                   = build_ele.Factor.value[tier]
 
+            if self.build_ele.IsSurface.value[tier]:
+                slab_props.GetSlabTierProperties(tier).Surface = self.build_ele.SurfaceName.value[tier]
+
         self.slab_element.Properties = slab_props
 
         #----------------- create the element

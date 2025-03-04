@@ -1,4 +1,6 @@
-﻿""" implementation of the example for the PythonPart - element connection"""
+﻿""" implementation of the example PythonPart showing how to associate the PythonPart with
+another element in order for the PythonPart to be updated when the associated element changes
+"""
 
 from __future__ import annotations
 
@@ -20,21 +22,24 @@ from HandleParameterType import HandleParameterType
 from HandleProperties import HandleProperties
 from PythonPartTransaction import ConnectToElements
 from PythonPartUtil import PythonPartUtil
-from ScriptObjectInteractors.BaseFilterObject import BaseFilterObject
+
 from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectInteractor, SingleElementSelectResult
+
 from TypeCollections.ModelEleList import ModelEleList
+
 from Utils import LibraryBitmapPreview
 from Utils.ElementFilter.CurvedGeometryElementFilter import CurvedGeometryElementFilter
 from Utils.ElementFilter.FilterCollection import FilterCollection
 from Utils.Geometry.ExtrudeByVectorUtil import ExtrudeByVectorUtil
 
 if TYPE_CHECKING:
-    from __BuildingElementStubFiles.MyPythonPartConnectionBuildingElement import MyPythonPartConnectionBuildingElement as BuildingElement  # type: ignore
+    from __BuildingElementStubFiles.PythonPartElementConnectionBuildingElement \
+        import PythonPartElementConnectionBuildingElement as BuildingElement  # type: ignore
 else:
     from BuildingElement import BuildingElement
 
 
-print(f'PythonPartElementConnection.py loaded from {Path(__file__).parent}')
+print('Load PythonPartElementConnection.py')
 
 def check_allplan_version(_build_ele: BuildingElement,
                           _version  : str) -> bool:
@@ -53,12 +58,12 @@ def check_allplan_version(_build_ele: BuildingElement,
 
 
 def create_preview(build_ele: BuildingElement,
-                   _doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
+                   _doc     : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
     """ Creation of the element preview
 
     Args:
         build_ele: building element with the parameter properties
-        _doc:       document of the Allplan drawing files
+        _doc:      document of the Allplan drawing files
 
     Returns:
         created elements for the preview
@@ -110,7 +115,7 @@ class PythonPartElementConnection(BaseScriptObject):
 
         #----------------- check for modification
 
-        if not self.is_modification_mode:
+        if self.execution_event == AllplanSettings.ExecutionEvent.eCreation:
             return
 
         # use associative framework to get associated elements
@@ -124,7 +129,7 @@ class PythonPartElementConnection(BaseScriptObject):
 
         # save hash of the associated element`s geometry to trigger the update only on geometry change
         build_ele.SourceElementHash.value = hashlib.sha224(repr(self.geo_ele).encode()).hexdigest()
-        build_ele.InputMode.value        = build_ele.PARAMETER_MODIFICATION
+        build_ele.InputMode.value         = build_ele.PARAMETER_MODIFICATION
 
 
     def start_input(self):
@@ -133,13 +138,13 @@ class PythonPartElementConnection(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        if self.is_only_update or self.is_modification_mode:
+        if self.execution_event != AllplanSettings.ExecutionEvent.eCreation:
             return
 
-        # filter out only curve elements and only on the current drawing file
+        # set up selection filter
         element_filter = FilterCollection(True)
-        element_filter.append(CurvedGeometryElementFilter(True, True))
-        element_filter.append(CurrentDfFilter())
+        element_filter.append(CurvedGeometryElementFilter(True, True))      # allow only curves (2D and 3D)
+        element_filter.append(lambda ele: ele.IsInActiveLayer())            # allow only elements on current drawing file on active layers
 
         self.script_object_interactor = SingleElementSelectInteractor(self.sel_result, element_filter, "Select the curve element")
 
@@ -212,24 +217,3 @@ class PythonPartElementConnection(BaseScriptObject):
             model_ele_list.append_geometry_3d(extruded_ele)
 
         return model_ele_list
-
-
-class CurrentDfFilter(BaseFilterObject):
-    """ Definition of a filter, that filters only elements on the current drawing file"""
-
-    # def __init__(self):
-    #     """ Initialization
-    #     """
-    #     self._active_df = AllplanBaseElements.DrawingFileService.GetActiveFileNumber()
-
-    def __call__(self, element: AllplanEleAdapter.BaseElementAdapter) -> bool:
-        """ execute the filtering
-
-        Args:
-            element: element to filter
-
-        Returns:
-            True, when element is a curve AND on the current drawing file
-        """
-
-        return element.IsInActiveLayer()

@@ -11,10 +11,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import NemAll_Python_BaseElements as AllplanBaseElements
+import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
-import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
 
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElementAttributeList import BuildingElementAttributeList
 from CreateElementResult import CreateElementResult
 from PythonPart import PythonPart
@@ -28,7 +28,6 @@ if TYPE_CHECKING:
         PythonPartWithAttributesBuildingElement as BuildingElement  # type: ignore
 else:
     from BuildingElement import BuildingElement
-
 
 
 def check_allplan_version(_build_ele: BuildingElement,
@@ -47,88 +46,129 @@ def check_allplan_version(_build_ele: BuildingElement,
     return True
 
 
-def create_element(build_ele: BuildingElement,
-                   _doc: AllplanElementAdapter.DocumentAdapter) -> CreateElementResult:
-    """Function for the element creation
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
+    """ Creation of the script object
 
     Args:
-        build_ele: the building element.
-        _doc:      input document
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
-        created element result
+        created script object
     """
-    python_part = create_pythonpart(build_ele)
 
-    return CreateElementResult(python_part.create(), multi_placement = True)
+    return PythonPartWithAttributes(build_ele, script_object_data)
 
 
-def create_pythonpart(build_ele: BuildingElement) -> PythonPart:
-    """Create a PythonPart containing cube geometry and some attributes
-
-    Args:
-        build_ele: BuildingElement object containing parameter values
-
-    Returns:
-        PythonPart object
+class PythonPartWithAttributes(BaseScriptObject):
+    """ Definition of class PythonPartWithAttributes
     """
-    python_part_util = PythonPartUtil(build_ele.CommonProp.value)
 
-    python_part_util.add_pythonpart_view_2d3d(create_bottom_cuboid(build_ele) + create_top_cuboid(build_ele))
+    def __init__(self,
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
+        """ Initialization
 
-    if build_ele.AppendGeometryAttributes.value:
-        geometry_attributes = BuildingElementAttributeList()
-        geometry_attributes.add_attribute_by_unit(AttributeIdEnums.LENGTH, build_ele.Dimensions.value.X)
-        geometry_attributes.add_attribute_by_unit(AttributeIdEnums.THICKNESS, build_ele.Dimensions.value.Y)
-        geometry_attributes.add_attribute_by_unit(AttributeIdEnums.HEIGHT, build_ele.Dimensions.value.Z)
+        Args:
+            build_ele:          building element with the parameter properties
+            script_object_data: script object data
+        """
 
-        python_part_util.add_attribute_list(geometry_attributes)
+        super().__init__(script_object_data)
 
-    return python_part_util.get_pythonpart(build_ele,
-                                           type_uuid = "23b28875-bc0e-4e8b-b0df-e36d0d1c432c",
-                                           type_display_name = "PythonPart with attributes")
+        self.build_ele = build_ele
 
 
-def create_top_cuboid(build_ele: BuildingElement) -> ModelEleList:
-    """Creates a model element list containing one cuboid with dimensions specified
-    by the user in the property palette
+    def create_library_preview(self) -> CreateElementResult:
+        """ create the library preview
 
-    Args:
-        build_ele:  building element containing parameter values from the property palette
+        Returns:
+            created elements for the preview
+        """
 
-    Returns:
-        Model element list with one element representing a cuboid
-    """
-    cuboid_geo     = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(0, 0, build_ele.LayerThickness.value),
+        return self.execute()
+
+
+    def execute(self) -> CreateElementResult:
+        """ execute the script
+
+        Returns:
+            created element result
+        """
+
+        python_part = self.create_pythonpart()
+
+        return CreateElementResult(python_part.create(), multi_placement = True)
+
+
+    def create_pythonpart(self) -> PythonPart:
+        """ Create a PythonPart containing cube geometry and some attributes
+
+        Returns:
+            PythonPart object
+        """
+
+        build_ele = self.build_ele
+
+        python_part_util = PythonPartUtil(build_ele.CommonProp.value)
+
+        python_part_util.add_pythonpart_view_2d3d(self.create_bottom_cuboid() + self.create_top_cuboid())
+
+        if build_ele.AppendGeometryAttributes.value:
+            geometry_attributes = BuildingElementAttributeList()
+            geometry_attributes.add_attribute_by_unit(AttributeIdEnums.LENGTH, build_ele.Dimensions.value.X)
+            geometry_attributes.add_attribute_by_unit(AttributeIdEnums.THICKNESS, build_ele.Dimensions.value.Y)
+            geometry_attributes.add_attribute_by_unit(AttributeIdEnums.HEIGHT, build_ele.Dimensions.value.Z)
+
+            python_part_util.add_attribute_list(geometry_attributes)
+
+        return python_part_util.get_pythonpart(build_ele,
+                                               type_uuid = "23b28875-bc0e-4e8b-b0df-e36d0d1c432c",
+                                               type_display_name = "PythonPart with attributes")
+
+
+    def create_top_cuboid(self) -> ModelEleList:
+        """ Creates a model element list containing one cuboid with dimensions specified
+        by the user in the property palette
+
+        Returns:
+            Model element list with one element representing a cuboid
+        """
+
+        build_ele = self.build_ele
+
+        cuboid_geo = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(0, 0, build_ele.LayerThickness.value),
                                                           AllplanGeo.Point3D() + build_ele.Dimensions.value)
 
-    common_props       = AllplanBaseElements.CommonProperties()
-    common_props.Color = 6
+        common_props       = AllplanBaseEle.CommonProperties()
+        common_props.Color = 6
 
-    model_ele_list = ModelEleList(common_props)
-    model_ele_list.append_geometry_3d(cuboid_geo)
+        model_ele_list = ModelEleList(common_props)
+        model_ele_list.append_geometry_3d(cuboid_geo)
 
-    return model_ele_list
+        return model_ele_list
 
-def create_bottom_cuboid(build_ele: BuildingElement) -> ModelEleList:
-    """Creates a model element list containing one cuboid with dimensions specified
-    by the user in the property palette
 
-    Args:
-        build_ele:  building element containing parameter values from the property palette
+    def create_bottom_cuboid(self) -> ModelEleList:
+        """ Creates a model element list containing one cuboid with dimensions specified
+        by the user in the property palette
 
-    Returns:
-        Model element list with one element representing a cuboid
-    """
-    cuboid_geo     = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(),
+        Returns:
+            Model element list with one element representing a cuboid
+        """
+
+        build_ele = self.build_ele
+
+        cuboid_geo = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(),
                                                           AllplanGeo.Point3D(build_ele.Dimensions.value.X,
                                                                              build_ele.Dimensions.value.Y,
                                                                              build_ele.LayerThickness.value))
 
-    common_props       = AllplanBaseElements.CommonProperties()
-    common_props.Color = 7
+        common_props       = AllplanBaseEle.CommonProperties()
+        common_props.Color = 7
 
-    model_ele_list = ModelEleList(common_props)
-    model_ele_list.append_geometry_3d(cuboid_geo)
+        model_ele_list = ModelEleList(common_props)
+        model_ele_list.append_geometry_3d(cuboid_geo)
 
-    return model_ele_list
+        return model_ele_list

@@ -105,7 +105,7 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
         #----------------- check for modification
 
-        if not self.is_modification_mode:
+        if self.execution_event == AllplanSettings.ExecutionEvent.eCreation:
             return
 
         python_part = self.modification_ele_list.get_base_element_adapter(self.document)
@@ -146,7 +146,7 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        if self.is_only_update or self.is_modification_mode and not self.select_opening_for_copy:
+        if self.is_only_update or self.execution_event != AllplanSettings.ExecutionEvent.eCreation and not self.select_opening_for_copy:
             return
 
         self.script_object_interactor = SingleElementSelectInteractor(self.sel_result,

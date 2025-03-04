@@ -124,22 +124,22 @@
         <Text>3D bspline list</Text>
 
         <Parameter>
-            <Name>BSpline3DListExp</Name>
-            <Text>List of BSpline3yD</Text>
+            <Name>Format3D</Name>
+            <Text>Format</Text>
             <ValueType>Expander</ValueType>
 
             <Parameter>
-                <Name>Format3D</Name>
-                <Text>Format</Text>
-                <ValueType>Expander</ValueType>
-
-                <Parameter>
-                    <Name>CommonProp3DList</Name>
-                    <Text></Text>
-                    <Value>CommonProperties(Color(5))</Value>
-                    <ValueType>CommonProperties</ValueType>
-                </Parameter>
+                <Name>CommonProp3DList</Name>
+                <Text></Text>
+                <Value>CommonProperties(Color(5))</Value>
+                <ValueType>CommonProperties</ValueType>
             </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>BSpline3DListExp</Name>
+            <Text>List of BSpline3yD</Text>
+            <ValueType>Expander</ValueType>            
 
             <Parameter>
                 <Name>BSplineCount</Name>

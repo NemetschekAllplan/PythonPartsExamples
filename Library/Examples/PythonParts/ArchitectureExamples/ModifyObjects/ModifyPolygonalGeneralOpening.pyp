@@ -19,6 +19,9 @@
         </Constant>
     </Constants>
     <Page>
+        <Name>Page1</Name>
+        <Text>Opening</Text>
+        <Visible>InputMode == OPENING_INPUT</Visible>
 
         <Parameter>
             <Name>GeometryExp</Name>s

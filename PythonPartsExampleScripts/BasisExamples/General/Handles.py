@@ -4,12 +4,12 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from string import Template
 
 import math
 
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_Input as AllplanIFW
-import NemAll_Python_BasisElements as AllplanBasisEle
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
@@ -18,9 +18,11 @@ from HandleParameterData import HandleParameterData
 from HandleParameterType import HandleParameterType
 from HandleProperties import HandleProperties
 from HandlePropertiesService import HandlePropertiesService
-from Utils import RotationUtil
 
 from TypeCollections import ModelEleList
+
+from Utils import RotationUtil
+from Utils.HandleCreator import HandleCreator
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.HandlesBuildingElement import HandlesBuildingElement as BuildingElement  # type: ignore
@@ -64,6 +66,8 @@ class Handles(BaseScriptObject):
     """ Definition of class self
     """
 
+    MIRROR_CUBOID_KEY = "MirrorCuboid"
+
     def __init__(self,
                  build_ele         : BuildingElement,
                  script_object_data: BaseScriptObjectData):
@@ -76,7 +80,8 @@ class Handles(BaseScriptObject):
 
         super().__init__(script_object_data)
 
-        self.build_ele = build_ele
+        self.build_ele     = build_ele
+        self.mirror_cuboid = False
 
 
     def execute(self) -> CreateElementResult:
@@ -105,7 +110,7 @@ class Handles(BaseScriptObject):
         build_ele = self.build_ele
 
         point1 = AllplanGeo.Point3D()
-        point3 = AllplanGeo.Point3D(-build_ele.Length.value if build_ele.MirrorCuboid.value else build_ele.Length.value,
+        point3 = AllplanGeo.Point3D(-build_ele.Length.value if self.mirror_cuboid else build_ele.Length.value,
                                     build_ele.Thickness.value,
                                     build_ele.Height.value)
 
@@ -127,7 +132,7 @@ class Handles(BaseScriptObject):
         #----------------- create the handles
 
         point3.Z = 0
-        point2   = AllplanGeo.Point3D(-build_ele.Length.value if build_ele.MirrorCuboid.value else build_ele.Length.value, 0, 0)
+        point2   = AllplanGeo.Point3D(-build_ele.Length.value if self.mirror_cuboid else build_ele.Length.value, 0, 0)
         point5   = AllplanGeo.Point3D(0, build_ele.Thickness.value / 2, 0)
 
         point1 = AllplanGeo.Transform(point1, rot_mat)
@@ -135,7 +140,7 @@ class Handles(BaseScriptObject):
         point2 = AllplanGeo.Transform(point2, rot_mat)
         point5 = AllplanGeo.Transform(point5, rot_mat)
 
-        point4_bottom = AllplanGeo.Point3D(0, build_ele.Thickness.value, build_ele.Height.value)
+        point4_bottom = AllplanGeo.Point3D(0, build_ele.Thickness.value, 0)
         point4_top    = AllplanGeo.Point3D(0, build_ele.Thickness.value, build_ele.Height.value)
         point4_bottom = AllplanGeo.Transform(point4_bottom, rot_mat)
         point4_top    = AllplanGeo.Transform(point4_top, rot_mat)
@@ -143,75 +148,38 @@ class Handles(BaseScriptObject):
 
         #-----------------  mirror handle
 
-        mirror_handle = HandleProperties("MirrorCuboid", point5, AllplanGeo.Point3D(),
-                                         [],
-                                         HandleDirection.CLICK)
+        handle_list = list[HandleProperties]()
 
-        mirror_handle.handle_type  = AllplanIFW.ElementHandleType.HANDLE_ARROW
-        mirror_handle.info_text    = "Mirror the cuboid"
-        mirror_handle.handle_angle = rot_angle
-
-        handle_list = [mirror_handle]
+        HandleCreator.click(handle_list, self.MIRROR_CUBOID_KEY, point5, AllplanIFW.ElementHandleType.HANDLE_ARROW,
+                            "Mirror the cuboid", rot_angle)
 
 
         #----------------- checkbox handle for input controls
 
-        show_input_handle = HandleProperties("ShowInputControlsHandle", point1 + AllplanGeo.Point3D(0, -500, 0), AllplanGeo.Point3D(),
-                                             [HandleParameterData("ShowInputControls", HandleParameterType.CHECK_BOX,
-                                                                   check_box_state = build_ele.ShowInputControls.value)],
-                                             HandleDirection.CLICK)
-
-        show_input_handle.info_text = "Hide input controls" if build_ele.ShowInputControls.value else "Show input controls"
-
-        handle_list.append(show_input_handle)
+        HandleCreator.checkbox(handle_list, "ShowInputControls", point1 + AllplanGeo.Point3D(0, -500, 0),
+                               build_ele.ShowInputControls.value, "Hide input controls", "Show input controls")
 
 
         #----------------- checkbox handle for show handles
 
-        show_handles = HandleProperties("ShowHandles", point1 + AllplanGeo.Point3D(0, -800, 0), AllplanGeo.Point3D(),
-                                        [HandleParameterData("ShowHandles", HandleParameterType.CHECK_BOX,
-                                                             check_box_state = build_ele.ShowHandles.value)],
-                                         HandleDirection.CLICK)
-
-        show_handles.info_text = "Hide handles" if build_ele.ShowHandles.value else "Show handles"
-
-        handle_list.append(show_handles)
+        HandleCreator.checkbox(handle_list, "ShowHandles", point1 + AllplanGeo.Point3D(0, -800, 0),
+                               build_ele.ShowHandles.value, "Hide handles", "Show handles")
 
 
         #----------------- increment and decrement handle
 
-        increment_handle = HandleProperties("IncrementHandle",
-                                             point2 + AllplanGeo.Point3D(200, 100, 0), AllplanGeo.Point3D(),
-                                             [HandleParameterData("Thickness", HandleParameterType.INCREMENT_BUTTON,
-                                                                  in_decrement_value = 100.)],
-                                             HandleDirection.CLICK)
+        HandleCreator.increment(handle_list, "Thickness", point3 + AllplanGeo.Point3D(0, 200, 0), 100,
+                                "Increment thickness by 0.1m")
 
-        increment_handle.info_text = "Increment thickness by 0.1m"
+        HandleCreator.decrement(handle_list, "Thickness", point3 + AllplanGeo.Point3D(0, -200, 0), 100,
+                                "Decrement thickness by 0.1m")
 
-        handle_list.append(increment_handle)
-
-        decrement_handle = HandleProperties("DecrementHandle",
-                                             point2 + AllplanGeo.Point3D(200, -100, 0), AllplanGeo.Point3D(),
-                                             [HandleParameterData("Thickness", HandleParameterType.DECREMENT_BUTTON,
-                                                                  in_decrement_value = 100.)],
-                                             HandleDirection.CLICK)
-
-        decrement_handle.info_text = "Decrement thickness by 0.1m"
-        decrement_handle.handle_angle = AllplanGeo.Angle(math.pi)
-
-        handle_list.append(decrement_handle)
+        handle_list[-1].handle_angle = AllplanGeo.Angle(math.pi)
 
 
         #-----------------  offset point handle
 
-        offset_handle = HandleProperties("Offset", build_ele.OffsetPoint.value, AllplanGeo.Point3D(),
-                                         [HandleParameterData("OffsetPoint", HandleParameterType.POINT, False)],
-                                         HandleDirection.XYZ_DIR)
-
-        offset_handle.handle_type  = AllplanIFW.ElementHandleType.HANDLE_SQUARE_RED
-        offset_handle.info_text    = "Offset the cuboid"
-
-        handle_list.append(offset_handle)
+        HandleCreator.move(handle_list, "OffsetPoint", build_ele.OffsetPoint.value, "Offset the cuboid")
 
 
         #----------------- slope handle
@@ -219,47 +187,23 @@ class Handles(BaseScriptObject):
         show_input_controls = build_ele.ShowInputControls.value
         show_handles        = build_ele.ShowHandles.value
 
-        handle_slope = HandleProperties("Slope",
-                                        point1 + AllplanGeo.Point3D(build_ele.SlopeX.value, build_ele.SlopeY.value, 0),
-                                        point1,
-                                        [HandleParameterData("SlopeX", HandleParameterType.X_DISTANCE, show_input_controls),
-                                         HandleParameterData("SlopeY", HandleParameterType.Y_DISTANCE, show_input_controls)],
-                                        HandleDirection.XYZ_DIR, False,
-                                        show_handles = show_handles)
+        HandleCreator.xy_distance(handle_list, "SlopeX", "SlopeY",
+                                  point1 + AllplanGeo.Point3D(build_ele.SlopeX.value, build_ele.SlopeY.value, 0), point1,
+                                  show_input_controls, show_handles = show_handles)
 
-        handle_slope.info_text = "Slope handle"
-
-        handle_list.append(handle_slope)
+        handle_list[-1].info_text = "Slope handle"
 
 
         #----------------- dimension handles
 
-        handle_length = HandleProperties("Length", point2, point1,
-                                         [HandleParameterData("Length", HandleParameterType.POINT_DISTANCE, show_input_controls)],
-                                         HandleDirection.XYZ_DIR,
-                                         show_handles = show_handles)
+        HandleCreator.point_distance(handle_list, "Length", point2, point1, show_input_controls, False, show_handles,
+                                     info_text = "Length handle")
 
-        handle_length.info_text = "Length handle"
+        HandleCreator.point_distance(handle_list, "Thickness", point3, point2, show_input_controls, True, show_handles,
+                                     info_text = "Thickness handle")
 
-        handle_list.append(handle_length)
-
-        handle_thickness = HandleProperties("HandleThickness", point3, point2,
-                                            [HandleParameterData("Thickness", HandleParameterType.POINT_DISTANCE, show_input_controls)],
-                                            HandleDirection.XYZ_DIR,
-                                            show_handles = show_handles)
-
-        handle_thickness.info_text = "Thickness handle"
-
-        handle_list.append(handle_thickness)
-
-        handle_height = HandleProperties("HandleHeight", point4_bottom, point4_top,
-                                         [HandleParameterData("Height", HandleParameterType.POINT_DISTANCE, show_input_controls)],
-                                         HandleDirection.XYZ_DIR,
-                                         show_handles = show_handles)
-
-        handle_height.info_text = "Height handle"
-
-        handle_list.append(handle_height)
+        HandleCreator.point_distance(handle_list, "Height", point4_top, point4_bottom, show_input_controls, True, show_handles,
+                                     info_text="Height handle")
 
         return model_ele_list, handle_list
 
@@ -335,16 +279,10 @@ class Handles(BaseScriptObject):
 
         handle_list.append(handle_placement)
 
-        handle_opening = HandleProperties("DeltaAngle", center_pnt + opening_handle_pnt, center_pnt,
-                                          [HandleParameterData("DeltaAngle", HandleParameterType.ANGLE, False)],
-                                          HandleDirection.ANGLE, angle_placement = angle_placement)
-
-        handle_opening.info_text = "Opening handle"
-
-        handle_list.append(handle_opening)
+        HandleCreator.angle(handle_list, "DeltaAngle", center_pnt + opening_handle_pnt, center_pnt,
+                            angle_placement, center_pnt, info_text = "Delta angle handle")
 
         return model_ele_list, handle_list
-
 
 
     def create_polygon(self) -> tuple[ModelEleList, list[HandleProperties]]:
@@ -360,15 +298,12 @@ class Handles(BaseScriptObject):
 
         poly_points = build_ele.PolyPoints.value
 
-        poly = AllplanGeo.Polygon3D()
-
-        for pnt in poly_points:
-            poly += pnt
+        poly = AllplanGeo.Polygon3D(poly_points)
 
         poly += poly.StartPoint
 
-        rot_pnt_y = (poly_points[0] + poly_points[1]) / 2
-        rot_pnt_z = (poly_points[1] + poly_points[2]) / 2
+        _, rot_pnt_z = AllplanGeo.CenterCalculus.Calculate(poly, True, 0)
+        rot_pnt_y    = rot_pnt_z + AllplanGeo.Vector3D(0, -500, 0)
 
         poly = AllplanGeo.Transform(poly, RotationUtil(0, 0, build_ele.RotAngleZ.value).get_rotation_matrix(rot_pnt_z))
         poly = AllplanGeo.Transform(poly, RotationUtil(0, -build_ele.RotAngleY.value, 0).get_rotation_matrix(rot_pnt_y))
@@ -381,47 +316,34 @@ class Handles(BaseScriptObject):
         #----------------- point list handles
 
         poly_points = poly.Points
-        ref_pnt     = poly_points[0]
-        handle_list = []
+        handle_list = list[HandleProperties]()
 
-        for index, pnt in enumerate(poly_points[:-1]):
-            handle_list.append(HandleProperties("PolyPoints", pnt, ref_pnt,
-                                                [HandleParameterData("PolyPoints", HandleParameterType.POINT, False,
-                                                                     list_index = index)],
-                                                 HandleDirection.XYZ_DIR))
-            handle_list[-1].info_text = "Index=" + str(index)
+        HandleCreator.point_list(handle_list, "PolyPoints", poly_points[:-1],
+                                 info_text_template = Template("Shift + click = delete point\nIndex=$index"),
+                                 delete_point = True)
+        HandleCreator.point_list_segment_center(handle_list, "PolyPoints", poly_points,
+                                                info_text_template = Template("Split segment $index"), index_offset = 1)
+
+        if not poly.IsValid():
+            return model_ele_list, handle_list
 
 
         #----------------- rotation handles
 
-        rot_pnt_y = (poly_points[0] + poly_points[1]) / 2
-        rot_pnt_z = (poly_points[1] + poly_points[2]) / 2
+        HandleCreator.angle(handle_list, "RotAngleZ", rot_pnt_z, rot_pnt_z + AllplanGeo.Vector3D(1000, 0, 0),
+                            AllplanGeo.AxisPlacement3D(AllplanGeo.Axis3D(rot_pnt_z, poly.GetPlane()[1].GetVector()),
+                                                       rot_pnt_z + AllplanGeo.Vector3D(1000, 0, 0)),
+                            info_text = "Z rotation handle")
 
-        handle_z_rot = HandleProperties("Z_Rotation",
-                                        rot_pnt_z, rot_pnt_z,
-                                        [HandleParameterData("RotAngleZ", HandleParameterType.ANGLE)],
-                                        HandleDirection.ANGLE, False)
-
-        handle_z_rot.info_text = "Z rotation handle"
-
-        handle_list.append(handle_z_rot)
-
-        handle_y_rot = HandleProperties("Y_Rotation",
-                                        rot_pnt_y, rot_pnt_y,
-                                        [HandleParameterData("RotAngleY", HandleParameterType.ANGLE)],
-                                        HandleDirection.ANGLE, False,
-                                        angle_placement = AllplanGeo.AxisPlacement3D(AllplanGeo.Point3D(),
-                                                                                     AllplanGeo.Vector3D(1000, 0, 0),
-                                                                                     AllplanGeo.Vector3D(0, -1000, 0)))
-
-        handle_y_rot.info_text = "Y rotation handle"
-
-        handle_list.append(handle_y_rot)
+        HandleCreator.angle(handle_list, "RotAngleY", rot_pnt_y, rot_pnt_y + AllplanGeo.Vector3D(0, 1000, 0),
+                            AllplanGeo.AxisPlacement3D(rot_pnt_y, AllplanGeo.Vector3D(1000, 0, 0),
+                                                       AllplanGeo.Vector3D(0, -1000, 0)),
+                            info_text = "Y rotation handle")
 
         return model_ele_list, handle_list
 
 
-    def create_lines(self) -> tuple[list[AllplanBasisEle.ModelElement3D], list[HandleProperties]]:
+    def create_lines(self) -> tuple[ModelEleList, list[HandleProperties]]:
         """ create lines by distance
 
         Returns:
@@ -457,15 +379,14 @@ class Handles(BaseScriptObject):
 
         #----------------- create the handles
 
-        handle_list = []
+        handle_list = list[HandleProperties]()
         start_pnt   = ref_pnt
 
         for index, dist in enumerate(build_ele.DistanceList.value):
-            handle_list.append(HandleProperties("DistanceList", start_pnt + AllplanGeo.Point3D(dist, 0, 0), AllplanGeo.Point3D(start_pnt),
-                                                [HandleParameterData("DistanceList", HandleParameterType.X_DISTANCE, True,
-                                                                     list_index = index)],
-                                                 HandleDirection.X_DIR))
-            handle_list[-1].info_text = "Index=" + str(index)
+            HandleCreator.x_distance(handle_list, "DistanceList", start_pnt + AllplanGeo.Point3D(dist, 0, 0),
+                                     AllplanGeo.Point3D(start_pnt), True, False,
+                                     list_index = index, info_text = f"Index={index}",
+                                     show_input_field_always = True)
 
             start_pnt += AllplanGeo.Point3D(dist, 0, 0)
 
@@ -487,8 +408,8 @@ class Handles(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        if handle_prop.handle_id == build_ele.MirrorCuboid.name:
-            build_ele.MirrorCuboid.value = not build_ele.MirrorCuboid.value
+        if handle_prop.handle_id == self.MIRROR_CUBOID_KEY:
+            self.mirror_cuboid = not self.mirror_cuboid
 
         else:
             HandlePropertiesService.update_property_value(build_ele, handle_prop, input_pnt)

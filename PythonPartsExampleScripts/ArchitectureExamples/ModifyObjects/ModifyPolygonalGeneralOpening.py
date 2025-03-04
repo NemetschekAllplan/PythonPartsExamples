@@ -140,7 +140,7 @@ class ModifyPolygonalGeneralOpening(BaseScriptObject):
 
         opening_prop = self.general_opening_ele.Properties
 
-        build_ele.NicheType.value = "Niche" if opening_prop.OpeningType == AllplanArchEle.OpeningType.eNiche else "Recess"
+        build_ele.NicheType.value = "Niche" if opening_prop.OpeningType == AllplanArchEle.OpeningType.eNiche else "Recess, opening"
 
         build_ele.IsVisibleInViewSection3D.value    = opening_prop.VisibleInViewSection3D
         build_ele.HasIndependent2DInteraction.value = opening_prop.Independent2DInteraction
@@ -162,6 +162,8 @@ class ModifyPolygonalGeneralOpening(BaseScriptObject):
         Returns:
             created element result
         """
+
+        self.hide_general_element()
 
         handle_placement_geo = self.hide_ele.get_hidden_geo_elements
         handle_placement_geo.append(self.opening_polygon)
@@ -272,3 +274,20 @@ class ModifyPolygonalGeneralOpening(BaseScriptObject):
         AllplanIFW.HandleService().RemoveHandles()
 
         return OnCancelFunctionResult.RESTART
+
+
+    def hide_general_element(self):
+        """ hide the general element
+        """
+
+        build_ele = self.build_ele
+
+        if not build_ele.HasIndependent2DInteraction.value and not self.hide_ele.hidden_elements:
+            self.hide_ele.hide_arch_ground_view_elements(self.placement_ele)
+
+        elif build_ele.HasIndependent2DInteraction.value and self.hide_ele.hidden_elements:
+            ele_list = AllplanEleAdapter.BaseElementAdapterList([self.placement_ele])
+
+            AllplanIFW.VisibleService.ShowElements(ele_list, True)
+
+            self.hide_ele.clear()

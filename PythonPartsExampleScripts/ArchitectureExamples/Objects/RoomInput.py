@@ -5,7 +5,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
@@ -14,9 +13,13 @@ from AttributeIdValue import AttributeIdValue
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData, OnCancelFunctionResult
 from BuildingElementListService import BuildingElementListService
 from CreateElementResult import CreateElementResult
+from HandleProperties import HandleProperties
 
 from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
+from TypeCollections import ModelEleList
+
+from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
 from Utils import LibraryBitmapPreview, ElementPropertiesAttributeUtil
 
 if TYPE_CHECKING:
@@ -41,25 +44,6 @@ def check_allplan_version(_build_ele: BuildingElement,
 
     # Support all versions
     return True
-
-
-def create_preview(_build_ele: BuildingElement,
-                   _doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
-    """ Creation of the element preview
-
-    Args:
-        _build_ele: building element with the parameter properties
-        _doc:       document of the Allplan drawing files
-
-    Returns:
-        created elements for the preview
-    """
-
-    print(_build_ele.pyp_file_path)
-
-    return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview( \
-                               AllplanSettings.AllplanPaths.GetPythonPartsEtcPath() +
-                               r"Examples\PythonParts\ArchitectureExamples\Objects\RoomInput.png"))
 
 
 def create_script_object(build_ele         : BuildingElement,
@@ -102,17 +86,32 @@ class RoomScript(BaseScriptObject):
 
         #----------------- get the default attributes
 
-        usr_attr = self.build_ele.UserAttributes.value
-
         room_attr = {230, 246, 501, 502, 503, 504, 505, 506, 507}
 
-        fav_attr = {attr.attribute_id for attr in usr_attr}
+        fav_attr = {attr.attribute_id for attr in self.build_ele.UserAttributes.value}
 
-        for attr_id, attr_value in AllplanArchEle.RoomProperties().GetAttributes(self.coord_input.GetInputViewDocument(), True):
-            if attr_id not in room_attr and attr_id not in fav_attr:
-                usr_attr.insert(-1, AttributeIdValue(attr_id, attr_value))
+
+        #----------------- start the attribute list with the default room attributes
+
+        self.build_ele.UserAttributes.value = \
+            [AttributeIdValue(attr_id, attr_value)
+                for attr_id, attr_value in AllplanArchEle.RoomProperties().GetAttributes(self.document, True) \
+                    if attr_id not in room_attr and attr_id not in fav_attr] + \
+            self.build_ele.UserAttributes.value
 
         build_ele.InputMode.value = build_ele.POLYGON_INPUT
+
+
+    def create_library_preview(self) -> CreateElementResult:
+        """ create the library preview
+
+        Returns:
+            created elements for the preview
+        """
+
+        return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{self.build_ele.pyp_file_path}\{self.build_ele.pyp_name}.png"))
+
 
 
     def start_input(self):
@@ -146,7 +145,13 @@ class RoomScript(BaseScriptObject):
             Result object with elements to create
         """
 
-        return CreateElementResult([self.create_room(self.polygon_result.input_polygon)],
+        handle_list = list[HandleProperties]()
+
+        CurveHandleCreator.poly_curve(handle_list, self.polygon_result.input_polygon, True,
+                                      info_text = "Shift + click = delete point", delete_point = True)
+
+        return CreateElementResult(ModelEleList(element = self.create_room(self.polygon_result.input_polygon)),
+                                   handle_list,
                                    placement_point = AllplanGeo.Point3D(), multi_placement = True)
 
 
@@ -185,8 +190,8 @@ class RoomScript(BaseScriptObject):
         return room_ele
 
 
-    def create_preview_elements(self, polygon: AllplanGeo.Polygon3D) -> list:
-        """Create the list of slab elements to preview based on 3d polygon
+    def create_preview_elements(self, polygon: AllplanGeo.Polygon3D) -> list[AllplanArchEle.RoomElement]:
+        """Create the room for the preview
 
         Args:
             polygon: input 3d polygon

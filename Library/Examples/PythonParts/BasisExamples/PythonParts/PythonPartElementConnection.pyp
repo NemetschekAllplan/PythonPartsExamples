@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Element>
     <Script>
-        <Title>ModelPolygonExtrudeInteractor.py</Title>
+        <Title>PythonPart element connection</Title>
         <Name>BasisExamples\PythonParts\PythonPartElementConnection.py</Name>
         <Version>1.0</Version>
         <ReadLastInput>True</ReadLastInput>

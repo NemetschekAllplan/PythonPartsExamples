@@ -4,6 +4,7 @@
         <Name>BasisExamples\PythonParts\PythonPartWithAttributes.py</Name>
         <Title>PythonPart with attributes</Title>
         <Version>1.0</Version>
+        <AttributeEvent>True</AttributeEvent>
     </Script>
     <Page>
         <Name>PythonPart</Name>
@@ -51,7 +52,7 @@
                 <Value>300</Value>
                 <MaxValue>Dimensions.Z</MaxValue>
                 <ValueType>Attribute</ValueType>
-                <AttributeId>211</AttributeId>
+                <AttributeId>AttributeIdEnums.LAYER_THICKNESS</AttributeId>
             </Parameter>
             <Parameter>
                 <Name>Separator</Name>

@@ -163,11 +163,5 @@
             <Value></Value>
             <ValueType>Integer</ValueType>
         </Parameter>
-        <Parameter>
-            <Name>ElementTierCount</Name>
-            <Text>Element tier count</Text>
-            <Value>1</Value>
-            <ValueType>Integer</ValueType>
-        </Parameter>
     </Page>
 </Element>

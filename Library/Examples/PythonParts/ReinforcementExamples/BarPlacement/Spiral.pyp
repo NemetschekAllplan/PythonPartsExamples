@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><Element>
     <Script>
-        <Name>ReinforcementExamples\Spiral.py</Name>
+        <Name>ReinforcementExamples\BarPlacement\Spiral.py</Name>
         <Title>Spiral</Title>
         <Version>1.0</Version>
     </Script>
@@ -14,12 +14,12 @@
             <Value>True</Value>
             <ValueType>CheckBox</ValueType>
         </Parameter>
-        
+
         <Parameter>
             <Name>Expander1</Name>
             <Text>Geometry</Text>
             <ValueType>Expander</ValueType>
-            
+
             <Parameter>
                 <Name>Height</Name>
                 <Text>Height</Text>
@@ -35,7 +35,7 @@
                 <MinValue>100</MinValue>
             </Parameter>
         </Parameter>
-        
+
         <Parameter>
             <Name>Expander2</Name>
             <Text>Reinforcement</Text>

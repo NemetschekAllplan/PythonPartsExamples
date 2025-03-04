@@ -90,21 +90,22 @@
                 <Value>1.0</Value>
                 <ValueType>Double</ValueType>
             </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>Height</Name>
+            <Text>Height</Text>
+            <ValueType>Expander</ValueType>
 
             <Parameter>
-                <Name>Height</Name>
-                <Text>Height</Text>
-                <ValueType>Expander</ValueType>
-
-                <Parameter>
-                    <Name>PlaneReferences</Name>
-                    <Text>Room height</Text>
-                    <Value></Value>
-                    <ValueType>PlaneReferences</ValueType>
-                    <ValueDialog>PlaneReferences</ValueDialog>
-                </Parameter>
+                <Name>PlaneReferences</Name>
+                <Text>Room height</Text>
+                <Value></Value>
+                <ValueType>PlaneReferences</ValueType>
+                <ValueDialog>PlaneReferences</ValueDialog>
             </Parameter>
         </Parameter>
+        
     </Page>
     <Page>
         <Name>UserAttributesPage</Name>

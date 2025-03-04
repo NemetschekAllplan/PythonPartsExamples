@@ -47,20 +47,21 @@
                 <ValueType>AttributeIdValue</ValueType>
                 <ValueDialog>AttributeSelectionInsert</ValueDialog>
             </Parameter>
+        </Parameter>
+
+        <Parameter>
+            <Name>ListIdValueExp</Name>
+            <Text>Attribute list</Text>
+            <ValueType>Expander</ValueType>
 
             <Parameter>
-                <Name>ListIdValueExp</Name>
-                <Text>Attribute list</Text>
-                <ValueType>Expander</ValueType>
-
-                <Parameter>
-                    <Name>AttributeList</Name>
-                    <Text>Attributes</Text>
-                    <Value>[(0,)]</Value>
-                    <ValueType>AttributeIdValue</ValueType>
-                    <ValueDialog>AttributeSelectionInsert</ValueDialog>
-                </Parameter>
+                <Name>AttributeList</Name>
+                <Text>Attributes</Text>
+                <Value>[(0,)]</Value>
+                <ValueType>AttributeIdValue</ValueType>
+                <ValueDialog>AttributeSelectionInsert</ValueDialog>
             </Parameter>
         </Parameter>
+        
     </Page>
 </Element>
