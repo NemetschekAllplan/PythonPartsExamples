@@ -272,7 +272,7 @@ class ModifyBlockFoundation(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
@@ -286,8 +286,6 @@ class ModifyBlockFoundation(BaseScriptObject):
         match handle_prop.handle_id:
             case "PlacementPoint":
                 self.placement_pnt = input_pnt
-
-        return self.execute()
 
 
     def on_cancel_function(self) -> OnCancelFunctionResult:

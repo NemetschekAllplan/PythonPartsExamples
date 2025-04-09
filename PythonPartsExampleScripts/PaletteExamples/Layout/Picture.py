@@ -1,30 +1,33 @@
-﻿"""
-Example Script for Picture
+﻿""" Example Script for Picture
 """
 
-import NemAll_Python_AllplanSettings as AllplanSettings
-import NemAll_Python_Geometry as AllplanGeo
-import NemAll_Python_BasisElements as AllplanBasisElements
-import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
+from __future__ import annotations
 
-from BuildingElement import BuildingElement
-from HandleProperties import HandleProperties
-from PythonPartUtil import PythonPartUtil
+from typing import TYPE_CHECKING
+
+import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
+
+from CreateElementResult import CreateElementResult
+from Utils import LibraryBitmapPreview
+
+if TYPE_CHECKING:
+    from __BuildingElementStubFiles.PictureBuildingElement import PictureBuildingElement as BuildingElement  # type: ignore
+else:
+    from BuildingElement import BuildingElement
 
 print('Load Picture.py')
 
 
 def check_allplan_version(build_ele: BuildingElement,
-                          version:   float):
-    """
-    Check the current Allplan version
+                          version:   float) -> bool:
+    """ Check the current Allplan version
 
     Args:
-        build_ele: the building element.
+        build_ele: building element with the parameter properties
         version:   the current Allplan version
 
     Returns:
-        True/False if version is supported by this script
+        True
     """
 
     # Delete unused arguments
@@ -34,114 +37,54 @@ def check_allplan_version(build_ele: BuildingElement,
     # Support all versions
     return True
 
-
-def create_element(build_ele: BuildingElement,
-                   doc: AllplanElementAdapter.DocumentAdapter):
-    """
-    Creation of element
+def create_preview(_build_ele: BuildingElement,
+                   _doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
+    """ Creation of the element preview
 
     Args:
-        build_ele: the building element.
-        doc:       input document
+        _build_ele: building element with the parameter properties
+        _doc:       document of the Allplan drawing files
+
+    Returns:
+        created elements for the preview
     """
-    element = PictureExample(doc)
 
-    return element.create(build_ele)
+    return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{_build_ele.pyp_file_path}\{_build_ele.pyp_name}.png"))
 
-
-def move_handle(build_ele: BuildingElement,
-                handle_prop: HandleProperties,
-                input_pnt: AllplanGeo.Point3D,
-                doc: AllplanElementAdapter.DocumentAdapter):
-    """
-    Modify the element geometry by handles
+def create_element(_build_ele: BuildingElement,
+                   _doc: AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
+    """Creation of element
 
     Args:
-        build_ele:  the building element.
-        handle_prop handle properties
-        input_pnt:  input point
-        doc:        input document
+        _build_ele: the building element.
+        _doc:       input document
+
+    Returns:
+        Object with the result data of the element creation
     """
 
-    build_ele.change_property(handle_prop, input_pnt)
-
-    element = PictureExample(doc)
-
-    return element.create(build_ele)
+    return CreateElementResult()
 
 
-class PictureExample():
+def modify_element_property(build_ele: BuildingElement,
+                            name     : str,
+                            value    : str):
+    """ Modify property of element
+
+    Args:
+        build_ele: building element with the parameter properties
+        name:      name of the modified property
+        value:     new value
     """
-    Definition of class PictureExample
-    """
 
-    def __init__(self,
-                 doc: AllplanElementAdapter.DocumentAdapter):
-        """
-        Initialization of class PictureExample
+    if name == "DynamicPictureCombo":                               # pylint: disable=magic-value-comparison
+        match value:
+            case "Representation 1":
+                build_ele.DynamicPicture.value = "etc\\Library\\Finish\\Bitmaps\\rs_rep1.png"
 
-        Args:
-            doc: input document
-        """
+            case "Representation 2":
+                build_ele.DynamicPicture.value = "etc\\Library\\Finish\\Bitmaps\\rs_rep2.png"
 
-        self.model_ele_list = []
-        self.handle_list    = None
-        self.document       = doc
-
-
-    def create(self,
-               build_ele: BuildingElement):
-        """
-        Create the elements
-
-        Args:
-            build_ele:  the building element.
-
-        Returns:
-            tuple  with created elements and handles.
-        """
-        print('Create the Quaders')
-
-        self.create_geometry(build_ele)
-
-        return (self.model_ele_list, self.handle_list)
-
-
-    def create_geometry(self,
-                        build_ele: BuildingElement):
-        """
-        Create the element geometries
-
-        Args:
-            build_ele:  the building element.
-        """
-
-        #----------------- Extract palette parameter values
-
-        width  = build_ele.Width.value
-        length = build_ele.Length.value
-        height = build_ele.Height.value
-
-
-        #------------------ Define the cube polyhedron
-
-        polyhed = AllplanGeo.Polyhedron3D.CreateCuboid(width, length, height)
-
-
-        #------------------ Define common properties, take global Allplan settings
-
-        com_prop = AllplanSettings.AllplanGlobalSettings.GetCurrentCommonProperties()
-
-
-        #------------------ Append cubes as new Allplan elements
-
-        pyp_util = PythonPartUtil()
-
-        pyp_util.add_pythonpart_view_2d3d(AllplanBasisElements.ModelElement3D(com_prop, polyhed))
-
-        self.model_ele_list = pyp_util.create_pythonpart(build_ele)
-
-
-        #------------------ No handles
-
-        self.handle_list = []
+            case "Representation 3":
+                build_ele.DynamicPicture.value = "etc\\Library\\Finish\\Bitmaps\\rs_rep3.png"

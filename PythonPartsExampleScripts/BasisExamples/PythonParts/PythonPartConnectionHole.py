@@ -204,8 +204,7 @@ class PythonPartConnectionHole():
 
         self.create_hole()
 
-        PythonPartPreview.execute(self.coord_input.GetInputViewDocument(), self.placement_mat, self.model_ele_list, True, None,
-                                  not self.modification_mode)
+        PythonPartPreview.execute(self.coord_input.GetInputViewDocument(), self.placement_mat, self.model_ele_list, True, None)
 
 
     def modify_element_property(self,

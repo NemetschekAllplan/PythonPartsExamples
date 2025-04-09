@@ -5,7 +5,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_BasisElements as AllplanBasisEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
@@ -44,7 +43,7 @@ def check_allplan_version(_build_ele: BuildingElement,
 def create_preview(_build_ele: BuildingElement,
                    _doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
     """ Creation of the element preview
-ö
+
     Args:
         _build_ele: building element with the parameter properties
         _doc:       document of the Allplan drawing files
@@ -53,9 +52,8 @@ def create_preview(_build_ele: BuildingElement,
         created elements for the preview
     """
 
-    return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview( \
-                               f"{AllplanSettings.AllplanPaths.GetPythonPartsEtcPath()}"
-                               r"Examples\PythonParts\PaletteExamples\ButtonControls\PictureButtonList.png"))
+    return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{_build_ele.pyp_file_path}\{_build_ele.pyp_name}.png"))
 
 
 def create_script_object(build_ele         : BuildingElement,

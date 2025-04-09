@@ -4,26 +4,19 @@ another element in order for the PythonPart to be updated when the associated el
 
 from __future__ import annotations
 
-import hashlib
-
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import NemAll_Python_AllplanSettings as AllplanSettings
-import NemAll_Python_BaseElements as AllplanBaseElements
-import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
+import NemAll_Python_Geometry as AllplanGeo
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
-from HandleDirection import HandleDirection
-from HandleParameterData import HandleParameterData
-from HandleParameterType import HandleParameterType
 from HandleProperties import HandleProperties
-from PythonPartTransaction import ConnectToElements
 from PythonPartUtil import PythonPartUtil
 
-from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectInteractor, SingleElementSelectResult
+from ScriptObjectInteractors.MultiElementSelectInteractor import MultiElementSelectInteractor, MultiElementSelectInteractorResult
+from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResult
 
 from TypeCollections.ModelEleList import ModelEleList
 
@@ -31,6 +24,9 @@ from Utils import LibraryBitmapPreview
 from Utils.ElementFilter.CurvedGeometryElementFilter import CurvedGeometryElementFilter
 from Utils.ElementFilter.FilterCollection import FilterCollection
 from Utils.Geometry.ExtrudeByVectorUtil import ExtrudeByVectorUtil
+from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+
+from ValueTypes.Data.ElementGeometryConnection import ElementGeometryConnection, GeometryType
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.PythonPartElementConnectionBuildingElement \
@@ -55,24 +51,6 @@ def check_allplan_version(_build_ele: BuildingElement,
 
     # Support all versions
     return True
-
-
-def create_preview(build_ele: BuildingElement,
-                   _doc     : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
-    """ Creation of the element preview
-
-    Args:
-        build_ele: building element with the parameter properties
-        _doc:      document of the Allplan drawing files
-
-    Returns:
-        created elements for the preview
-    """
-
-    script_path = Path(build_ele.pyp_file_path) / Path(build_ele.pyp_file_name).name
-    thumbnail_path = script_path.with_suffix(".png")
-
-    return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview(str(thumbnail_path)))
 
 
 def create_script_object(build_ele         : BuildingElement,
@@ -106,30 +84,32 @@ class PythonPartElementConnection(BaseScriptObject):
 
         super().__init__(script_object_data)
 
+
         #----------------- set initial values
 
-        self.build_ele  = build_ele
-        self.connection = ConnectToElements()
-        self.geo_ele    = None
-        self.sel_result = SingleElementSelectResult()
+        self.build_ele    = build_ele
+        self.sel_result   = MultiElementSelectInteractorResult()
+
+        self.script_object_interactor : (MultiElementSelectInteractor | None) = None
+
 
         #----------------- check for modification
 
         if self.execution_event == AllplanSettings.ExecutionEvent.eCreation:
             return
 
-        # use associative framework to get associated elements
-        pythonpart_uuid  = self.modification_ele_list.get_base_element_adapter(self.document).GetModelElementUUID()
-        observed_elements = AllplanBaseElements.AssociationService.GetObservedElements(self.document, pythonpart_uuid)
+        build_ele.InputMode.value = build_ele.PARAMETER_MODIFICATION
 
-        if len(observed_elements) == 0:
-            return
 
-        self.geo_ele = observed_elements[0].GetGeometry()
+    def create_library_preview(self) -> CreateElementResult:
+        """ create the library preview
 
-        # save hash of the associated element`s geometry to trigger the update only on geometry change
-        build_ele.SourceElementHash.value = hashlib.sha224(repr(self.geo_ele).encode()).hexdigest()
-        build_ele.InputMode.value         = build_ele.PARAMETER_MODIFICATION
+        Returns:
+            created elements for the preview
+        """
+
+        return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{self.build_ele.pyp_file_path}\{self.build_ele.pyp_name}.png"))
 
 
     def start_input(self):
@@ -141,12 +121,14 @@ class PythonPartElementConnection(BaseScriptObject):
         if self.execution_event != AllplanSettings.ExecutionEvent.eCreation:
             return
 
-        # set up selection filter
-        element_filter = FilterCollection(True)
-        element_filter.append(CurvedGeometryElementFilter(True, True))      # allow only curves (2D and 3D)
-        element_filter.append(lambda ele: ele.IsInActiveLayer())            # allow only elements on current drawing file on active layers
 
-        self.script_object_interactor = SingleElementSelectInteractor(self.sel_result, element_filter, "Select the curve element")
+        #----------------- set up selection filter
+
+        element_filter = FilterCollection(True)
+
+        element_filter.append(CurvedGeometryElementFilter(True, True))      # allow only curves (2D and 3D)
+
+        self.script_object_interactor = MultiElementSelectInteractor(self.sel_result, element_filter, "Select the curve element(s)")
 
         build_ele.InputMode.value = build_ele.ELEMENT_SELECT
 
@@ -159,12 +141,10 @@ class PythonPartElementConnection(BaseScriptObject):
 
         self.script_object_interactor = None
 
-        self.geo_ele = self.sel_result.sel_element.GetGeometry()
+        build_ele.InputMode.value = self.build_ele.PARAMETER_MODIFICATION
 
-        build_ele.SourceElementHash.value = hashlib.sha224(repr(self.geo_ele).encode()).hexdigest()
-        build_ele.InputMode.value         = self.build_ele.PARAMETER_MODIFICATION
-
-        self.connection = ConnectToElements([str(self.sel_result.sel_element.GetModelElementUUID())])
+        build_ele.ElementGeoConnection.value = \
+            [ElementGeometryConnection(sel_element, GeometryType.BASE_GEOMETRY) for sel_element in self.sel_result.sel_elements]
 
 
     def execute(self) -> CreateElementResult:
@@ -173,30 +153,35 @@ class PythonPartElementConnection(BaseScriptObject):
         Returns:
             created result
         """
-        if self.geo_ele is None:
-            return CreateElementResult()
 
         build_ele = self.build_ele
+
+
+        #----------------- check for empty elements
+
+        if not build_ele.ElementGeoConnection.value:
+            if self.execution_event == AllplanSettings.ExecutionEvent.eCreation:
+                return CreateElementResult()
+
+            elements_to_delete = \
+                AllplanEleAdapter.BaseElementAdapterList([self.modification_ele_list.get_base_element_adapter(self.document)])
+
+            return CreateElementResult(ModelEleList(), [], elements_to_delete = elements_to_delete)
+
+
+        #----------------- create the PythonPart
 
         pyp_util = PythonPartUtil()
         pyp_util.add_pythonpart_view_2d3d(self.extrude_geometry())
 
+        handle_list  = list[HandleProperties]()
 
-        #----------------- create the handle
+        CurveHandleCreator.vector(handle_list, self.build_ele.ElementGeoConnection.value[0].geometry.StartPoint,
+                                  build_ele.ExtrusionVector.value, "ExtrusionVector")
 
-        if isinstance(start_pnt := self.geo_ele.StartPoint, AllplanGeo.Point2D):
-            start_pnt = start_pnt.To3D
-
-        handle_list = [HandleProperties("ExtrusionVector", start_pnt + build_ele.ExtrusionVector.value, start_pnt,
-                                        [HandleParameterData("ExtrusionVector.X", HandleParameterType.X_DISTANCE, True),
-                                         HandleParameterData("ExtrusionVector.Y", HandleParameterType.Y_DISTANCE, True),
-                                         HandleParameterData("ExtrusionVector.Z", HandleParameterType.Z_DISTANCE, True)],
-                                         HandleDirection.XYZ_DIR, False)]
-
-        return CreateElementResult(pyp_util.create_pythonpart(build_ele), handle_list,
+        return CreateElementResult(pyp_util.create_pythonpart(build_ele),  handle_list,
                                    placement_point     = AllplanGeo.Point3D(),
-                                   multi_placement     = True,
-                                   connect_to_ele      = self.connection)
+                                   multi_placement     = True)
 
 
     def extrude_geometry(self) -> ModelEleList:
@@ -206,14 +191,38 @@ class PythonPartElementConnection(BaseScriptObject):
             created model elements
         """
 
+        build_ele = self.build_ele
+
         model_ele_list = ModelEleList()
 
-        # if the curve is a closed polyline, convert it to a polygon
-        if isinstance(self.geo_ele, AllplanGeo.Polyline2D) and self.geo_ele.Points[0] == self.geo_ele.Points[-1]:
-            self.geo_ele = AllplanGeo.Polygon2D(self.geo_ele.Points)
+        for connection in build_ele.ElementGeoConnection.value:
+            geo_ele = connection.geometry
 
-        if (extruded_ele := ExtrudeByVectorUtil.extrude([self.geo_ele],
-                                                         self.build_ele.ExtrusionVector.value, False, True)) is not None:
-            model_ele_list.append_geometry_3d(extruded_ele)
+            if isinstance(geo_ele, AllplanGeo.Polyline2D) and geo_ele.Points[0] == geo_ele.Points[-1]:
+                geo_ele = AllplanGeo.Polygon2D(geo_ele.Points)                                          # pylint: disable=redefined-loop-name
+
+            if (extruded_ele := ExtrudeByVectorUtil.extrude([geo_ele],
+                                                            self.build_ele.ExtrusionVector.value, False, True)) is not None:
+                model_ele_list.append_geometry_3d(extruded_ele)
 
         return model_ele_list
+
+
+    def on_cancel_function(self) -> OnCancelFunctionResult:
+        """Handles the event of hitting ESC during the input
+
+        Cancels the input, when ESC is hit during the start point input. Otherwise restarts the start point input.
+
+        Returns:
+            False during the start point input, True otherwise
+        """
+
+        build_ele = self.build_ele
+
+        if build_ele.InputMode.value == build_ele.ELEMENT_SELECT:
+            if self.script_object_interactor:
+                self.script_object_interactor.close_selection()
+
+            return OnCancelFunctionResult.CANCEL_INPUT
+
+        return OnCancelFunctionResult.CREATE_ELEMENTS

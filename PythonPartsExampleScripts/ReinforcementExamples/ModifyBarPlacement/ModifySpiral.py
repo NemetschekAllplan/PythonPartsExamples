@@ -248,15 +248,12 @@ class ModifySpiral(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         if not self.spirals.is_modified:
@@ -265,10 +262,6 @@ class ModifySpiral(BaseScriptObject):
         HandlePropertiesService.update_property_value(self.build_ele, handle_prop, input_pnt)
 
         self.spirals.set_handle_modification(handle_prop.owner_element)
-
-        result = self.execute()
-
-        return result
 
 
     def modify_element_property(self,

@@ -179,7 +179,7 @@ class ModifySlab(BaseScriptObject):
         slab_props.TierCount                = build_ele.TierCount.value
         slab_props.PlaneReferences          = build_ele.PlaneReferences.value
         slab_props.VariableTier             = build_ele.VariableTier.value
-       
+
 
         calc_modes = ["m³","m²","m","Pcs","kg"]
 
@@ -222,15 +222,12 @@ class ModifySlab(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         match handle_prop.handle_id:
@@ -238,9 +235,6 @@ class ModifySlab(BaseScriptObject):
                 self.polygon.StartPoint = input_pnt.To2D
                 self.polygon.EndPoint = input_pnt.To2D
 
-
-
-        return self.execute()
 
     def on_cancel_function(self) -> OnCancelFunctionResult:
         """ Handles the cancel function event (e.g. by ESC, ...)
@@ -289,7 +283,7 @@ class ModifySlab(BaseScriptObject):
                 self.build_ele.PlaneReferences.value = plane_ref
 
                 return True
-            
+
             case "VariableTier":
 
                 old_variable_tier = self.slab_element.GetProperties().GetVariableTier() -1
@@ -298,7 +292,7 @@ class ModifySlab(BaseScriptObject):
                 self.build_ele.Thickness.value[value-1] = self.build_ele.Thickness.value[old_variable_tier]
                 self.build_ele.Thickness.value[old_variable_tier] = old_thickness
                 return True
-              
+
             case "PlaneReferences.Height":
 
                 height = 0.0
@@ -308,7 +302,7 @@ class ModifySlab(BaseScriptObject):
                 for tier in range(tier_count):
                     if tier != variable_tier:
                         height = height + self.build_ele.Thickness.value[tier]
-                        
+
                 self.build_ele.Thickness.value[variable_tier-1] = value - height
 
                 return True

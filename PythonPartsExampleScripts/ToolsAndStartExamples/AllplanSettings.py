@@ -1,5 +1,5 @@
 ﻿"""
-Example Script for ComboBox
+Example Script for AllplanSettings
 """
 
 import NemAll_Python_Geometry as AllplanGeo
@@ -7,6 +7,7 @@ import NemAll_Python_BaseElements as AllplanBaseElements
 import NemAll_Python_BasisElements as AllplanBasisElements
 import NemAll_Python_AllplanSettings as AllplanSettings
 
+from Utilities.AllplanEnvironment import AllplanEnvironment
 
 print('Load AllplanSettings.py')
 
@@ -128,6 +129,8 @@ class AllplanSettingsExample():
         build_ele.XOffset.value = offset_pnt.X
         build_ele.YOffset.value = offset_pnt.Y
         build_ele.ZOffset.value = offset_pnt.Z
+
+        build_ele.IsDarkTheme.value = AllplanEnvironment.is_dark_mode()
 
         return
 

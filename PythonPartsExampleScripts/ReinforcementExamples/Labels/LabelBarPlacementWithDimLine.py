@@ -314,22 +314,18 @@ class LabelBarPlacementWithDimLine(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         if cast(str, handle_prop.handle_id).startswith("Swap_"):
             self.label_placement.swap_dim_line_position(AllplanEleAdapter.GUID.FromString(cast(str, handle_prop.handle_id)[5:]))
 
-            return CreateElementResult(self.labeled_bars_rep, self.handle_list,
-                                       placement_point = AllplanGeo.Point3D(), multi_placement = True, as_static_preview = True)
+            return
 
 
         #----------------- get the index of the bars representation element
@@ -360,8 +356,7 @@ class LabelBarPlacementWithDimLine(BaseScriptObject):
 
         self.label_placement.set_dim_line_position(bars_rep_ele_guid, label.DimensionLineOffset, self.dim_lines[index])
 
-        return CreateElementResult(self.labeled_bars_rep, self.handle_list,
-                                   placement_point = AllplanGeo.Point3D(), multi_placement = True, as_static_preview = True)
+        return
 
 
     def process_mouse_move(self,

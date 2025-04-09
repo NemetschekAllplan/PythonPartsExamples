@@ -1,73 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Element>
-    <Script>
-        <Name>ObjectAccessExamples\GetJointData.py</Name>
-        <Title>Get Data Joint</Title>
-        <Version>1.0</Version>
-        <ReadLastInput>False</ReadLastInput>
-    </Script>
-    <Constants>
-        <Constant>
-            <Name>ELEMENT_SELECT</Name>
-            <Value>1</Value>
-            <ValueType>Integer</ValueType>
-        </Constant>
-        <Constant>
-            <Name>JOINT_INPUT</Name>
-            <Value>2</Value>
-            <ValueType>Integer</ValueType>
-        </Constant>
-        <Constant>
-            <Name>JOINT_PLACEMENT</Name>
-            <Value>2</Value>
-            <ValueType>Integer</ValueType>
-        </Constant>
-    </Constants>
-    <Page>
-        <Name>Page1</Name>
-        <Text>Main Page</Text>       
-        <Parameter>
-            <Name>GeometryExp</Name>
-            <Text>Geometry</Text>
-            <ValueType>Expander</ValueType> 
-            <Parameter>
-                <Name>Width</Name>
-                <Text>Joint width</Text>
-                <Value>0</Value>
-                <ValueType>Length</ValueType>
-                <Enable>False</Enable>
-            </Parameter>
-            <Parameter>
-                <Name>Depth</Name>
-                <Text>Joint depth</Text>
-                <Value>0</Value>
-                <ValueType>Length</ValueType>
-                <Enable>False</Enable>
-            </Parameter>            
-        </Parameter>
-        <Parameter>
-                <Name>StartPoint</Name>
-                <Text>StartPoint</Text>
-                <Value></Value>
-                <ValueType>Point2D</ValueType>
-                <Enable>False</Enable>
-        </Parameter>
-        <Parameter>
-                <Name>EndPoint</Name>
-                <Text>EndPoint</Text>
-                <Value></Value>
-                <ValueType>Point2D</ValueType>
-                <Enable>False</Enable>
-        </Parameter>        
-    </Page>
-    <Page>
-        <Name>__HiddenPage__</Name>
-        <Text></Text>
-        <Parameter>
-            <Name>InputMode</Name>
-            <Text>Input mode</Text>
-            <Value></Value>
-            <ValueType>Integer</ValueType>
-        </Parameter>
-    </Page>
+<?xml version='1.0' encoding='UTF-8'?>
+<Element xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://pythonparts.allplan.com/2026/schemas/PythonPart.xsd">
+  <Script>
+    <Name>ObjectAccessExamples\GetJointData.py</Name>
+    <Title>Get Data Joint</Title>
+    <Version>1.0</Version>
+    <ReadLastInput>False</ReadLastInput>
+  </Script>
+  <Constants>
+    <Constant>
+      <Name>ELEMENT_SELECT</Name>
+      <Value>1</Value>
+      <ValueType>Integer</ValueType>
+    </Constant>
+    <Constant>
+      <Name>JOINT_INPUT</Name>
+      <Value>2</Value>
+      <ValueType>Integer</ValueType>
+    </Constant>
+    <Constant>
+      <Name>JOINT_PLACEMENT</Name>
+      <Value>2</Value>
+      <ValueType>Integer</ValueType>
+    </Constant>
+  </Constants>
+  <Page>
+    <Name>Page1</Name>
+    <Text>Main Page</Text>
+    <Parameters>
+      <Parameter>
+        <Name>GeometryExp</Name>
+        <Text>Geometry</Text>
+        <ValueType>Expander</ValueType>
+        <Parameters>
+          <Parameter>
+            <Name>Width</Name>
+            <Text>Joint width</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+            <Enable>False</Enable>
+          </Parameter>
+          <Parameter>
+            <Name>Depth</Name>
+            <Text>Joint depth</Text>
+            <Value>0</Value>
+            <ValueType>Length</ValueType>
+            <Enable>False</Enable>
+          </Parameter>
+        </Parameters>
+      </Parameter>
+      <Parameter>
+        <Name>StartPoint</Name>
+        <Text>StartPoint</Text>
+        <Value/>
+        <ValueType>Point2D</ValueType>
+        <Enable>False</Enable>
+      </Parameter>
+      <Parameter>
+        <Name>EndPoint</Name>
+        <Text>EndPoint</Text>
+        <Value/>
+        <ValueType>Point2D</ValueType>
+        <Enable>False</Enable>
+      </Parameter>
+    </Parameters>
+  </Page>
+  <Page>
+    <Name>__HiddenPage__</Name>
+    <Text/>
+    <Parameters>
+      <Parameter>
+        <Name>InputMode</Name>
+        <Text>Input mode</Text>
+        <Value/>
+        <ValueType>Integer</ValueType>
+      </Parameter>
+    </Parameters>
+  </Page>
 </Element>

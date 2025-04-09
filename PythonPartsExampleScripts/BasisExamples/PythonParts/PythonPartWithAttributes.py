@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
@@ -97,13 +96,32 @@ class PythonPartWithAttributes(BaseScriptObject):
             created element result
         """
 
-        python_part = self.create_pythonpart()
-
-        return CreateElementResult(python_part.create(), multi_placement = True)
+        return CreateElementResult(self.create_pythonparts(), multi_placement = True)
 
 
-    def create_pythonpart(self) -> PythonPart:
-        """ Create a PythonPart containing cube geometry and some attributes
+    def create_pythonparts(self) -> ModelEleList:
+        """ create the PythonParts copies
+
+        Returns:
+            model element list with the PythonParts
+        """
+
+        build_ele = self.build_ele
+
+        model_ele_list = ModelEleList()
+
+        for index in range(build_ele.NumberOfCopies.value):
+            model_ele_list += self.create_pythonpart(build_ele.Distance.value * index).create()
+
+        return model_ele_list
+
+
+    def create_pythonpart(self,
+                          translation: AllplanGeo.Vector3D = AllplanGeo.Vector3D()) -> PythonPart:
+        """ Create the PythonPart containing cube geometry and some attributes
+
+        Args:
+            translation: translation vector
 
         Returns:
             PythonPart object
@@ -123,9 +141,16 @@ class PythonPartWithAttributes(BaseScriptObject):
 
             python_part_util.add_attribute_list(geometry_attributes)
 
-        return python_part_util.get_pythonpart(build_ele,
-                                               type_uuid = "23b28875-bc0e-4e8b-b0df-e36d0d1c432c",
-                                               type_display_name = "PythonPart with attributes")
+        placement_mat = AllplanGeo.Matrix3D()
+
+        placement_mat.SetTranslation(translation)
+
+        python_part = python_part_util.get_pythonpart(build_ele,
+                                                      placement_matrix = placement_mat,
+                                                      type_uuid = "23b28875-bc0e-4e8b-b0df-e36d0d1c432c",
+                                                      type_display_name = "PythonPart with attributes")
+
+        return python_part
 
 
     def create_top_cuboid(self) -> ModelEleList:
@@ -141,10 +166,9 @@ class PythonPartWithAttributes(BaseScriptObject):
         cuboid_geo = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(0, 0, build_ele.LayerThickness.value),
                                                           AllplanGeo.Point3D() + build_ele.Dimensions.value)
 
-        common_props       = AllplanBaseEle.CommonProperties()
-        common_props.Color = 6
+        model_ele_list = ModelEleList()
 
-        model_ele_list = ModelEleList(common_props)
+        model_ele_list.set_color(6)
         model_ele_list.append_geometry_3d(cuboid_geo)
 
         return model_ele_list
@@ -160,15 +184,14 @@ class PythonPartWithAttributes(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        cuboid_geo = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(),
+        cuboid_geo = AllplanGeo.Polyhedron3D.CreateCuboid(AllplanGeo.Point3D(0, 0, 0),
                                                           AllplanGeo.Point3D(build_ele.Dimensions.value.X,
                                                                              build_ele.Dimensions.value.Y,
                                                                              build_ele.LayerThickness.value))
 
-        common_props       = AllplanBaseEle.CommonProperties()
-        common_props.Color = 7
+        model_ele_list = ModelEleList()
 
-        model_ele_list = ModelEleList(common_props)
+        model_ele_list.set_color(7)
         model_ele_list.append_geometry_3d(cuboid_geo)
 
         return model_ele_list

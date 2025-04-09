@@ -1,4 +1,5 @@
-<Include>
+<?xml version='1.0' encoding='UTF-8'?>
+<Include xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://pythonparts.allplan.com/2026/schemas/PythonPartInclude.xsd">
     <Parameter>
         <Name>XCoord</Name>
         <Text>X coordinate #</Text>

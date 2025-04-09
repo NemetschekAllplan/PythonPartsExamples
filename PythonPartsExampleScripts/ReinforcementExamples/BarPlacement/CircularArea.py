@@ -103,7 +103,8 @@ class CircularArea():
 
         model_ele_list = self.create_outline(self.build_ele)
 
-        reinforcement_elements = []
+        reinforcement_elements = ModelEleList()
+
         if self.build_ele.CreateCircularReinf.value:
             reinforcement_elements.append(self.create_circumferential_reinforcement(self.build_ele))
 
@@ -129,11 +130,15 @@ class CircularArea():
 
     def create_outline(self,
                        build_ele: BuildingElement) -> ModelEleList:
-        """Create the outline of the reinforcement placement as 2D lines
+        """ Create the outline of the reinforcement placement as 2D lines
+
+        Args:
+            build_ele: building element with the parameter properties
 
         Returns:
             model element list containing 2d outer arc, inner arc and lines connecting them
         """
+
         model_ele_list = ModelEleList(self.build_ele.CommonProp.value)
 
         # create the outer arc
@@ -222,11 +227,14 @@ class CircularArea():
 
     def create_radial_reinforcement(self,
                                     build_ele: BuildingElement) -> AllplanReinf.BarPlacement:
-        """Create a radial reinforcement placement using the BarPlacement class based on values
+        """ Create a radial reinforcement placement using the BarPlacement class based on values
         provided by the user in the pallete page RadialReinforcement
 
         Args:
             build_ele: building element with the parameter properties
+
+        Returns:
+            create reinforcement placement of the radial bars
         """
 
         # set concrete covers
@@ -258,8 +266,8 @@ class CircularArea():
         radial_bar_shape.Transform(local_to_global)
 
         # determine the delta angle, between each rebar
-        rotation_angle = AllplanGeo.Angle.FromDeg(-(build_ele.InnerAngleEnd.value - build_ele.InnerAngleStart.value)/(build_ele.RadialBarCount.value - 1))
-        self.rotation_axis.Reverse()
+        rotation_angle = AllplanGeo.Angle.FromDeg((build_ele.InnerAngleEnd.value - build_ele.InnerAngleStart.value) /
+                                                  (build_ele.RadialBarCount.value - 1))
 
         # create the radial placement
         return AllplanReinf.BarPlacement(1,

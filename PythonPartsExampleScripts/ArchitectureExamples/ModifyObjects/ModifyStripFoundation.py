@@ -252,15 +252,12 @@ class ModifyStripFoundation(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         match handle_prop.handle_id:
@@ -270,8 +267,6 @@ class ModifyStripFoundation(BaseScriptObject):
         match handle_prop.handle_id:
             case "PlacementPointEnd":
                 self.axis.EndPoint = input_pnt.To2D
-
-        return self.execute()
 
 
     def on_cancel_function(self) -> OnCancelFunctionResult:

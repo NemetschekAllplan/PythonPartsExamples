@@ -7,7 +7,6 @@ from typing import Any
 import websockets as wb
 import uvicorn
 
-import clr
 from System import Object, Func             # type: ignore
 from System.Windows import Application      # type: ignore
 
@@ -35,7 +34,6 @@ def invoke_in_ui_thread(func: Any) -> Any:
     return Application.Current.Dispatcher.Invoke(Func[Object](func))
 
 
-
 @app.get("/")
 def health_check() -> dict:
     """Health Check function to check if server is running.
@@ -45,6 +43,18 @@ def health_check() -> dict:
     """
     return {"message": "Hello from a threaded FastAPI server with arguments!"}
 
+
+@app.get("/plane-reference")
+def get_plane_reference() -> JSONResponse:
+    """ Get Plane Reference from ALLPLAN.
+
+    Returns:
+        Response with Plane Reference.
+    """
+
+    result = invoke_in_ui_thread(lambda: app.connection_handler.get_plane_reference())
+
+    return JSONResponse(content={"status": "200", "payload": result})
 
 
 @app.post("/create-elements")
@@ -57,8 +67,11 @@ def create_elements(payload: dict = Body(...)) -> JSONResponse:
     Returns:
         JSONResponse: Reponse object representing state.
     """
-    _ = invoke_in_ui_thread(lambda: app.connection_handler.handle_create_elements(payload))
+
+    invoke_in_ui_thread(lambda: app.connection_handler.handle_create_elements(payload))
+
     return JSONResponse(content={"status": "200", "payload": None})
+
 
 
 @app.websocket("/ws")
@@ -68,13 +81,17 @@ async def connet_websocket(websocket: WebSocket):
     Args:
         websocket: Websockt connection
     """
+
     await websocket.accept()
+
     try:
         print("Starting Websocket")
+
         while True:
             data = await websocket.receive_text()
             print(data)
             await websocket.send_text(f"Message text was: {data}")
+
     except WebSocketDisconnect:
         pass
 
@@ -86,6 +103,7 @@ def init_app(connection_handler):
     Args:
         connection_handler: Connection hadnler which contains util functions to create elements.
     """
+
     app.connection_handler = connection_handler
     return app
 

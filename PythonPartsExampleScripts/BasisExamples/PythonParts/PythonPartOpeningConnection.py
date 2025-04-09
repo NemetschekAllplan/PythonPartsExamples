@@ -14,7 +14,6 @@ from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElement import BuildingElement
 from CreateElementResult import CreateElementResult
 from PythonPartUtil import PythonPartUtil
-from PythonPartTransaction import ConnectToElements
 
 from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectInteractor, SingleElementSelectResult
 
@@ -22,6 +21,8 @@ from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
 from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
+
+from ValueTypes.Data.ElementGeometryConnection import ElementGeometryConnection, GeometryType
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.PythonPartOpeningConnectionBuildingElement import PythonPartOpeningConnectionBuildingElement
@@ -127,16 +128,6 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
             return
 
-
-        #----------------- get the data
-
-        geo_ele =  self.opening_ele.GetGeometry()
-
-        if isinstance(geo_ele, AllplanGeo.Polyline2D):
-            geo_ele = AllplanGeo.Polygon2D(geo_ele.Points)
-
-        build_ele.GeometryElement.value = geo_ele
-
         build_ele.InputMode.value = build_ele.PARAMETER_MODIFICATION
 
 
@@ -168,8 +159,7 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
         build_ele.InputMode.value = self.build_ele.PARAMETER_MODIFICATION
 
-        build_ele.GeometryElement.value           = self.sel_result.sel_element.GetGeometry()
-        build_ele.OpeningConnection.value.element = self.coord_input.GetSelectedElement()
+        build_ele.OpeningConnection.value = ElementGeometryConnection(self.coord_input.GetSelectedElement(), GeometryType.BASE_GEOMETRY)
 
 
     def execute(self) -> CreateElementResult:
@@ -189,7 +179,7 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
             pyp_ele = AllplanEleAdapter.BaseElementAdapter.FromGUID(pyp_uuid, self.document)
 
-            return CreateElementResult([], elements_to_delete = AllplanEleAdapter.BaseElementAdapterList([pyp_ele]))
+            return CreateElementResult(ModelEleList(), elements_to_delete = AllplanEleAdapter.BaseElementAdapterList([pyp_ele]))
 
 
         #----------------- create the PythonPart
@@ -201,7 +191,6 @@ class PythonPartOpeningConnection(BaseScriptObject):
         return CreateElementResult(pyp_util.create_pythonpart(build_ele),
                                    placement_point = AllplanGeo.Point3D(),
                                    multi_placement = True,
-                                   connect_to_ele = ConnectToElements([str(build_ele.OpeningConnection.value.uuid)]),
                                    uuid_parameter_name = "PythonPartUUID")
 
 
@@ -232,7 +221,11 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
         plane_ref = opening_ele_prop.PlaneReferences
 
-        opening_polygon = self.build_ele.GeometryElement.value
+        opening_polygon = build_ele.OpeningConnection.value.geometry
+
+        if isinstance(opening_polygon, AllplanGeo.Polyline2D):
+            opening_polygon = AllplanGeo.Polygon2D(opening_polygon.Points)
+
         opening_height  = plane_ref.AbsTopElevation - plane_ref.AbsBottomElevation
         opening_dir_vec = AllplanGeo.Vector2D(opening_polygon[0], opening_polygon[1])
         opening_width   = opening_dir_vec.GetLength()

@@ -276,15 +276,12 @@ class ModifyColumn(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         build_ele = self.build_ele
@@ -304,8 +301,6 @@ class ModifyColumn(BaseScriptObject):
             HandlePropertiesService.update_property_value(build_ele, handle_prop, input_pnt)
 
         self.columns.set_handle_modification(handle_prop.owner_element)
-
-        return self.execute()
 
 
     def modify_element_property(self,

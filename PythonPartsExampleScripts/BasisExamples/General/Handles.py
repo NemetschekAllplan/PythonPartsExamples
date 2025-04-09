@@ -13,9 +13,6 @@ import NemAll_Python_IFW_Input as AllplanIFW
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
-from HandleDirection import HandleDirection
-from HandleParameterData import HandleParameterData
-from HandleParameterType import HandleParameterType
 from HandleProperties import HandleProperties
 from HandlePropertiesService import HandlePropertiesService
 
@@ -95,9 +92,10 @@ class Handles(BaseScriptObject):
         model_ele_list2, handle_list2 = self.create_arc()
         model_ele_list3, handle_list3 = self.create_polygon()
         model_ele_list4, handle_list4 = self.create_lines()
+        model_ele_list5, handle_list5 = self.create_rounded_rect()
 
-        return CreateElementResult(model_ele_list1 + model_ele_list2 + model_ele_list3 + model_ele_list4,
-                                   handle_list1 + handle_list2 + handle_list3 + handle_list4)
+        return CreateElementResult(model_ele_list1 + model_ele_list2 + model_ele_list3 + model_ele_list4 + model_ele_list5,
+                                   handle_list1 + handle_list2 + handle_list3 + handle_list4 + handle_list5)
 
 
     def create_cuboid(self) -> tuple[ModelEleList, list[HandleProperties]]:
@@ -212,12 +210,12 @@ class Handles(BaseScriptObject):
         """ create a cuboid
 
         Returns:
-            model element
+            model elements, handles
         """
 
         build_ele      = self.build_ele
         model_ele_list = ModelEleList()
-        handle_list    = []
+        handle_list    = list[HandleProperties]()
         delta_angle    = AllplanGeo.Angle.DegToRad(build_ele.DeltaAngle.value)
         center_pnt     = AllplanGeo.Point3D(1000, build_ele.Length.value, 0)
 
@@ -268,16 +266,10 @@ class Handles(BaseScriptObject):
 
         handle_pnt = opening_handle_pnt / 2
 
-        handle_placement = HandleProperties("ArcPlacement", center_pnt + handle_pnt, center_pnt,
-                                            [HandleParameterData("XPlacement", HandleParameterType.VECTOR_DISTANCE, False,
-                                                                 dir_vector = AllplanGeo.Vector3D(1000, 0, 0)),
-                                             HandleParameterData("YPlacement", HandleParameterType.VECTOR_DISTANCE, False,
-                                                                 dir_vector = AllplanGeo.Vector3D(0, 1000, 0))],
-                                            HandleDirection.VECTOR_DIR)
-
-        handle_placement.info_text = "Placement handle"
-
-        handle_list.append(handle_placement)
+        HandleCreator.vector_distances(handle_list, ["XPlacement", "YPlacement"], center_pnt + handle_pnt, center_pnt,
+                                       [AllplanGeo.Vector3D(1000, 0, 0), AllplanGeo.Vector3D(0, 1000, 0)],
+                                       [False, False], [False, False],
+                                       info_text = "Placement handle")
 
         HandleCreator.angle(handle_list, "DeltaAngle", center_pnt + opening_handle_pnt, center_pnt,
                             angle_placement, center_pnt, info_text = "Delta angle handle")
@@ -289,8 +281,8 @@ class Handles(BaseScriptObject):
         """ create a polygon
 
         Returns:
-            model element
-        """
+            model elements, handles
+       """
 
         #----------------- create a polygon
 
@@ -347,7 +339,7 @@ class Handles(BaseScriptObject):
         """ create lines by distance
 
         Returns:
-            model element
+            model elements, handles
         """
 
         build_ele = self.build_ele
@@ -393,17 +385,50 @@ class Handles(BaseScriptObject):
         return model_ele_list, handle_list
 
 
+    def create_rounded_rect(self) -> tuple[ModelEleList, list[HandleProperties]]:
+        """ create a rounded rectangle
+
+        Returns:
+            model elements, handles
+        """
+
+        build_ele = self.build_ele
+
+        reft_pnt = AllplanGeo.Point2D(4000, build_ele.Length.value)
+
+        line_length = build_ele.RectLength.value - build_ele.RectThickness.value / 2
+
+        model_ele_list = ModelEleList()
+
+        model_ele_list.append_geometry_2d(AllplanGeo.Line2D(reft_pnt, reft_pnt + AllplanGeo.Vector2D(line_length, 0)))
+        model_ele_list.append_geometry_2d(AllplanGeo.Line2D(reft_pnt, reft_pnt + AllplanGeo.Vector2D(0, build_ele.RectThickness.value)))
+        model_ele_list.append_geometry_2d(AllplanGeo.Line2D(reft_pnt + AllplanGeo.Vector2D(0, build_ele.RectThickness.value),
+                                                            reft_pnt + AllplanGeo.Vector2D(line_length, build_ele.RectThickness.value)))
+        model_ele_list.append_geometry_2d(AllplanGeo.Arc2D(reft_pnt + AllplanGeo.Vector2D(line_length, build_ele.RectThickness.value / 2),
+                                                           build_ele.RectThickness.value / 2,
+                                                           build_ele.RectThickness.value / 2, 0, math.pi * 1.5,  math.pi * 2.5))
+
+        handle_list = list[HandleProperties]()
+
+        HandleCreator.x_distance(handle_list, "RectLength",
+                                 (reft_pnt + AllplanGeo.Vector2D(build_ele.RectLength.value, build_ele.RectThickness.value / 2)).To3D,
+                                 (reft_pnt + AllplanGeo.Vector2D(0, build_ele.RectThickness.value / 2)).To3D, True, False,
+                                 info_text = "Thickness handle")
+
+        HandleCreator.y_distance(handle_list, "RectThickness", (reft_pnt + AllplanGeo.Vector2D(0, build_ele.RectThickness.value)).To3D,
+                                 reft_pnt.To3D, True, False, info_text = "Thickness handle")
+
+        return model_ele_list, handle_list
+
+
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         build_ele = self.build_ele
@@ -413,5 +438,3 @@ class Handles(BaseScriptObject):
 
         else:
             HandlePropertiesService.update_property_value(build_ele, handle_prop, input_pnt)
-
-        return self.execute()

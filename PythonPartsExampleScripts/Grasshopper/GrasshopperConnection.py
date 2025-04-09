@@ -11,12 +11,14 @@ from typing import TYPE_CHECKING
 
 from threading import Thread
 
+
 from System.Windows.Threading import DispatcherTimer        # type: ignore
 from System import TimeSpan                                 # type: ignore
 
 import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_Geometry as AllplanGeo
+from PythonPartTransaction import PythonPartTransaction
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
@@ -63,10 +65,8 @@ def create_preview(_build_ele: BuildingElement,
         created elements for the preview
     """
 
-    script_path = Path(_build_ele.pyp_file_path) / Path(_build_ele.pyp_file_name).name
-    thumbnail_path = script_path.with_suffix(".png")
-    preview = LibraryBitmapPreview.create_library_bitmap_preview(str(thumbnail_path))
-    return CreateElementResult(preview)
+    
+    return CreateElementResult(LibraryBitmapPreview.create_library_bitmap_preview(f"{_build_ele.pyp_file_path}{_build_ele.pyp_name}.png"))
 
 
 def create_script_object(build_ele         : BuildingElement,
@@ -102,7 +102,7 @@ class GrasshopperConnection(BaseScriptObject):
 
         #----------------- start http server
 
-        self.app = init_app(GrasshopperPythonHostHandler(self.coord_input))
+        self.app = init_app(GrasshopperPythonHostHandler(self.coord_input, _build_ele))
 
         self.thread = Thread(target = run_server, args=(self.app,))
 
@@ -150,8 +150,26 @@ class GrasshopperConnection(BaseScriptObject):
             True/False/None for success.
         """
 
+        # self.server.server_close()
+        # Send termination signal to shut down the server
         self.timer.Stop()
         os.kill(os.getpid(), signal.SIGINT)
         print("Python Host is stopped")
 
+
         return OnCancelFunctionResult.CANCEL_INPUT
+
+    def on_control_event(self, _event_id: int):
+        """On control event
+
+        Args:
+            _event_id: event id of the clicked button control
+        """
+        # ID for Button in  pyp to start bake all.
+        if _event_id == 1003:
+            pyp_transaction = PythonPartTransaction(self.document)
+
+            pyp_transaction.execute(AllplanGeo.Matrix3D(),
+                                           self.coord_input.GetViewWorldProjection(),
+                                           self.app.connection_handler.model_ele_list,
+                                           modification_ele_list = [])

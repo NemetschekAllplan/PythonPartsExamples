@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Element>
-    <Script>
-        <Name>GeometryExamples\Operations\Comparison\DeterminePosition.py</Name>
-        <Title>Determine position of a point</Title>
-        <Version>1.0</Version>
-        <Interactor>True</Interactor>
-    </Script>
-    <Page>
-        <Name>SelectGeometry</Name>
-        <Text>Compare geometry objects</Text>
-
-        <Parameter>
-            <Name>Tolerance</Name>
-            <Text>Tolerance</Text>
-            <Value>0.0</Value>
-            <ValueType>Length</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>Separator</Name>
-            <Text></Text>
-            <ValueType>Separator</ValueType>
-        </Parameter>
-        <Parameter>
-            <Name>DescriptionText</Name>
-            <Text>Selectable objects:</Text>
-            <Value>3D object
+<?xml version='1.0' encoding='UTF-8'?>
+<Element xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://pythonparts.allplan.com/2026/schemas/PythonPart.xsd">
+  <Script>
+    <Name>GeometryExamples\Operations\Comparison\DeterminePosition.py</Name>
+    <Title>Determine position of a point</Title>
+    <Version>1.0</Version>
+    <Interactor>True</Interactor>
+  </Script>
+  <Page>
+    <Name>SelectGeometry</Name>
+    <Text>Compare geometry objects</Text>
+    <Parameters>
+      <Parameter>
+        <Name>Tolerance</Name>
+        <Text>Tolerance</Text>
+        <Value>0.0</Value>
+        <ValueType>Length</ValueType>
+      </Parameter>
+      <Parameter>
+        <Name>Separator</Name>
+        <Text/>
+        <ValueType>Separator</ValueType>
+      </Parameter>
+      <Parameter>
+        <Name>DescriptionText</Name>
+        <Text>Selectable objects:</Text>
+        <Value>3D object
 Arc
 Clothoid
 Cylinder
@@ -38,7 +38,8 @@ Polyline
 Spline
 Surface
             </Value>
-            <ValueType>Text</ValueType>
-        </Parameter>
-    </Page>
+        <ValueType>Text</ValueType>
+      </Parameter>
+    </Parameters>
+  </Page>
 </Element>

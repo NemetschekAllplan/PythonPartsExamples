@@ -324,15 +324,12 @@ class PolygonalGeneralOpening(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         index = cast(int, handle_prop.parameter_data[0].list_index)
@@ -346,8 +343,6 @@ class PolygonalGeneralOpening(BaseScriptObject):
 
         elif index == end_index:
             self.opening_polygon.SetPoint(input_pnt.To2D, 0)
-
-        return self.execute()
 
 
     def modify_element_property(self,

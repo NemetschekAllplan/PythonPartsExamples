@@ -95,12 +95,6 @@ def modify_element_properties(build_ele, con_props, name, value, doc):
     del value
     del doc
 
-    if build_ele.Element.value == 1:
-        build_ele.Layer.value = tuple(['', 0, '', ''])
-
-    if name.find("Layer") > -1:
-        update_layers(build_ele, name, build_ele.Layer.value)
-
     return False
 
 def modify_control_properties(build_ele, con_props, name, value, doc):
@@ -120,85 +114,7 @@ def modify_control_properties(build_ele, con_props, name, value, doc):
     del value
     del doc
 
-    if name == "Element":
-        return fill_layers(build_ele, name)
-    if name.find("Layer") > -1:
-        update_layers(build_ele, name, build_ele.Layer.value)
-
-
     return True
-
-def fill_layers(build_ele : BuildingElement,
-                name      : str):
-    """
-    Fill layers of precastElementType
-
-    Args:
-        build_ele:  the building element.
-        name:       the name of the property.
-
-    Returns:
-        True/False if palette refresh is necessary
-    """
-
-    if not name[0:name.find("[")] == "Layer" and not name == "Element":
-        return False
-
-    start_values = name.find("[")
-    end_values   = name.find("]")
-
-    if start_values > 0:
-        prop_name = name[0 : start_values]
-        val_idx   = int(name[start_values + 1 : end_values])
-
-        tmp = build_ele.get_property(prop_name)
-        tmp.value[val_idx] = tuple([tmp.value[val_idx][0],
-                                    tmp.value[val_idx][1],
-                                    tmp.value[val_idx][2],
-                                    tmp.value[val_idx][3],
-                                    tmp.value[val_idx][3] + "Cat(" + tmp.value[val_idx][4] + ")"])
-        return True
-
-    if not build_ele.Element.selected_value == "":
-
-        layers = build_ele.Element.selected_value.split(";")
-
-        values = []
-
-        for layer in layers:
-            layer = layer[1:len(layer) - 1]
-            parameters = layer.split("|")
-            values.append(tuple([parameters[0], True, float(parameters[1]), parameters[2], parameters[3]]))
-
-        build_ele.Layer.value = values
-
-    return True
-
-def update_layers(build_ele : BuildingElement,
-                  name      : str,
-                  value):
-    """
-    Update layers of precastElementType
-    Args:
-        build_ele:  the building element.
-        name:       the name of the property.
-        value:      value to update
-    Returns:
-        True if palette should update
-    """
-    start_values = name.find("[")
-    end_values   = name.find("]")
-    if start_values > 0:
-        prop_name = name[0 : start_values]
-        val_idx   = int(name[start_values + 1 : end_values])
-        tmp = build_ele.get_property(prop_name)
-        tmp.value[val_idx] = tuple([value[val_idx][0],
-                                    value[val_idx][1],
-                                    value[val_idx][2],
-                                    value[val_idx][3],
-                                    value[val_idx][3] + "Cat(" + value[val_idx][4] + ")"])
-    return True
-
 
 class PrecastElementsExample():
     """
@@ -348,39 +264,47 @@ class PrecastElementsExample():
         precast_layers = []
         layers = build_ele.Layer.value
 
-        for idx, layer in enumerate(layers):
+        if isinstance(layers, list):
+            for idx, layer in enumerate(layers):
+                layer_prop = AllplanPrecast.PrecastLayerProperties()
+                layer_prop.LayerName = layer.LayerName
+                layer_prop.CalculateLayerThickness = layer.CalculateLayerThickness
+                layer_prop.LayerThickness = layer.LayerThickness
+                layer_prop.MaterialType = layer.MaterialType
+                layer_prop.Material = layer.Material
+                layer_prop.MaterialCatAddressOffset = layer_prop.SetMaterialCatalogAddressOffset(layer_prop.MaterialType, layer_prop.Material)
+                layer_prop.LayerNumber = layer.LayerNumber
+                precast_layer = AllplanPrecast.PrecastLayer(layer_prop)
+                precast_layers.append(precast_layer)
+        else:
             layer_prop = AllplanPrecast.PrecastLayerProperties()
-            layer_prop.LayerName = layer[0]
-            layer_prop.CalculateLayerThickness = layer[1]
-            layer_prop.LayerThickness = layer[2]
-            layer_prop.MaterialType = self.get_material_type(layer[3])
-            layer_prop.Material = layer[4][layer[4].find("(") + 1:layer[4].find(")")] if layer[4].find("(") > -1 else ''
-            layer_prop.MaterialCatAddressOffset = layer_prop.SetMaterialCatalogAddressOffset(layer[3], layer_prop.Material)
-            layer_prop.LayerNumber = idx + 1
+            layer_prop.LayerName = layers.LayerName
+            layer_prop.CalculateLayerThickness = layers.CalculateLayerThickness
+            layer_prop.LayerThickness = layers.LayerThickness
+            layer_prop.MaterialType = layers.MaterialType
+            layer_prop.Material = layers.Material
+            layer_prop.MaterialCatAddressOffset = layer_prop.SetMaterialCatalogAddressOffset(get_material_type_str(layers.MaterialType), layer_prop.Material)
+            layer_prop.LayerNumber = layers.LayerNumber
             precast_layer = AllplanPrecast.PrecastLayer(layer_prop)
             precast_layers.append(precast_layer)
 
         return precast_layers
 
-    def get_material_type(self,
-                          material : str):
-        """
-        Get materialTypeEnum
-
-        Args:
-            material:  materialType string
-
-        Returns:
-            MaterialTypeEnum
-        """
-        if material == "Concrete":
-            return 0
-        if material == "Insulation":
-            return 1
-        if material == "In-situ Concrete":
-            return 2
-        if material == "Brick/Tile":
-            return 3
-
-        return -1
+def get_material_type_str(materialtype : int):
+    """
+    Get materialTypeEnum
+    Args:
+        material:  materialType string
+    Returns:
+        MaterialTypeEnum
+    """
+    if materialtype == 0:
+        return "Concrete"
+    if materialtype == 1:
+        return "Insulation"
+    if materialtype == 2:
+        return "In-situ Concrete"
+    if materialtype == 3:
+        return "Brick/Tile"
+    return ""
 

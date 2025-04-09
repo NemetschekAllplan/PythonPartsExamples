@@ -241,7 +241,7 @@ class ModifyDoorOpening(ModifyOpeningBase):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
@@ -265,6 +265,4 @@ class ModifyDoorOpening(ModifyOpeningBase):
                 build_ele.OpeningSymbolTierIndex.value = OpeningPointsUtil.select_opening_tier(input_pnt, self.opening_tier_center)
 
             case _:
-                return super().move_handle(handle_prop, input_pnt)
-
-        return self.execute()
+                super().move_handle(handle_prop, input_pnt)

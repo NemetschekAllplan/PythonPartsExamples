@@ -238,15 +238,12 @@ class OpeningBase(BaseScriptObject):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         build_ele = self.build_ele
@@ -289,8 +286,6 @@ class OpeningBase(BaseScriptObject):
 
             case _:
                 HandlePropertiesService.update_property_value(self.build_ele, handle_prop, input_pnt)
-
-        return self.execute()
 
 
     def on_cancel_function(self) -> OnCancelFunctionResult:

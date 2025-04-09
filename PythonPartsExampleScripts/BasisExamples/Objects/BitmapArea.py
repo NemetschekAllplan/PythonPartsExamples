@@ -9,14 +9,12 @@ import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_BasisElements as AllplanBasisElements
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanElementAdapter
-import NemAll_Python_IFW_Input as AllplanIFW
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 from HandleDirection import HandleDirection
 from HandleParameterData import HandleParameterData, HandleParameterType
 from HandleProperties import HandleProperties
-from HandlePropertiesService import HandlePropertiesService
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.BitmapAreaBuildingElement import BitmapAreaBuildingElement as BuildingElement  # type: ignore
@@ -100,23 +98,6 @@ class ScriptObject(BaseScriptObject):
         """
 
         return CreateElementResult([self.bitmap_element], self.handles)
-
-
-    def move_handle(self,
-                    handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
-        """ Handles the event of modifying the element geometry using a handle.
-
-        Args:
-            handle_prop: handle properties
-            input_pnt:   input point
-
-        Returns:
-            created element result
-        """
-        HandlePropertiesService.update_property_value(self.build_ele, handle_prop, input_pnt)
-
-        return self.execute()
 
 
     @property

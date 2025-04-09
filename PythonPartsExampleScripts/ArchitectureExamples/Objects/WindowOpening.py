@@ -205,15 +205,12 @@ class WindowOpening(OpeningBase):
 
     def move_handle(self,
                     handle_prop: HandleProperties,
-                    input_pnt  : AllplanGeo.Point3D) -> CreateElementResult:
+                    input_pnt  : AllplanGeo.Point3D):
         """ Modify the element geometry by handles
 
         Args:
             handle_prop: handle properties
             input_pnt:   input point
-
-        Returns:
-            created element result
         """
 
         build_ele = cast(BuildingElement, self.build_ele)
@@ -223,6 +220,4 @@ class WindowOpening(OpeningBase):
                 build_ele.OpeningSymbolTierIndex.value = OpeningPointsUtil.select_opening_tier(input_pnt, self.opening_tier_center)
 
             case _:
-                return super().move_handle(handle_prop, input_pnt)
-
-        return self.execute()
+                super().move_handle(handle_prop, input_pnt)

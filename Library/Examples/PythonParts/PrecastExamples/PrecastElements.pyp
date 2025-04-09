@@ -1,14 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Element>
+<?xml version='1.0' encoding='UTF-8'?>
+<Element xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://pythonparts.allplan.com/2026/schemas/PythonPart.xsd">
     <Script>
         <Name>PrecastExamples\PrecastElements.py</Name>
         <Title>PrecastElements</Title>
         <Version>1.0</Version>
+        <ReadLastInput>True</ReadLastInput>
+
     </Script>
     <Page>
         <Name>Page1</Name>
         <Text>PrecastElements</Text>
-
+    <Parameters>
         <Parameter>
             <Name>Factory</Name>
 			<TextId>1000</TextId>
@@ -16,7 +18,6 @@
              <Value>Werk1</Value>
             <ValueType>FactoryCatalogReference</ValueType>
         </Parameter>
-
         <Parameter>
             <Name>Norm</Name>
 			<TextId>1001</TextId>
@@ -29,13 +30,14 @@
 			<TextId>1002</TextId>
             <Text>Python part erzeugen</Text>
             <ValueType>Row</ValueType>
+        <Parameters>
             <Parameter>
                 <Name>CreatePEWithPythonPart</Name>
                 <Value>True</Value>
-                <ValueType>Checkbox</ValueType>
+            <ValueType>CheckBox</ValueType>
             </Parameter>
+        </Parameters>
         </Parameter>
-
         <Parameter>
             <Name>Element</Name>
 			<TextId>1003</TextId>
@@ -43,15 +45,13 @@
             <Value>MD</Value>
             <ValueType>PrecastElementTypeCatalogReference</ValueType>
         </Parameter>
-
         <Parameter>
             <Name>Layer</Name>
 			<TextId>1004</TextId>
 			<Text>Layer</Text>
-            <Value>[Beton|True|1000.0|Concrete|ConcreteCat(C20/25)]</Value>
-            <ValueType>tuple(Text,CheckBox,Length,Text,MaterialCatalogReference)</ValueType>
+            <ValueType>PrecastLayerProperties</ValueType>
+			<Constraint>Element</Constraint>
          </Parameter>
-
         <Parameter>
             <Name>PosNr</Name>
 			<TextId>1005</TextId>
@@ -78,80 +78,95 @@
 			 <TextId>1008</TextId>
              <Text>Typenkennzeichnung</Text>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>TypenKennValue</Name>
-                 <Value></Value>
+            <Value/>
                  <ValueType>String</ValueType>
              </Parameter>
+        </Parameters>
         </Parameter>
         <Parameter>
              <Name>Row1CreateLabelling</Name>
 			 <TextId>1009</TextId>
              <Text>CreateLabelling</Text>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>CreateLabellingValue</Name>
                  <Value>True</Value>
                  <ValueType>CheckBox</ValueType>
              </Parameter>
+        </Parameters>
         </Parameter>
         <Parameter>
              <Name>Row1LabelingTextRefPoint</Name>
 			 <TextId>1010</TextId>
              <Text>LabelingTextRefPoint</Text>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>LabelingTextRefPointValue</Name>
                  <Value>1</Value>
                  <ValueType>Integer</ValueType>
              </Parameter>
+        </Parameters>
         </Parameter>
         <Parameter>
              <Name>Row1ManualDimensionst</Name>
              <Text>ManualDimensions</Text>
 			 <TextId>1011</TextId>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>ManualDimensionsValue</Name>
                  <Value>False</Value>
                  <ValueType>CheckBox</ValueType>
              </Parameter>
+        </Parameters>
         </Parameter>
         <Parameter>
              <Name>Row1DimensionViewing</Name>
 			 <TextId>1012</TextId>
              <Text>DimensionViewing</Text>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>DimensionViewingValue</Name>
                  <Value>0.0</Value>
                  <ValueType>Length</ValueType>
                  <Enable>ManualDimensionsValue</Enable>
              </Parameter>
+        </Parameters>
         </Parameter>
         <Parameter>
              <Name>Row1DimensionSpan</Name>
 			 <TextId>1013</TextId>
              <Text>DimensionSpan</Text>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>DimensionSpanValue</Name>
                  <Value>0.0</Value>
                  <ValueType>Length</ValueType>
                  <Enable>ManualDimensionsValue</Enable>
              </Parameter>
+        </Parameters>
         </Parameter>
         <Parameter>
              <Name>Row1DimensionCross</Name>
 			 <TextId>1014</TextId>
              <Text>DimensionCross</Text>
              <ValueType>Row</ValueType>
+        <Parameters>
              <Parameter>
                  <Name>DimensionCrossValue</Name>
                  <Value>0.0</Value>
                  <ValueType>Length</ValueType>
                  <Enable>ManualDimensionsValue</Enable>
              </Parameter>
+        </Parameters>
         </Parameter>
+    </Parameters>
     </Page>
 </Element>
