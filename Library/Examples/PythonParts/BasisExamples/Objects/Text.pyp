@@ -19,7 +19,7 @@
             <Text/>
             <Value/>
             <ValueType>CommonProperties</ValueType>
-            <Visible>|CommonProp.Stroke:False|CommonProp.StrokeByLayer:False</Visible>
+            <Visible>|Stroke:False|StrokeByLayer:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

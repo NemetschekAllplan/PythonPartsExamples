@@ -65,7 +65,7 @@ on 3D objects are not visible directly in a plan or isometric view.</Text>
             <Text/>
             <Value/>
             <ValueType>SurfaceElementProperties</ValueType>
-            <Visible>|SurfaceElementProperties.UseAreaInGroundplan:False</Visible>
+            <Visible>|UseAreaInGroundplan:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

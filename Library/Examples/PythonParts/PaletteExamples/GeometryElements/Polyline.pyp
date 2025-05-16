@@ -128,7 +128,7 @@
             <Value>Polyline3D(Points((11000,7000,0)(13000,8100,1000)(16000,6500,3000)))</Value>
             <ValueType>Polyline3D</ValueType>
             <XYZinRow>True</XYZinRow>
-            <Visible>|Polyline8.Y:False</Visible>
+            <Visible>|Y:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

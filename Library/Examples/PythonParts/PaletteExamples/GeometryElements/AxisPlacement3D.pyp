@@ -101,7 +101,7 @@
             <Text>AxisPlacement 4</Text>
             <Value>AxisPlacement3D(Origin(15000,0,0)XDirection(0,1,0)ZDirection(0,0,1))</Value>
             <ValueType>AxisPlacement3D</ValueType>
-            <Visible>|AxisPlacement4.XDirection:False</Visible>
+            <Visible>|XDirection:False</Visible>
             <XYZinRow>True</XYZinRow>
           </Parameter>
         </Parameters>

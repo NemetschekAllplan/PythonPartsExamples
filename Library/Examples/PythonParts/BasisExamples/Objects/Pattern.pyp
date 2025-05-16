@@ -45,7 +45,7 @@
             <Text/>
             <Value/>
             <ValueType>CommonProperties</ValueType>
-            <Visible>|CommonPropPattern.Stroke:False|CommonPropPattern.StrokeByLayer:False</Visible>
+            <Visible>|Stroke:False|StrokeByLayer:False</Visible>
           </Parameter>
           <Parameter>
             <Name>PatternId</Name>

@@ -97,7 +97,7 @@
             <Text>Arc 4</Text>
             <Value>Arc2D(CenterPoint(5000,5000)MinorRadius(1000)MajorRadius(1000)AxisAngle(0)StartAngle(pi / 4)EndAngle(pi * 3 / 2)IsCounterClockwise(1))</Value>
             <ValueType>Arc2D</ValueType>
-            <Visible>|Arc4.MinorRadius:False|Arc4.MajorRadius:False</Visible>
+            <Visible>|MinorRadius:False|Arc4.MajorRadius:False</Visible>
             <XYZinRow>True</XYZinRow>
           </Parameter>
         </Parameters>

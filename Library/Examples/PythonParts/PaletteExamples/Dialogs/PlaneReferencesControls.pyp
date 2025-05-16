@@ -35,7 +35,7 @@
             <Value/>
             <ValueType>PlaneReferences</ValueType>
             <ValueDialog>PlaneReferences</ValueDialog>
-            <Visible>|PlanRefPolyhed1.Height:False</Visible>
+            <Visible>|Height:False</Visible>
           </Parameter>
           <Parameter>
             <Name>PlanRefPolyhed2</Name>
@@ -43,7 +43,7 @@
             <Value/>
             <ValueType>PlaneReferences</ValueType>
             <ValueDialog>BottomPlaneReferences</ValueDialog>
-            <Visible>|PlanRefPolyhed2.AbsBottomElevation:False</Visible>
+            <Visible>|AbsBottomElevation:False</Visible>
           </Parameter>
           <Parameter>
             <Name>PlanRefPolyhed3</Name>
@@ -51,7 +51,7 @@
             <Value/>
             <ValueType>PlaneReferences</ValueType>
             <ValueDialog>TopPlaneReferences</ValueDialog>
-            <Visible>|PlanRefPolyhed3.AbsTopElevation:False</Visible>
+            <Visible>|AbsTopElevation:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

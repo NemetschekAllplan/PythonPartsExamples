@@ -101,7 +101,7 @@
             <Text>Plane 4</Text>
             <Value>Plane3D(Point(15000,0,0)Vector(0,0,1))</Value>
             <ValueType>Plane3D</ValueType>
-            <Visible>|Plane4.Vector:False</Visible>
+            <Visible>|Vector:False</Visible>
             <XYZinRow>True</XYZinRow>
           </Parameter>
         </Parameters>

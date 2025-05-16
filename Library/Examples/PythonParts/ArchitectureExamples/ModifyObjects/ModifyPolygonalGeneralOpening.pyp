@@ -23,14 +23,29 @@
     <Text>Opening</Text>
     <Visible>InputMode == OPENING_INPUT</Visible>
     <Parameters>
-      <Parameter><Name>GeometryExp</Name>s
-            <Text>Geometry</Text>
-            <ValueType>Expander</ValueType>
+      <Parameter>
+        <Name>GeometryExp</Name>
+        <Text>Geometry</Text>
+        <ValueType>Expander</ValueType>
+        <Parameters>
+          <Parameter>
+            <Name>SillHeight</Name>
+            <Text>Height to BL</Text><Value/>
+            <ValueType>Length</ValueType>
+            <Constraint>HeightSettings.BottomElevation</Constraint>
+            <Persistent>NO</Persistent>
+          </Parameter>
 
-            <Parameters><Parameter><Name>SillHeight</Name><Text>Height to BL</Text><Value/><ValueType>Length</ValueType><Constraint>HeightSettings.BottomElevation</Constraint><Persistent>NO</Persistent></Parameter>
-
-            <Parameter><Name>HeightSettings</Name><Text>Opening height</Text><Value>PlaneReferences(BottomElevation(1000)Height(1010))</Value><ValueType>PlaneReferences</ValueType><ValueDialog>PlaneReferences</ValueDialog><Constraint>BottomElevation=SillHeight;Height=RiseAtTop + HeightToRise</Constraint></Parameter>
-        </Parameters></Parameter>
+          <Parameter>
+            <Name>HeightSettings</Name>
+            <Text>Opening height</Text>
+            <Value>PlaneReferences(BottomElevation(1000)Height(1010))</Value>
+            <ValueType>PlaneReferences</ValueType>
+            <ValueDialog>PlaneReferences</ValueDialog>
+            <Constraint>BottomElevation=SillHeight;Height=RiseAtTop + HeightToRise</Constraint>
+          </Parameter>
+        </Parameters>
+      </Parameter>
       <Parameter>
         <Name/>
         <Text/>

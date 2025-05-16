@@ -94,14 +94,14 @@
             <Text>Start point</Text>
             <Value>Point3D(5000,1000,0)</Value>
             <ValueType>Point3D</ValueType>
-            <Visible>|StartPoint.Y:False</Visible>
+            <Visible>|Y:False</Visible>
           </Parameter>
           <Parameter>
             <Name>EndPoint</Name>
             <Text>End point</Text>
             <Value>Point3D(10000,3000,0)</Value>
             <ValueType>Point3D</ValueType>
-            <Visible>|EndPoint.X:False</Visible>
+            <Visible>|X:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

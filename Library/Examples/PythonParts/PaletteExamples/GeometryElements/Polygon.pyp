@@ -128,7 +128,7 @@
             <Value>Polygon3D(Points((10000,7000,0)(14000,8000,0)(18000,5000,0)(10000,5000,0)(10000,7000,0)))</Value>
             <ValueType>Polygon3D</ValueType>
             <XYZinRow>True</XYZinRow>
-            <Visible>|Polygon8.Y:False</Visible>
+            <Visible>|Y:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

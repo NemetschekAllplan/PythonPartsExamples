@@ -66,7 +66,7 @@
             <Value>None</Value>
             <ValueType>PlaneReferences</ValueType>
             <ValueDialog>PlaneReferences</ValueDialog>
-            <Visible>|BracePlaneReferences.Height:False</Visible>
+            <Visible>|Height:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

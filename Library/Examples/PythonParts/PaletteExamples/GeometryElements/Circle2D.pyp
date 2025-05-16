@@ -95,7 +95,7 @@
             <Text>Circle 4</Text>
             <Value>Circle2D(CenterPoint(2000,0)MajorRadius(300))</Value>
             <ValueType>Circle2D</ValueType>
-            <Visible>|Circle4.MajorRadius:False</Visible>
+            <Visible>|MajorRadius:False</Visible>
             <XYZinRow>True</XYZinRow>
           </Parameter>
         </Parameters>

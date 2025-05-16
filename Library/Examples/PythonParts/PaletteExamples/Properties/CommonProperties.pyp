@@ -120,7 +120,7 @@
             <Text/>
             <Value>CommonProperties(Color(4))</Value>
             <ValueType>CommonProperties</ValueType>
-            <Visible>|CommonPropCond.ColorByLayer:False|CommonPropCond.DrawOrder:False</Visible>
+            <Visible>|ColorByLayer:False|DrawOrder:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

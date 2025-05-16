@@ -1,4 +1,4 @@
-﻿""" Example script for Hatch
+""" Script for Hatch
 """
 
 from __future__ import annotations
@@ -6,17 +6,18 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import NemAll_Python_BasisElements as AllplanBasisEle
-import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_Geometry as AllplanGeo
 
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
-from HandleDirection import HandleDirection
-from HandleParameterData import HandleParameterData, HandleParameterType
 from HandleProperties import HandleProperties
-from HandlePropertiesService import HandlePropertiesService
-from PythonPartUtil import PythonPartUtil
+
+from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
 from TypeCollections import ModelEleList
+
+from Utils import LibraryBitmapPreview
+from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.HatchBuildingElement import HatchBuildingElement as BuildingElement  # type: ignore
@@ -42,111 +43,150 @@ def check_allplan_version(_build_ele: BuildingElement,
     return True
 
 
-def create_preview(build_ele: BuildingElement,
-                   doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
-    """ Creation of the element preview
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
+    """ Creation of the script object
 
     Args:
-        build_ele: building element with the parameter properties
-        doc:       document of the Allplan drawing files
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
-        created elements for the preview
+        created script object
     """
 
-    element = Hatch(doc)
-
-    return element.create(build_ele)
+    return Hatch(build_ele, script_object_data)
 
 
-def create_element(build_ele: BuildingElement,
-                   doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
-    """ Creation of element
-
-    Args:
-        build_ele: building element with the parameter properties
-        doc:       document of the Allplan drawing files
-
-    Returns:
-        created element result
-    """
-
-    element = Hatch(doc)
-
-    return element.create(build_ele)
-
-
-def move_handle(build_ele  : BuildingElement,
-                handle_prop: HandleProperties,
-                input_pnt  : AllplanGeo.Point3D,
-                doc        : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
-    """ Modify the element geometry by handles
-
-    Args:
-        build_ele:   building element with the parameter properties
-        handle_prop: handle properties
-        input_pnt:   input point
-        doc:         document of the Allplan drawing files
-
-    Returns:
-        created element result
-    """
-
-    HandlePropertiesService.update_property_value(build_ele, handle_prop, input_pnt)
-
-    return create_element(build_ele, doc)
-
-
-
-class Hatch():
+class Hatch(BaseScriptObject):
     """ Definition of class Hatch
     """
 
     def __init__(self,
-                 doc: AllplanEleAdapter.DocumentAdapter):
+                 build_ele         : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            doc: document of the Allplan drawing files
+            build_ele:   building element with the parameter properties
+            script_object_data: script object data
         """
 
-        self.document = doc
+        super().__init__(script_object_data)
+
+        self.build_ele              = build_ele
+        self.poly_interactor_result = PolygonInteractorResult()
+        self.model_ele_list         = ModelEleList()
 
 
-    @staticmethod
-    def create(build_ele: BuildingElement) -> CreateElementResult:
-        """ Create the elements
+    def create_library_preview(self) -> CreateElementResult:
+        """ Creation of the element preview
 
-        Args:
-            build_ele: building element with the parameter properties
+        Returns:
+            created elements for the preview
+        """
+
+        return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{self.build_ele.pyp_file_path}\{self.build_ele.pyp_name}.png"))
+
+
+    def start_input(self):
+        """ start the input
+        """
+
+        build_ele = self.build_ele
+
+        self.script_object_interactor = PolygonInteractor(self.poly_interactor_result, z_coord_input = False,
+                                                          multi_polygon_input = True, preview_function = self.draw_preview)
+
+        build_ele.InputMode.value = build_ele.POLYGON_INPUT
+
+
+    def start_next_input(self):
+        """ start the next input
+        """
+
+        build_ele = self.build_ele
+
+        self.script_object_interactor = None
+
+        build_ele.InputMode.value = build_ele.PALETTE_INPUT
+
+
+    def execute(self) -> CreateElementResult:
+        """ execute the script
 
         Returns:
             created element result
         """
 
-        model_ele_list = ModelEleList(build_ele.CommonProp.value)
+        self.create_hatch(self.poly_interactor_result.input_polygon)
 
 
-        #----------------- create geometry
+        #------------------ Handles
 
-        length = build_ele.Size.value.X
-        width  = build_ele.Size.value.Y
+        handle_list = list[HandleProperties]()
 
-        if length < 1 or width < 1:
-            return CreateElementResult()
+        CurveHandleCreator.poly_curve(handle_list, self.poly_interactor_result.input_polygon,
+                                      True, "Polyyon", delete_point = True)
+
+        return CreateElementResult(self.model_ele_list, handle_list, placement_point = AllplanGeo.Point3D(), multi_placement = True)
 
 
-        #------------------ Define the polygon
+    def draw_preview(self,
+                     polygon: AllplanGeo.Polygon3D) -> ModelEleList:
+        """ draw the preview
 
-        polygon = AllplanGeo.Polygon2D()
-        polygon += AllplanGeo.Point2D(0,0)
-        polygon += AllplanGeo.Point2D(length,0)
-        polygon += AllplanGeo.Point2D(length,width)
-        polygon += AllplanGeo.Point2D(0,width)
-        polygon += AllplanGeo.Point2D(0,0)
+        Args:
+            polygon: polygon
+
+        Returns:
+            created elements for the preview
+        """
+
+        return self.create_hatch(polygon)
+
+
+    def create_hatch(self,
+                     polygon: AllplanGeo.Polygon3D) -> ModelEleList:
+        """ create the hatch
+
+        Args:
+            polygon: polygon
+
+        Returns:
+            created elements
+        """
+
+        build_ele = self.build_ele
+
+        self.model_ele_list = ModelEleList()
+
+
+        #------------------ Create the bounding polygon(s)
+
+        valid, polygon_2d = AllplanGeo.ConvertTo2D(polygon)
+
+        if not valid:
+            return self.model_ele_list
+
+        build_ele.PolygonSegmentCount.value = 0
 
         if build_ele.ShowPolygon.value:
-            model_ele_list.append_geometry_2d(polygon)
+            sub_poly = AllplanGeo.Polygon2D()
+
+            for segment in polygon_2d.GetSegments()[1]:
+                if not sub_poly.Count():
+                    sub_poly += segment.StartPoint
+
+                sub_poly += segment.EndPoint
+
+                build_ele.PolygonSegmentCount.value += 1
+
+                if AllplanGeo.Comparison.Equal(sub_poly.StartPoint, sub_poly.EndPoint):
+                    self.model_ele_list.append_geometry_2d(sub_poly, build_ele.ComPropGeo.value)
+
+                    sub_poly = AllplanGeo.Polygon2D()
 
 
         #------------------ Define hatching properties
@@ -164,25 +204,6 @@ class Hatch():
 
         #------------------ Append the hatching element
 
-        model_ele_list.append(AllplanBasisEle.HatchingElement(build_ele.CommonPropHatch.value, hatching_prop, polygon))
+        self.model_ele_list.append(AllplanBasisEle.HatchingElement(build_ele.ComPropHatch.value, hatching_prop, polygon_2d))
 
-
-        #------------------ Handles
-
-        handle1 = HandleProperties("UpperRightCorner",
-                                   AllplanGeo.Point3D(length, width, 0), AllplanGeo.Point3D(),
-                                   [HandleParameterData("Size.X", HandleParameterType.X_DISTANCE),
-                                    HandleParameterData("Size.Y", HandleParameterType.Y_DISTANCE)],
-                                   HandleDirection.xy_dir,
-                                   True)
-
-        handle_list = [handle1]
-
-
-        #----------------- return the PythonPart
-
-        pyp_util = PythonPartUtil()
-
-        pyp_util.add_pythonpart_view_2d3d(model_ele_list)
-
-        return CreateElementResult(pyp_util.create_pythonpart(build_ele), handle_list)
+        return self.model_ele_list

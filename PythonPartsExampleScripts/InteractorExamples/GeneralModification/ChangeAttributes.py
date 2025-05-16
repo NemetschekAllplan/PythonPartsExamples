@@ -134,8 +134,11 @@ class AttributesModificator(BaseScriptObject):
         attributes = BuildingElementAttributeList()
         attributes.add_attributes_from_parameters(self.build_ele)
 
+        set_undefined = self.build_ele.SetUndefined.value
+        delete_Attribute = self.build_ele.DeleteAttribute.value
+
         # assign the attributes to the selected elements
-        AllplanBaseEle.ElementsAttributeService.ChangeAttributes(attributes.get_attributes_list_as_tuples(), elements)
+        AllplanBaseEle.ElementsAttributeService.ChangeAttributes(attributes.get_attributes_list_as_tuples(), elements, set_undefined, delete_Attribute)
 
     def on_cancel_function(self) -> OnCancelFunctionResult:
         """ Handle the cancel function event.

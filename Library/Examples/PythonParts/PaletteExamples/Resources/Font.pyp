@@ -19,7 +19,7 @@
             <Text/>
             <Value/>
             <ValueType>CommonProperties</ValueType>
-            <Visible>|CommonProp.Stroke:False|CommonProp.StrokeByLayer:False</Visible>
+            <Visible>|Stroke:False|StrokeByLayer:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>
@@ -66,7 +66,7 @@
             <Text>Emphasis</Text>
             <Value>0</Value>
             <ValueType>FontEmphasis</ValueType>
-            <Visible>|FontEmphasisCond.CrossedOut:False</Visible>
+            <Visible>|CrossedOut:False</Visible>
             <Constraint>FontId</Constraint>
           </Parameter>
           <Parameter>

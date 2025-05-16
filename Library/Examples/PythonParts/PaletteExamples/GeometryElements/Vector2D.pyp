@@ -94,14 +94,14 @@
             <Text>X distance start</Text>
             <Value>Vector2D(5000,1000)</Value>
             <ValueType>Vector2D</ValueType>
-            <Visible>|StartVector.Y:False</Visible>
+            <Visible>|Y:False</Visible>
           </Parameter>
           <Parameter>
             <Name>EndVector</Name>
             <Text>Y distance end</Text>
             <Value>Vector2D(10000,3000)</Value>
             <ValueType>Vector2D</ValueType>
-            <Visible>|EndVector.X:False</Visible>
+            <Visible>|X:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

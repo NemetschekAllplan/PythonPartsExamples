@@ -24,6 +24,18 @@
           </Parameter>
         </Parameters>
       </Parameter>
+      <Parameter>
+          <Name>SetUndefined</Name>
+          <Text>Set value undefined</Text>
+          <Value>False</Value>
+          <ValueType>CheckBox</ValueType>
+      </Parameter>
+      <Parameter>
+          <Name>DeleteAttribute</Name>
+          <Text>Delete Attribute</Text>
+          <Value>False</Value>
+          <ValueType>CheckBox</ValueType>
+      </Parameter>
     </Parameters>
   </Page>
 </Element>

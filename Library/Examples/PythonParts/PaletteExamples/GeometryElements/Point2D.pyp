@@ -94,14 +94,14 @@
             <Text>X coordinate start</Text>
             <Value>Point2D(5000,1000)</Value>
             <ValueType>Point2D</ValueType>
-            <Visible>|StartPoint.Y:False</Visible>
+            <Visible>|Y:False</Visible>
           </Parameter>
           <Parameter>
             <Name>EndPoint</Name>
             <Text>Y coordinate end</Text>
             <Value>Point2D(10000,3000)</Value>
             <ValueType>Point2D</ValueType>
-            <Visible>|EndPoint.X:False</Visible>
+            <Visible>|X:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

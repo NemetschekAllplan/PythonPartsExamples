@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Element>
+    <Script>
+        <Name>BasisExamples\Objects\Line2D.py</Name>
+        <Title>Line2D</Title>
+        <Version>1.0</Version>
+        <ReadLastInput>True</ReadLastInput>
+    </Script>
+    <Constants>
+        <Constant>
+            <Name>FROM_POINT</Name>
+            <Value>1</Value>
+            <ValueType>Integer</ValueType>
+        </Constant>
+        <Constant>
+            <Name>TO_POINT</Name>
+            <Value>2</Value>
+            <ValueType>Integer</ValueType>
+        </Constant>
+    </Constants>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Page 1</Text>
+        <Parameter>
+            <Name>FormatExp</Name>
+            <Text>Format</Text>
+            <ValueType>Expander</ValueType>
+            <Parameters>
+                <Parameter>
+                    <Name>CommonProp</Name>
+                    <Text></Text>
+                    <Value></Value>
+                    <ValueType>CommonProperties</ValueType>
+                </Parameter>
+            </Parameters>
+        </Parameter>
+    </Page>
+    <Page>
+        <Name>__HiddenPage__</Name>
+        <Text/>
+        <Parameters>
+            <Parameter>
+                <Name>InputMode</Name>
+                <Value></Value>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+        </Parameters>
+    </Page>
+</Element>

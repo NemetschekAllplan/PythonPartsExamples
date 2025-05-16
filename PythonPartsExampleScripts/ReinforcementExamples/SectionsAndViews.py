@@ -265,12 +265,18 @@ class SectionsAndViews():
         view_format_props = view_props.FormatProperties
         view_filter_props = view_props.FilterProperties
         view_label_props  = view_props.LabelingProperties
+        view_light_props  = view_props.LightProperties
+        view_scale_props  = view_props.ScaleProperties
 
 
         #----------------- section format properties
 
-        view_format_props.IsEliminationOn  = True
-        view_format_props.EliminationAngle = 22
+        view_format_props.IsEliminationOn     = True
+        view_format_props.EliminationAngle    = 22
+        view_format_props.IsEliminationOn     = True
+        view_format_props.FixtureAsWireframe  = True
+        view_format_props.CosiderTransparancy = True
+        view_format_props.SurfaceElements     = view_format_props.SurfaceElements_Enum.eNoElements
 
 
         #----------------- labeling properties
@@ -294,6 +300,17 @@ class SectionsAndViews():
         view_filter_props.IsAssociativityOn      = build_ele.AutoUpdate.value
 
 
+        #----------------- section light properties
+
+        view_light_props.ConsiderLight = False
+
+
+        #----------------- section filter properties
+
+        view_scale_props.Factor_X_direction = 1.0
+        view_scale_props.Factor_Y_direction = 1.0
+
+
         #----------------- general section properties
 
         view_props = AllplanBasisElements.SectionGeneralProperties(True)
@@ -303,6 +320,9 @@ class SectionsAndViews():
         view_props.FormatProperties   = view_format_props
         view_props.FilterProperties   = view_filter_props
         view_props.LabelingProperties = view_label_props
+        view_props.LightProperties    = view_light_props
+        view_props.ScaleProperties    = view_scale_props
+        view_props.ReferenceScale     = 1.0
 
 
         #----------------- front view

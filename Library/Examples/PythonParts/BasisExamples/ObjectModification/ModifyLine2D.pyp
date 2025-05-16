@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Element xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://pythonparts.allplan.com/2026/schemas/PythonPart.xsd">
+    <Script>
+        <Name>BasisExamples\ObjectModification\ModifyLine2D.py</Name>
+        <Title>ModifyLine2D</Title>
+        <Version>1.0</Version>
+        <ReadLastInput>True</ReadLastInput>
+    </Script>
+    <Constants>
+        <Constant>
+            <Name>ELEMENT_SELECT</Name>
+            <Value>1</Value>
+            <ValueType>Integer</ValueType>
+        </Constant>
+        <Constant>
+            <Name>ELEMENT_MODIFY</Name>
+            <Value>2</Value>
+            <ValueType>Integer</ValueType>
+        </Constant>
+    </Constants>
+    <Page>
+        <Name>Page1</Name>
+        <Text>Page 1</Text>
+        <Visible>InputMode == ELEMENT_MODIFY</Visible>
+        <Parameters>
+            <Parameter>
+                <Name>FormatExp</Name>
+                <Text>Format</Text>
+                <ValueType>Expander</ValueType>
+                <Parameters>
+                    <Parameter>
+                        <Name>CommonProp</Name>
+                        <Text></Text>
+                        <Value></Value>
+                        <ValueType>CommonProperties</ValueType>
+                    </Parameter>
+                </Parameters>
+            </Parameter>
+            <Parameter>
+                <Name>GeometryExp</Name>
+                <Text>Geometry</Text>
+                <ValueType>Expander</ValueType>
+                <Parameters>
+                    <Parameter>
+                        <Name>Line</Name>
+                        <Text></Text>
+                        <Value></Value>
+                        <ValueType>Line2D</ValueType>
+                        <Visible>|Length:True|DeltaX:True|DeltaY:True|Angle:True</Visible>
+                    </Parameter>
+                </Parameters>
+            </Parameter>
+        </Parameters>
+    </Page>
+    <Page>
+        <Name>__HiddenPage__</Name>
+        <Text/>
+        <Parameters>
+            <Parameter>
+                <Name>InputMode</Name>
+                <Value></Value>
+                <ValueType>Integer</ValueType>
+            </Parameter>
+        </Parameters>
+    </Page>
+</Element>

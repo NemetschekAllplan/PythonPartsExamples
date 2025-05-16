@@ -69,7 +69,7 @@
                 <ValueType>Picture</ValueType>
               </Parameter>
               <Parameter>
-                <Name>Width</Name>
+                <Name>WidthEdit</Name>
                 <Value>2000.</Value>
                 <ValueType>Length</ValueType>
               </Parameter>
@@ -93,7 +93,7 @@
                 <ValueType>Picture</ValueType>
               </Parameter>
               <Parameter>
-                <Name>Thickness</Name>
+                <Name>ThicknessEdit</Name>
                 <Value>2000.</Value>
                 <ValueType>Length</ValueType>
               </Parameter>
@@ -117,7 +117,7 @@
                 <ValueType>Picture</ValueType>
               </Parameter>
               <Parameter>
-                <Name>Diameter</Name>
+                <Name>DiameterEdit</Name>
                 <Value>500.</Value>
                 <ValueType>Length</ValueType>
               </Parameter>

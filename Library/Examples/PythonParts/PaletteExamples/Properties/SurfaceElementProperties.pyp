@@ -39,8 +39,7 @@
             <Text/>
             <Value/>
             <ValueType>SurfaceElementProperties</ValueType>
-            <Visible>|SurfaceElementPropCond.BitmapSelected:False|SurfaceElementPropCond.BitmapID:False|
-                |SurfaceElementPropCond.FillingSelected:False|SurfaceElementPropCond.FillingID:False</Visible>
+            <Visible>|BitmapSelected:False|BitmapID:False|FillingSelected:False|FillingID:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

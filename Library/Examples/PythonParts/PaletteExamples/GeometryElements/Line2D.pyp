@@ -96,7 +96,7 @@
             <Value>Line2D(5000,5000,7000,7000)</Value>
             <ValueType>Line2D</ValueType>
             <XYZinRow>True</XYZinRow>
-            <Visible>|Line4.EndPoint:False</Visible>
+            <Visible>|EndPoint:False</Visible>
           </Parameter>
           <Parameter>
             <Name>Line5</Name>
@@ -104,7 +104,7 @@
             <Value>Line2D(7000,7000,7000,9000)</Value>
             <ValueType>Line2D</ValueType>
             <XYZinRow>True</XYZinRow>
-            <Visible>|Line5.StartPoint:False</Visible>
+            <Visible>|StartPoint:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>

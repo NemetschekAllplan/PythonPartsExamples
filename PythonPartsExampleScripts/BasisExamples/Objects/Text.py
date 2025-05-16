@@ -1,19 +1,22 @@
-﻿""" Example Script for Text
+""" Script for Text
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_BasisElements as AllplanBasisEle
-import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
+import NemAll_Python_Geometry as AllplanGeo
 
+from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
 
 from ParameterUtils.TextPropertiesParameterUtil import TextPropertiesParameterUtil
 
-from TypeCollections.ModelEleList import ModelEleList
+from Utils import LibraryBitmapPreview
+
+from TypeCollections import ModelEleList
+
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.TextBuildingElement import TextBuildingElement as BuildingElement  # type: ignore
@@ -21,6 +24,7 @@ else:
     from BuildingElement import BuildingElement
 
 print('Load Text.py')
+
 
 def check_allplan_version(_build_ele: BuildingElement,
                           _version  : str) -> bool:
@@ -38,48 +42,59 @@ def check_allplan_version(_build_ele: BuildingElement,
     return True
 
 
-def create_element(build_ele: BuildingElement,
-                   doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
-    """ Creation of element
+def create_script_object(build_ele         : BuildingElement,
+                         script_object_data: BaseScriptObjectData) -> BaseScriptObject:
+    """ Creation of the script object
 
     Args:
-        build_ele: building element with the parameter properties
-        doc:       document of the Allplan drawing files
+        build_ele:          building element with the parameter properties
+        script_object_data: script object data
 
     Returns:
-        created element result
+        created script object
     """
 
-    element = Text(doc)
-
-    return element.create(build_ele)
+    return Text(build_ele, script_object_data)
 
 
-class Text():
+class Text(BaseScriptObject):
     """ Definition of class Text
     """
 
     def __init__(self,
-                 doc: AllplanEleAdapter.DocumentAdapter):
+                 build_ele  : BuildingElement,
+                 script_object_data: BaseScriptObjectData):
         """ Initialization
 
         Args:
-            doc: document of the Allplan drawing files
+            build_ele:   building element with the parameter properties
+            script_object_data: script object data
         """
 
-        self.document = doc
+        super().__init__(script_object_data)
+
+        self.build_ele = build_ele
 
 
-    @staticmethod
-    def create(build_ele: BuildingElement) -> CreateElementResult:
-        """ Create the elements
+    def create_library_preview(self) -> CreateElementResult:
+        """ Creation of the element preview
 
-        Args:
-            build_ele: building element with the parameter properties
+        Returns:
+            created elements for the preview
+        """
+
+        return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{self.build_ele.pyp_file_path}\{self.build_ele.pyp_name}.png"))
+
+
+    def execute(self) -> CreateElementResult:
+        """ execute the script
 
         Returns:
             created element result
         """
+
+        build_ele = self.build_ele
 
         text_prop = TextPropertiesParameterUtil.create_text_properties(build_ele, "")
 

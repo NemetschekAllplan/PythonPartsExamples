@@ -94,14 +94,14 @@
             <Text>X distance start</Text>
             <Value>Vector3D(5000,1000,2000)</Value>
             <ValueType>Vector3D</ValueType>
-            <Visible>|StartVector.Y:False</Visible>
+            <Visible>|Y:False</Visible>
           </Parameter>
           <Parameter>
             <Name>EndVector</Name>
             <Text>Y distance end</Text>
             <Value>Vector3D(10000,3000,2000)</Value>
             <ValueType>Vector3D</ValueType>
-            <Visible>|EndVector.X:False</Visible>
+            <Visible>|X:False</Visible>
           </Parameter>
         </Parameters>
       </Parameter>
