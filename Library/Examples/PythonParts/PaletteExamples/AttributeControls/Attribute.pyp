@@ -5,6 +5,7 @@
     <Title>Attribute example</Title>
     <Version>1.0</Version>
     <ReadLastInput>True</ReadLastInput>
+    <AttributeEvent>True</AttributeEvent>
   </Script>
   <Page>
     <Name>Page1</Name>

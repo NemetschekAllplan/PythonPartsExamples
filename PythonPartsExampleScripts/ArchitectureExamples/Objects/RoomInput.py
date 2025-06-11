@@ -7,19 +7,18 @@ from typing import TYPE_CHECKING
 
 import NemAll_Python_ArchElements as AllplanArchEle
 import NemAll_Python_Geometry as AllplanGeo
-import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
 from AttributeIdValue import AttributeIdValue
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData, OnCancelFunctionResult
 from BuildingElementListService import BuildingElementListService
 from CreateElementResult import CreateElementResult
-from HandleProperties import HandleProperties
 
 from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
-from TypeCollections import ModelEleList
+from TypeCollections.HandleList import HandleList
+from TypeCollections.ModelEleList import ModelEleList
 
-from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
 from Utils import LibraryBitmapPreview, ElementPropertiesAttributeUtil
 
 if TYPE_CHECKING:
@@ -145,9 +144,9 @@ class RoomScript(BaseScriptObject):
             Result object with elements to create
         """
 
-        handle_list = list[HandleProperties]()
+        handle_list = HandleList()
 
-        CurveHandleCreator.poly_curve(handle_list, self.polygon_result.input_polygon, True,
+        CurveHandlesCreator.poly_curve(handle_list, "", self.polygon_result.input_polygon, True,
                                       info_text = "Shift + click = delete point", delete_point = True)
 
         return CreateElementResult(ModelEleList(element = self.create_room(self.polygon_result.input_polygon)),

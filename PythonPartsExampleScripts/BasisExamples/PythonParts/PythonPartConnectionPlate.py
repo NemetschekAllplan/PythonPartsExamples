@@ -6,6 +6,7 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING, cast
 
 import NemAll_Python_BaseElements as AllplanBaseEle
+import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_Input as AllplanIFW
 
@@ -51,6 +52,8 @@ class PythonPartConnectionPlate():
         self.ref_point_input       = not self.modification_mode
         self.model_ele_list        = ModelEleList()
         self.placement_mat         = self.build_ele_list[0].get_insert_matrix() if self.modification_mode else AllplanGeo.Matrix3D()
+        self.elements_to_hide      = AllplanEleAdapter.BaseElementAdapterList()
+        self.elements_to_show      = AllplanEleAdapter.BaseElementAdapterList()
 
         self.coord_input.InitFirstPointInput(AllplanIFW.InputStringConvert("Reference point"))
 
@@ -81,14 +84,19 @@ class PythonPartConnectionPlate():
 
         pyp_util.add_pythonpart_view_2d3d(self.model_ele_list)
 
+
+        #----------------- create the PythonPart
+
         pyp_transaction = PythonPartTransaction(self.coord_input.GetInputViewDocument())
 
         pyp_transaction.execute(self.placement_mat,
                                 self.coord_input.GetViewWorldProjection(),
                                 pyp_util.create_pythonpart(self.build_ele_list,
-                                                           type_uuid = "c0398407-1d54-4087-a8da-7d6aaffb25ec",
+                                                           type_uuid         = "c0398407-1d54-4087-a8da-7d6aaffb25ec",
                                                            type_display_name = "PythonPart Plate"),
-                                self.modification_ele_list)
+                                self.modification_ele_list,
+                                elements_to_hide = self.elements_to_hide,
+                                elements_to_show = self.elements_to_show)
 
         self.coord_input.InitFirstPointInput(AllplanIFW.InputStringConvert("Reference point"))
 
@@ -138,8 +146,8 @@ class PythonPartConnectionPlate():
         if build_ele.__HoleConnection__.value:
             _, plate = AllplanGeo.CreateBRep3D(AllplanGeo.Transform(plate, self.placement_mat))
 
-            for hole_connection in build_ele.__HoleConnection__.value:
-                if hole_connection.element.IsNull():
+            for hole_connection, visible in zip(build_ele.__HoleConnection__.value, build_ele.HoleVisibility.value):
+                if hole_connection.element.IsNull() or not visible:
                     continue
 
                 _, plate = AllplanGeo.MakeSubtraction(plate, hole_connection.element.GetModelGeometry()[0])
@@ -153,6 +161,28 @@ class PythonPartConnectionPlate():
 
         self.model_ele_list.append_geometry_3d(plate)
 
+        self.set_show_hide_elements()
+
+
+    def set_show_hide_elements(self):
+        """ set the show/hide elements
+        """
+
+        build_ele = self.build_ele
+
+        self.elements_to_hide = AllplanEleAdapter.BaseElementAdapterList()
+        self.elements_to_show = AllplanEleAdapter.BaseElementAdapterList()
+
+        if self.modification_mode:
+            for hole, visible in zip(build_ele.__HoleConnection__.value, build_ele.HoleVisibility.value):
+                if hole.element.IsNull():
+                    continue
+
+                if visible:
+                    self.elements_to_show.append(hole.element)
+                else:
+                    self.elements_to_hide.append(hole.element)
+
 
     def draw_preview(self):
         """ draw the preview
@@ -161,7 +191,8 @@ class PythonPartConnectionPlate():
         self.create_plate()
 
         PythonPartPreview.execute(self.coord_input.GetInputViewDocument(), self.placement_mat,
-                                  self.model_ele_list, True, None, not self.modification_mode)
+                                  self.model_ele_list, True, None, not self.modification_mode,
+                                  False, self.elements_to_hide, self.elements_to_show)
 
 
     def modify_element_property(self,

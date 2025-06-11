@@ -120,7 +120,7 @@ class LabelBarPlacementWithDimLine(BaseScriptObject):
 
         self.bars_ref_line_util = BarsRepresentationLineUtil()
 
-        self.hidden_elements  = AllplanEleAdapter.BaseElementAdapterList()
+        self.hidden_elements = AllplanEleAdapter.BaseElementAdapterList()
         self.visible_bar_ele = AllplanEleAdapter.BaseElementAdapterList()
 
         if not build_ele.SetVisibleBarsDimLine.value:
@@ -207,12 +207,12 @@ class LabelBarPlacementWithDimLine(BaseScriptObject):
 
         self.create_dim_line_handles()
 
-        AllplanIFW.VisibleService.ShowAllElements()
-        AllplanIFW.VisibleService.ShowElements(self.hidden_elements, False)
-        AllplanIFW.VisibleService.ShowElements(self.visible_bar_ele, True)
-
         return CreateElementResult(self.labeled_bars_rep, self.handle_list,
-                                   placement_point = AllplanGeo.Point3D(), multi_placement = True, as_static_preview = True)
+                                   placement_point         = AllplanGeo.Point3D(),
+                                   multi_placement         = True,
+                                   as_static_preview       = True,
+                                   hidden_preview_elements = self.hidden_elements,
+                                   visible_preview_elements= self.visible_bar_ele)
 
 
     def create_dim_line_label(self,

@@ -5,19 +5,20 @@ from __future__ import annotations
 
 from typing import Any, cast, TYPE_CHECKING
 
+import pathlib
+
+import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_Input as AllplanIFW
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
+from BaseInteractor import BaseInteractor, BaseInteractorData
 from BuildingElement import BuildingElement
-from BuildingElementComposite import BuildingElementComposite
-from BuildingElementControlProperties import BuildingElementControlProperties
 from BuildingElementListService import BuildingElementListService
 from BuildingElementPaletteService import BuildingElementPaletteService
 from BuildingElementXML import BuildingElementXML
 from CreateElementResult import CreateElementResult
-from StringTableService import StringTableService
 
 from TypeCollections.ModificationElementList import ModificationElementList
 
@@ -65,30 +66,17 @@ def create_preview(_build_ele: BuildingElement,
     return CreateElementResult()
 
 
-def create_interactor(coord_input             : AllplanIFW.CoordinateInput,
-                      pyp_path                : str,
-                      global_str_table_service: StringTableService,
-                      build_ele_list          : list[BuildingElement],
-                      build_ele_composite     : BuildingElementComposite,
-                      control_props_list      : list[BuildingElementControlProperties],
-                      modification_ele_list   : ModificationElementList) -> PythonPartConnection:
+def create_interactor(interactor_data: BaseInteractorData) -> PythonPartConnection:
     """ Create the interactor
 
     Args:
-        coord_input:              API object for the coordinate input, element selection, ... in the Allplan view
-        pyp_path:                 path of the pyp file
-        global_str_table_service: global string table service
-        build_ele_list:           list with the building elements
-        build_ele_composite:      building element composite with the building element constraints
-        control_props_list:       control properties list
-        modification_ele_list:    list with the modification elements in modification mode
+        interactor_data: interactor data
 
     Returns:
         Created interactor object
     """
 
-    return PythonPartConnection(coord_input, pyp_path, global_str_table_service,
-                                build_ele_list, build_ele_composite, control_props_list, modification_ele_list)
+    return PythonPartConnection(interactor_data)
 
 
 def execute_pre_element_delete(doc                   : AllplanEleAdapter.DocumentAdapter,
@@ -112,49 +100,36 @@ def execute_pre_element_delete(doc                   : AllplanEleAdapter.Documen
 
     build_ele = cast(PythonPartConnectionPlateBuildingElement, build_ele_list[1])
 
-    del_elements = AllplanEleAdapter.BaseElementAdapterList()
-
-    for connection in build_ele.__HoleConnection__.value:
-        if not connection.element.IsNull():
-            del_elements.append(connection.element)
+    del_elements = AllplanEleAdapter.BaseElementAdapterList([connection.element for connection in build_ele.__HoleConnection__.value \
+                                                             if not connection.element.IsNull()])
 
     AllplanBaseEle.DeleteElements(doc, del_elements)
 
 
-class PythonPartConnection():
+class PythonPartConnection(BaseInteractor):
     """ Definition of class PythonPartConnection
     """
 
+    BUILD_ELE_LIST_COUNT = 2
+
     def __init__(self,
-                 coord_input             : AllplanIFW.CoordinateInput,
-                 pyp_path                : str,
-                 global_str_table_service: StringTableService,
-                 build_ele_list          : list[BuildingElement],
-                 build_ele_composite     : BuildingElementComposite,
-                 control_props_list      : list[BuildingElementControlProperties],
-                 modification_ele_list   : ModificationElementList):
+                 interactor_data: BaseInteractorData):
         """ initialize and start the input
 
         Args:
-            coord_input:              API object for the coordinate input, element selection, ... in the Allplan view
-            pyp_path:                 path of the pyp file
-            global_str_table_service: global string table service
-            build_ele_list:           list with the building elements
-            build_ele_composite:      building element composite with the building element constraints
-            control_props_list:       control properties list
-            modification_ele_list:    list with the modification elements in modification mode
+            interactor_data: interactor data
         """
 
-        self.coord_input           = coord_input
-        self.pyp_path              = pyp_path
-        self.str_table_service     = global_str_table_service
-        self.build_ele_list        = build_ele_list
-        self.build_ele_composite   = build_ele_composite
-        self.control_props_list    = control_props_list
-        self.modification_ele_list = modification_ele_list
+        self.interactor_data       = interactor_data
+        self.coord_input           = interactor_data.coord_input
+        self.pyp_path              = interactor_data.pyp_path
+        self.str_table_service     = interactor_data.global_str_table_service
+        self.build_ele_list        = interactor_data.build_ele_list
+        self.build_ele_composite   = interactor_data.build_ele_composite
+        self.control_props_list    = interactor_data.control_props_list
+        self.modification_ele_list = interactor_data.modification_ele_list
         self.model_ele_list        = []
         self.object                = None
-        self.modification_mode     = modification_ele_list.is_modification_element()
 
         self.build_ele = cast(PythonPartConnectionBuildingElement, self.build_ele_list[0])
 
@@ -166,7 +141,7 @@ class PythonPartConnection():
                                                              self.control_props_list,
                                                              "PythonPartsFramework\\InteractorExamples\\PythonPartConnection")
 
-        if self.modification_mode:
+        if interactor_data.execution_event != AllplanSettings.ExecutionEvent.eCreation:
             self.create_sub_element(False)
 
         else:
@@ -181,18 +156,28 @@ class PythonPartConnection():
             is_refresh_palette: palette refresh state
         """
 
-        file_name = self.pyp_path + "\\" + ("PythonPartConnectionPlate.pypsub" if self.build_ele.ObjectType.value == 1 else \
-                                            "PythonPartConnectionHole.pypsub")
+        #----------------- use the local path for the sub element
+
+        local_pyp_file_path = pathlib.Path(self.build_ele.pyp_file_name).parent
+
+        file_name = f"{local_pyp_file_path}\\{("PythonPartConnectionPlate.pypsub" if self.build_ele.ObjectType.value == 1 else  \
+                                               "PythonPartConnectionHole.pypsub")}"
 
         self.build_ele.__AddPypSubFile__.value = file_name
 
+
+        #----------------- read the sub element
+
         xml_ele = BuildingElementXML()
+
+        file_name = f"{self.pyp_path}\\{("PythonPartConnectionPlate.pypsub" if self.build_ele.ObjectType.value == 1 else  \
+                                         "PythonPartConnectionHole.pypsub")}"
 
         build_ele, control_props, _ = xml_ele.read_element_parameter(file_name,
                                                                      self.str_table_service.str_table,
                                                                      self.str_table_service.material_str_table)
 
-        if len(self.build_ele_list) == 2:
+        if len(self.build_ele_list) == self.BUILD_ELE_LIST_COUNT:
             self.build_ele_list    [1] = build_ele
             self.control_props_list[1] = control_props
         else:
@@ -211,6 +196,21 @@ class PythonPartConnection():
         """
 
         if self.build_ele.ObjectType.value == 1:
+            build_ele = cast(PythonPartConnectionPlateBuildingElement, self.build_ele_list[1])
+
+
+            #------------- reset the hole visibility in case of copy
+
+            if self.interactor_data.execution_event == AllplanSettings.ExecutionEvent.eCopy:
+                build_ele.HoleVisibility.value = []
+
+
+            #------------- set the hole visibility
+
+            build_ele.HoleVisibility.value += [True] * (len(build_ele.__HoleConnection__.value) - len(build_ele.HoleVisibility.value))
+
+            build_ele.HoleVisibility.value = build_ele.HoleVisibility.value[:len(build_ele.__HoleConnection__.value)]
+
             self.object = PythonPartConnectionPlate(self.coord_input, self.palette_service,
                                                     self.build_ele_list, self.modification_ele_list)
 
@@ -222,6 +222,27 @@ class PythonPartConnection():
             self.palette_service.refresh_palette(self.build_ele_list, self.control_props_list)
         else:
             self.palette_service.show_palette(self.build_ele.script_name)
+
+
+    def set_copied_hole_visibility(self,
+                                   build_ele: BuildingElement):
+        """ set the visibility of the copied holes (hidden holes are not copied)
+
+        Args:
+            build_ele: building element with the parameter properties
+        """
+
+        build_ele = cast(PythonPartConnectionPlateBuildingElement, build_ele)
+
+        hole_visibility = list[bool]()
+
+        for connection, visible in zip(build_ele.__HoleConnection__.value, build_ele.HoleVisibility.value):
+            connection_ele_uuid_str = str(connection.element.GetModelElementUUID())
+
+            if self.interactor_data.org_and_copy_ele_guids.get(connection_ele_uuid_str, None) is not None:
+                hole_visibility.append(visible)
+
+        build_ele.HoleVisibility.value = hole_visibility
 
 
     def on_preview_draw(self):
@@ -248,7 +269,7 @@ class PythonPartConnection():
         """
 
         if self.object:
-            if self.modification_mode:
+            if self.interactor_data.execution_event != AllplanSettings.ExecutionEvent.eCreation:
                 self.object.create_python_part()
             else:
                 self.object.on_cancel_function()
@@ -275,6 +296,19 @@ class PythonPartConnection():
         return True
 
 
+    def on_value_input_control_enter(self) -> bool:
+        """ Handles the value input control enter event.
+
+        This event is triggered, when enter key is hit during the input inside the input control
+        located in the dialog line.
+
+        Returns:
+            True/False for success.
+        """
+
+        return False
+
+
     def modify_element_property(self,
                                 page : int,
                                 name : str,
@@ -287,7 +321,7 @@ class PythonPartConnection():
             value: new value
         """
 
-        if name == "ObjectType":
+        if name == self.build_ele.ObjectType.name:
             self.build_ele.ObjectType.value = value
 
             self.read_sub_element(True)

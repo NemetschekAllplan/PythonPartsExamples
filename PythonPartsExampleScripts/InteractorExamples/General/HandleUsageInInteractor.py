@@ -250,12 +250,6 @@ class HandleUsageInInteractor(BaseInteractor):
             _event_id: ID of the event
         """
 
-    def on_cancel_by_menu_function(self) -> None:
-        """Handles the event if canceling the input by starting another function"""
-
-        self.palette_service.close_palette()
-        BuildingElementListService.write_to_default_favorite_file([self.build_ele])
-
     def on_mouse_leave(self):
         """Handles the event of mouse leaving the viewport"""
 

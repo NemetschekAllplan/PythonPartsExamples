@@ -234,12 +234,6 @@ class Interactor(BaseInteractor):
     def update_after_favorite_read(self) -> None:
         print("\n\n--------  update_after_favorite_file_read  --------")
 
-    def on_cancel_by_menu_function(self) -> None:
-        print("\n\n----------  on_cancel_by_menu_function  ----------")
-
-        self.palette_service.close_palette()
-        print("\n==================  Interactor terminated  ===================\n")
-
     def on_cancel_function(self) -> bool:
         print("\n\n----------  on_cancel_function  ----------")
 

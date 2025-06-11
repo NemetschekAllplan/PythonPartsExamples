@@ -6,7 +6,7 @@
     <Version>1.0</Version>
     <AttributeEvent>True</AttributeEvent>
     <ReadLastInput>True</ReadLastInput>
-    <ModifyBySingleClick>True</ModifyBySingleClick>
+    <ModifyBySingleClick>False</ModifyBySingleClick>
 </Script>
 <Page>
     <Name>PythonPart</Name>

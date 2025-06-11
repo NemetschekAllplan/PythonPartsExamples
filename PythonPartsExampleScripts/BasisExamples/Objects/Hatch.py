@@ -10,14 +10,14 @@ import NemAll_Python_Geometry as AllplanGeo
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from CreateElementResult import CreateElementResult
-from HandleProperties import HandleProperties
 
 from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
-from TypeCollections import ModelEleList
+from TypeCollections.HandleList import HandleList
+from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
-from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
 
 if TYPE_CHECKING:
     from __BuildingElementStubFiles.HatchBuildingElement import HatchBuildingElement as BuildingElement  # type: ignore
@@ -96,8 +96,10 @@ class Hatch(BaseScriptObject):
 
         build_ele = self.build_ele
 
-        self.script_object_interactor = PolygonInteractor(self.poly_interactor_result, z_coord_input = False,
-                                                          multi_polygon_input = True, preview_function = self.draw_preview)
+        self.script_object_interactor = PolygonInteractor(self.poly_interactor_result,
+                                                          z_coord_input       = False,
+                                                          multi_polygon_input = True,
+                                                          preview_function    = self.draw_preview)
 
         build_ele.InputMode.value = build_ele.POLYGON_INPUT
 
@@ -125,10 +127,10 @@ class Hatch(BaseScriptObject):
 
         #------------------ Handles
 
-        handle_list = list[HandleProperties]()
+        handle_list = HandleList()
 
-        CurveHandleCreator.poly_curve(handle_list, self.poly_interactor_result.input_polygon,
-                                      True, "Polyyon", delete_point = True)
+        CurveHandlesCreator.poly_curve(handle_list, "Polyyon", self.poly_interactor_result.input_polygon,
+                                       True, delete_point = True)
 
         return CreateElementResult(self.model_ele_list, handle_list, placement_point = AllplanGeo.Point3D(), multi_placement = True)
 

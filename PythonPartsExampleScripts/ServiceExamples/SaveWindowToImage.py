@@ -233,12 +233,6 @@ class SaveWindowToImage(BaseInteractor):
         self.palette_service.close_palette()
         return True
 
-    def on_cancel_by_menu_function(self) -> None:
-        """ Called when the user has started another menu function during the runtime of
-        the PythonPart. The PythonPart will always be terminated after this function is completed.
-        """
-        self.palette_service.close_palette()
-
     @staticmethod
     def obtain_save_path(path: Path):
         """Obtain the absolute path to save the image file to prevent overwriting existing file.

@@ -19,7 +19,7 @@ from TypeCollections import ModelEleList
 from ScriptObjectInteractors.SingleElementSelectInteractor import SingleElementSelectInteractor, SingleElementSelectResult
 
 from Utils import LibraryBitmapPreview
-from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
 
 from Utils.HideElementsService import HideElementsService
 
@@ -153,6 +153,6 @@ class ModifyLine2D(BaseScriptObject):
 
         handle_list = list[HandleProperties]()
 
-        CurveHandleCreator.line(handle_list, "Line", build_ele.Line.value, owner_element = self.line_element.GetBaseElementAdapter())
+        CurveHandlesCreator.line(handle_list, "Line", build_ele.Line.value, owner_element = self.line_element.GetBaseElementAdapter())
 
         return CreateElementResult(model_ele_list, handle_list, multi_placement = True)

@@ -25,11 +25,12 @@ from ScriptObjectInteractors.MultiElementSelectInteractor import MultiElementSel
 from ScriptObjectInteractors.PolygonInteractor import PolygonInteractor, PolygonInteractorResult
 
 from TypeCollections.ElementModificationDataList import ElementModificationDataList
+from TypeCollections.HandleList import HandleList
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
 from Utils.HandleCreator.HandleCreator import HandleCreator
-from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
 from Utils.HandleCreator.ShapeHandleCreator import ShapeHandleCreator
 from Utils.HideElementsService import HideElementsService
 from Utils.General.AttributeUtil import AttributeUtil
@@ -245,7 +246,7 @@ class ModifyColumn(BaseScriptObject):
             handles
         """
 
-        handle_list = list[HandleProperties]()
+        handle_list = HandleList()
 
         for column_data in self.columns:
             column_ele  = column_data.element
@@ -266,7 +267,7 @@ class ModifyColumn(BaseScriptObject):
                                                  owner_element = column_data.adapter_element)
 
                 case AllplanArchEle.ShapeType.ePolygonal:
-                    CurveHandleCreator.poly_curve(handle_list, column_data.additional_data, True, "",
+                    CurveHandlesCreator.poly_curve(handle_list, "", column_data.additional_data, True,
                                                   delete_point  = True,
                                                   owner_element = column_data.adapter_element)
 

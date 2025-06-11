@@ -100,13 +100,6 @@ class OperationExampleBaseInteractor(BaseInteractor):
         return True
 
 
-    def on_cancel_by_menu_function(self) -> None:
-        """ Called when the user has started another menu function during the runtime of
-        the PythonPart. The PythonPart will always be terminated after this function is completed.
-        """
-        self.palette_service.close_palette()
-
-
     def start_geometry_selection(self,
                                  prompt_msg: str,
                                  whitelist : Union[None, List[type]] = None) -> None:

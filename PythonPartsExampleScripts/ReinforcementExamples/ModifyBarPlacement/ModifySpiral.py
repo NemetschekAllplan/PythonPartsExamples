@@ -12,8 +12,8 @@ import NemAll_Python_Reinforcement as AllplanReinf
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
 from BuildingElement import BuildingElement
-from BuildingElementListService import BuildingElementListService
 from CreateElementResult import CreateElementResult
+from BuildingElementListService import BuildingElementListService
 from HandleProperties import HandleProperties
 from HandlePropertiesService import HandlePropertiesService
 
@@ -21,12 +21,13 @@ from ScriptObjectInteractors.OnCancelFunctionResult import OnCancelFunctionResul
 from ScriptObjectInteractors.MultiElementSelectInteractor import MultiElementSelectInteractor, MultiElementSelectInteractorResult
 
 from TypeCollections.ElementModificationDataList import ElementModificationDataList
+from TypeCollections.HandleList import HandleList
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utils.ElementFilter.ReinforcementElementsFilterUtil import ReinforcementElementsFilterUtil
 from Utils.HideElementsService import HideElementsService
 from Utils.Reinforcement.ReinforcementElementUitl import ReinforcementElementUtil
-from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
 from Utils import LibraryBitmapPreview
 
 if TYPE_CHECKING:
@@ -90,7 +91,7 @@ class ModifySpiral(BaseScriptObject):
         self.build_ele.InputMode.value = self.build_ele.ELEMENT_SELECT
 
         self.hide_ele_service = HideElementsService()
-        self.spirals         = ElementModificationDataList[AllplanReinf.SpiralElement, AllplanGeo.Polyline3D]()
+        self.spirals          = ElementModificationDataList[AllplanReinf.SpiralElement, AllplanGeo.Polyline3D]()
 
 
     def create_library_preview(self) -> CreateElementResult:
@@ -237,10 +238,10 @@ class ModifySpiral(BaseScriptObject):
             handles
         """
 
-        handle_list = list[HandleProperties]()
+        handle_list = HandleList()
 
         for spiral_data in self.spirals:
-            CurveHandleCreator.poly_curve(handle_list, spiral_data.additional_data, True,
+            CurveHandlesCreator.poly_curve(handle_list, "", spiral_data.additional_data, True,
                                           owner_element = spiral_data.adapter_element)
 
         return handle_list

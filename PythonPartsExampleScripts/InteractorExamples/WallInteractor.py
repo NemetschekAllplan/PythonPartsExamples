@@ -229,13 +229,6 @@ class WallInteractor():
             self.palette_service.update_palette(-1, False)
 
 
-    def on_cancel_by_menu_function(self):
-        """ Check for input function cancel in case of a started menu function
-        """
-
-        self.palette_service.close_palette()
-
-
     def on_cancel_function(self) -> bool:
         """ Check for input function cancel in case of ESC
 

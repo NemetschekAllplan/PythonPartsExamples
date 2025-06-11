@@ -7,8 +7,6 @@ from typing import TYPE_CHECKING
 
 import NemAll_Python_AllplanSettings as AllplanSettings
 import NemAll_Python_ArchElements as AllplanArchEle
-import NemAll_Python_BasisElements as AllplanBasisEle
-import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
 from BuildingElementAttributeList import BuildingElementAttributeList
@@ -19,7 +17,8 @@ from Utils import LibraryBitmapPreview
 from TypeCollections import ModelEleList
 
 if TYPE_CHECKING:
-    from __BuildingElementStubFiles.ProfileCatalogServiceBuildingElement import ProfileCatalogServiceBuildingElement as BuildingElement  # type: ignore
+    from __BuildingElementStubFiles.ProfileCatalogServiceBuildingElement import \
+         ProfileCatalogServiceBuildingElement as BuildingElement  # type: ignore
 else:
     from BuildingElement import BuildingElement
 
@@ -105,7 +104,7 @@ class ProfileCatalogService():
         model_ele_list = ModelEleList(build_ele.CommonProp.value)
 
         if not build_ele.Profile.value:
-            return CreateElementResult([])
+            return CreateElementResult()
 
 
         #----------------- get the profile

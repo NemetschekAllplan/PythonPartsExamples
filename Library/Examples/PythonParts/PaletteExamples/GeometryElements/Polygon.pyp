@@ -31,7 +31,7 @@
           <Parameter>
             <Name>Polygon1</Name>
             <Text>Point</Text>
-            <Value>Polygon2D(Points((0,2000)(1000,3100)(0,3500)(0,2000)))</Value>
+            <Value>Polygon2D(Points((0,2000)(1000,3100)(0,3500)))</Value>
             <ValueType>Polygon2D</ValueType>
           </Parameter>
         </Parameters>
@@ -44,7 +44,7 @@
           <Parameter>
             <Name>Polygon2</Name>
             <Text>Point</Text>
-            <Value>Polygon2D(Points((5000,2000)(8000,2000)(8000,0)(5000,0)(5000,2000)))</Value>
+            <Value>Polygon2D(Points((5000,2000)(8000,2000)(8000,0)(5000,0)))</Value>
             <ValueType>Polygon2D</ValueType>
             <XYZinRow>True</XYZinRow>
           </Parameter>
@@ -64,7 +64,7 @@
           <Parameter>
             <Name>PolygonList</Name>
             <Text>Point</Text>
-            <Value>[Polygon2D(Points((12000,2000)(14000,3100)(12000,3500)(12000,2000)));Polygon2D(Points((15000,2000)(18000,3000)(18000,0)(15000,0)(15000,2000)))]</Value>
+            <Value>[Polygon2D(Points((12000,2000)(14000,3100)(12000,3500)));Polygon2D(Points((15000,2000)(18000,3000)(18000,0)(15000,0)))]</Value>
             <ValueType>Polygon2D</ValueType>
             <ValueListStartRow>1</ValueListStartRow>
             <Dimensions>PolygonCount</Dimensions>
@@ -98,7 +98,7 @@
           <Parameter>
             <Name>Polygon6</Name>
             <Text>Point</Text>
-            <Value>Polygon3D(Points((0,7000,0)(1000,8100,1000)(0,8500,3000)(0,7000,0)))</Value>
+            <Value>Polygon3D(Points((0,7000,0)(1000,8100,1000)(0,8500,3000)))</Value>
             <ValueType>Polygon3D</ValueType>
           </Parameter>
         </Parameters>
@@ -111,7 +111,7 @@
           <Parameter>
             <Name>Polygon7</Name>
             <Text>Point</Text>
-            <Value>Polygon3D(Points((5000,7000,0)(8000,8000,0)(8000,5000,0)(5000,5000,0)(5000,7000,0)))</Value>
+            <Value>Polygon3D(Points((5000,7000,0)(8000,8000,0)(8000,5000,0)(5000,5000,0)))</Value>
             <ValueType>Polygon3D</ValueType>
             <XYZinRow>True</XYZinRow>
           </Parameter>
@@ -125,7 +125,7 @@
           <Parameter>
             <Name>Polygon8</Name>
             <Text>Point</Text>
-            <Value>Polygon3D(Points((10000,7000,0)(14000,8000,0)(18000,5000,0)(10000,5000,0)(10000,7000,0)))</Value>
+            <Value>Polygon3D(Points((10000,7000,0)(14000,8000,0)(18000,5000,0)(10000,5000,0)))</Value>
             <ValueType>Polygon3D</ValueType>
             <XYZinRow>True</XYZinRow>
             <Visible>|Y:False</Visible>

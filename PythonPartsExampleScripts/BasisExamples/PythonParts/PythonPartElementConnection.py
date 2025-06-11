@@ -24,7 +24,7 @@ from Utils import LibraryBitmapPreview
 from Utils.ElementFilter.CurvedGeometryElementFilter import CurvedGeometryElementFilter
 from Utils.ElementFilter.FilterCollection import FilterCollection
 from Utils.Geometry.ExtrudeByVectorUtil import ExtrudeByVectorUtil
-from Utils.HandleCreator.CurveHandleCreator import CurveHandleCreator
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
 
 from ValueTypes.Data.ElementGeometryConnection import ElementGeometryConnection, GeometryType
 
@@ -176,7 +176,7 @@ class PythonPartElementConnection(BaseScriptObject):
 
         handle_list  = list[HandleProperties]()
 
-        CurveHandleCreator.vector(handle_list, self.build_ele.ElementGeoConnection.value[0].geometry.StartPoint,
+        CurveHandlesCreator.vector(handle_list, self.build_ele.ElementGeoConnection.value[0].geometry.StartPoint,
                                   build_ele.ExtrusionVector.value, "ExtrusionVector")
 
         return CreateElementResult(pyp_util.create_pythonpart(build_ele),  handle_list,

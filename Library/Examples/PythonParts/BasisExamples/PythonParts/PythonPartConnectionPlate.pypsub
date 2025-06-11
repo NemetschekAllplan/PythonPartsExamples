@@ -1,70 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Element>
+<Element xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://pythonparts.allplan.com/2026/schemas/PythonPart.xsd">
     <Script>
         <Title>Plate</Title>
         <Name>BasisExamples\PythonParts\PythonPartConnectionPlate.py</Name>
+        <Version>1.0</Version>
     </Script>
     <Page>
         <Name>Parent:PythonPartConnection</Name>
         <Text>Properties</Text>
 
-        <Parameter>
-            <Name>Format</Name>
-            <Text>Format</Text>
-            <ValueType>Expander</ValueType>
+        <Parameters>
             <Parameter>
-                <Name>CommonProp</Name>
-                <Text></Text>
-                <Value></Value>
-                <ValueType>CommonProperties</ValueType>
+                <Name>Format</Name>
+                <Text>Format</Text>
+                <ValueType>Expander</ValueType>
+                <Parameters>
+                    <Parameter>
+                        <Name>CommonProp</Name>
+                        <Text></Text>
+                        <Value></Value>
+                        <ValueType>CommonProperties</ValueType>
+                    </Parameter>
+                </Parameters>
             </Parameter>
-        </Parameter>
-
-        <Parameter>
-            <Name>PlateExpander</Name>
-            <Text>Plate</Text>
-            <ValueType>Expander</ValueType>
 
             <Parameter>
-                <Name>Length</Name>
-                <Text>Length</Text>
-                <Value>2000.</Value>
-                <ValueType>Length</ValueType>
+                <Name>PlateExpander</Name>
+                <Text>Plate</Text>
+                <ValueType>Expander</ValueType>
+                <Parameters>
+                    <Parameter>
+                        <Name>Length</Name>
+                        <Text>Length</Text>
+                        <Value>2000.</Value>
+                        <ValueType>Length</ValueType>
+                    </Parameter>
+                    <Parameter>
+                        <Name>Width</Name>
+                        <Text>Width</Text>
+                        <Value>1000.</Value>
+                        <ValueType>Length</ValueType>
+                    </Parameter>
+                    <Parameter>
+                        <Name>Height</Name>
+                        <Text>Height</Text>
+                        <Value>100.</Value>
+                        <ValueType>Length</ValueType>
+                    </Parameter>
+                </Parameters>
             </Parameter>
             <Parameter>
-                <Name>Width</Name>
-                <Text>Width</Text>
-                <Value>1000.</Value>
-                <ValueType>Length</ValueType>
+                <Name>HoleExp</Name>
+                <Text>Show holes</Text>
+                <ValueType>Expander</ValueType>
+                <Parameters>
+                    <Parameter>
+                        <Name>HoleVisibility</Name>
+                        <Text></Text>
+                        <TextDyn>"Hole " + str($list_row + 1)</TextDyn>
+                        <Value>[_]</Value>
+                        <ValueType>CheckBox</ValueType>
+                    </Parameter>
+                </Parameters>
             </Parameter>
             <Parameter>
-                <Name>Height</Name>
-                <Text>Height</Text>
-                <Value>100.</Value>
-                <ValueType>Length</ValueType>
+                <Name>CreateExp</Name>
+                <Text>Create plate</Text>
+                <ValueType>Expander</ValueType>
+                <Parameters>
+                    <Parameter>
+                        <Name>CreateButtonRow</Name>
+                        <Text> </Text>
+                        <ValueType>Row</ValueType>
+                        <Parameters>
+                            <Parameter>
+                                <Name>CreateButtonRow</Name>
+                                <Text>Create</Text>
+                                <EventId>1000</EventId>
+                                <ValueType>Button</ValueType>
+                                <Visible>__is_input_mode()</Visible>
+                            </Parameter>
+                        </Parameters>
+                    </Parameter>
+                </Parameters>
             </Parameter>
-            <Parameter>
-                <Name>CreateButtonRow</Name>
-                <Text> </Text>
-                <ValueType>Row</ValueType>
-                <Parameter>
-                    <Name>CreateButtonRow</Name>
-                    <Text>Create</Text>
-                    <EventId>1000</EventId>
-                    <ValueType>Button</ValueType>
-                    <Visible>__is_input_mode()</Visible>
-                </Parameter>
-            </Parameter>
-        </Parameter>
+        </Parameters>
     </Page>
     <Page>
         <Name>__HiddenPage__</Name>
+        <Text></Text>
 
-        <Parameter>
-            <Name>__HoleConnection__</Name>
-            <Value>[]</Value>
-            <ValueType>TimeStampConnection</ValueType>
-            <Persistent>MODEL</Persistent>
-        </Parameter>
+        <Parameters>
+            <Parameter>
+                <Name>__HoleConnection__</Name>
+                <Value>[]</Value>
+                <ValueType>TimeStampConnection</ValueType>
+                <Persistent>MODEL</Persistent>
+            </Parameter>
+        </Parameters>
     </Page>
 </Element>

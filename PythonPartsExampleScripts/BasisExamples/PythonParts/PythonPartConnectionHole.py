@@ -21,6 +21,7 @@ from PythonPartPreview import PythonPartPreview
 from PythonPartTransaction import PythonPartTransaction, ConnectToPythonPart, ConnectToPythonPartState
 from PythonPartUtil import PythonPartUtil
 
+from TypeCollections.ModelEleList import ModelEleList
 from TypeCollections.ModificationElementList import ModificationElementList
 
 if TYPE_CHECKING:
@@ -53,7 +54,7 @@ class PythonPartConnectionHole():
         self.modification_ele_list = modification_ele_list
         self.modification_mode     = modification_ele_list.is_modification_element()
         self.ref_point_input       = not self.modification_mode
-        self.model_ele_list        = []
+        self.model_ele_list        = ModelEleList()
         self.placement_mat         = self.build_ele_list[0].get_insert_matrix() if self.modification_mode else AllplanGeo.Matrix3D()
         self.plate_uuid            = AllplanEleAdapter.GUID()
 
@@ -95,7 +96,7 @@ class PythonPartConnectionHole():
         pyp_transaction.execute(self.placement_mat,
                                 self.coord_input.GetViewWorldProjection(),
                                 pyp_util.create_pythonpart(self.build_ele_list,
-                                                           type_uuid = "6069d5fe-3a10-4c86-9ee9-8ae90e04e686",
+                                                           type_uuid         = "6069d5fe-3a10-4c86-9ee9-8ae90e04e686",
                                                            type_display_name = "PythonPart Hole"),
                                 self.modification_ele_list)
 
@@ -130,7 +131,7 @@ class PythonPartConnectionHole():
             _, name, parameters = AllplanBaseEle.PythonPartService.GetParameter(sel_plate)
 
             if "pythonpartconnection" not in name.lower() or \
-                not next((True for parameter in parameters if parameter.find("__HoleConnection__") != -1), False):
+                not next((True for parameter in parameters if parameter.find("__HoleConnection__") != -1), False):  # pylint: disable=magic-value-comparison
                 return True
 
             self.build_ele.__PlateConnection__.value.element = sel_plate
@@ -192,7 +193,7 @@ class PythonPartConnectionHole():
 
         com_prop.HelpConstruction = True
 
-        self.model_ele_list = [AllplanBasisEle.ModelElement3D(com_prop, hole)]
+        self.model_ele_list = ModelEleList(element = AllplanBasisEle.ModelElement3D(com_prop, hole))
 
 
     def draw_preview(self):
