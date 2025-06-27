@@ -50,7 +50,7 @@
           </Parameter>
           <Parameter>
             <Name>BRepColor</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>3</Value>
             <ValueType>Color</ValueType>
           </Parameter>
@@ -69,7 +69,7 @@
           </Parameter>
           <Parameter>
             <Name>SphereColor</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>4</Value>
             <ValueType>Color</ValueType>
           </Parameter>

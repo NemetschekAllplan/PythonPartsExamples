@@ -147,7 +147,7 @@ Uncheck the box, to reduce the amout of text printed in the trace.</Text>
         <Parameters>
           <Parameter>
             <Name>ColorID</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>255</Value>
             <ValueType>Integer</ValueType>
             <ValueDialog>RGBColorDialog</ValueDialog>

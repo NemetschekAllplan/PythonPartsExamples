@@ -58,7 +58,7 @@ edit_width_overall  = color_width_general / 2
               </Parameter>
               <Parameter>
                 <Name>Color1</Name>
-                <Text>Color</Text>
+                <Text>Line color</Text>
                 <TextId>e_COLOR</TextId>
                 <Value>1</Value>
                 <ValueType>Color</ValueType>
@@ -103,7 +103,7 @@ edit_width_overall  = color_width_general / 2
               </Parameter>
               <Parameter>
                 <Name>Color1</Name>
-                <Text>Color</Text>
+                <Text>Line color</Text>
                 <TextId>e_COLOR</TextId>
                 <Value>1</Value>
                 <ValueType>Color</ValueType>
@@ -147,7 +147,7 @@ edit_width_overall  = color_width_general / 2
               </Parameter>
               <Parameter>
                 <Name>Color2</Name>
-                <Text>Color</Text>
+                <Text>Line color</Text>
                 <TextId>e_COLOR</TextId>
                 <Value>2</Value>
                 <ValueType>Color</ValueType>
@@ -193,7 +193,7 @@ edit_width_overall  = color_width_general / 2
               </Parameter>
               <Parameter>
                 <Name>Color2</Name>
-                <Text>Color</Text>
+                <Text>Line color</Text>
                 <TextId>e_COLOR</TextId>
                 <Value>2</Value>
                 <ValueType>Color</ValueType>
@@ -237,7 +237,7 @@ edit_width_overall  = color_width_general / 2
               </Parameter>
               <Parameter>
                 <Name>Color3</Name>
-                <Text>Color</Text>
+                <Text>Line color</Text>
                 <TextId>e_COLOR</TextId>
                 <Value>3</Value>
                 <ValueType>Color</ValueType>

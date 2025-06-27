@@ -40,21 +40,21 @@
       </Parameter>
       <Parameter>
         <Name>Pen</Name>
-        <Text>Pen</Text>
+        <Text>Line thickness</Text>
         <Value>1</Value>
         <!-- <Enable>CheckBox1 == True</Enable> see possible implementation of the enable function in the py file -->
         <ValueType>Pen</ValueType>
       </Parameter>
       <Parameter>
         <Name>Stroke</Name>
-        <Text>Stroke</Text>
+        <Text>Line type</Text>
         <Value>1</Value>
         <Visible>CheckBox1 == True and CheckBox2 == True</Visible>
         <ValueType>Stroke</ValueType>
       </Parameter>
       <Parameter>
         <Name>Color</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>1</Value>
         <Visible>
 if CheckBox1 and CheckBox2:

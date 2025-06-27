@@ -11,7 +11,8 @@ from CreateElementResult import CreateElementResult
 from TypeCollections.HandleList import HandleList
 from TypeCollections.ModelEleList import ModelEleList
 
-from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator, PolyPointsDistanceType
+from Utils.HandleCreator.CurveHandlesCreator import CurveHandlesCreator
+from Utils.HandleCreator.PolyPointsDistanceType import PolyPointsDistanceType
 from Utils import LibraryBitmapPreview
 
 if TYPE_CHECKING:

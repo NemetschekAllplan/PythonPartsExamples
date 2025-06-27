@@ -36,7 +36,7 @@
           </Parameter>
           <Parameter>
             <Name>PolyhedColor1</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>4</Value>
             <ValueType>Color</ValueType>
           </Parameter>
@@ -62,7 +62,7 @@
           </Parameter>
           <Parameter>
             <Name>PolyhedColor2</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>3</Value>
             <ValueType>Color</ValueType>
           </Parameter>

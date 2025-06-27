@@ -1,21 +1,32 @@
-﻿"""
-Example Script for Dimensioning
+﻿""" Example Script for Construction point symbol example
 """
+
+from typing import TYPE_CHECKING
 
 import NemAll_Python_Geometry as AllplanGeo
 import NemAll_Python_BaseElements as AllplanBaseElements
 import NemAll_Python_BasisElements as AllplanBasisElements
+import NemAll_Python_IFW_ElementAdapter as AllplanEleAdapter
 
-print('Load Dimensioning.py')
+from CreateElementResult import CreateElementResult
+from TypeCollections import ModelEleList
+from Utils import LibraryBitmapPreview
 
+if TYPE_CHECKING:
+    from __BuildingElementStubFiles.ConstructionPointComboboxBuildingElement \
+        import ConstructionPointComboboxBuildingElement as BuildingElement  # type: ignore
+else:
+    from BuildingElement import BuildingElement
 
-def check_allplan_version(_build_ele, _version):
-    """
-    Check the current Allplan version
+print('Load ConstructionPointSymbolExample.py')
+
+def check_allplan_version(_build_ele: BuildingElement,
+                          _version  : float) -> bool:
+    """ Check the current Allplan version
 
     Args:
-        build_ele: the building element.
-        version:   the current Allplan version
+        _build_ele: building element
+        _version:   the current Allplan version
 
     Returns:
         True/False if version is supported by this script
@@ -24,48 +35,63 @@ def check_allplan_version(_build_ele, _version):
     # Support all versions
     return True
 
-
-def create_element(build_ele, doc):
-    """
-    Creation of element
+def create_preview(_build_ele: BuildingElement,
+                   _doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
+    """ Creation of the element preview
 
     Args:
-        build_ele: the building element.
-        doc:       input document
+        _build_ele: building element with the parameter properties
+        _doc:       document of the Allplan drawing files
+
+    Returns:
+        created elements for the preview
     """
 
-    element = DimensioningExample(doc)
+    return CreateElementResult(
+            LibraryBitmapPreview.create_library_bitmap_preview(fr"{_build_ele.pyp_file_path}\{_build_ele.pyp_name}.png"))
+
+def create_element(build_ele: BuildingElement,
+                   doc      : AllplanEleAdapter.DocumentAdapter) -> CreateElementResult:
+    """ Creation of element
+
+    Args:
+        build_ele: building element with the parameter properties
+        doc:       document of the Allplan drawing files
+
+    Returns:
+        created element result
+    """
+
+    element = ConstructionPointSymbolExample(doc)
 
     return element.create(build_ele)
 
 
-class DimensioningExample():
-    """
-    Definition of class DimensioningExample
+class ConstructionPointSymbolExample():
+    """Definition of class ConstructionPointSymbolExample
     """
 
     def __init__(self, doc):
-        """
-        Initialization of class DimensioningExample
+        """Initialization of class ConstructionPointSymbolExample
 
         Args:
-            doc: input document
+            doc (AllplanBasisElements.Document): The input document.
         """
 
-        self.model_ele_list = []
+        self.model_ele_list = ModelEleList()
         self.handle_list    = []
         self.document       = doc
 
 
-    def create(self, build_ele):
-        """
-        Create the elements
+    def create(self,
+               build_ele: BuildingElement) -> CreateElementResult:
+        """ Create the elements
 
         Args:
-            build_ele:  the building element.
+            build_ele: building element with the parameter properties
 
         Returns:
-            tuple  with created elements and handles.
+            create element result
         """
 
         #----------------- Extract palette parameter values
@@ -81,13 +107,12 @@ class DimensioningExample():
         polyline = AllplanGeo.Polyline2D()
         polyline += AllplanGeo.Point2D()
 
-        for i in range(1,5):
+        for i in range(1,3):
             polyline += AllplanGeo.Point2D(length * i,height * (i - 1))
             polyline += AllplanGeo.Point2D(length * i,height * i)
 
         for i in range(0,polyline.Count()):
             dim_points.append(AllplanGeo.Point3D(polyline[i]))
-
 
         #------------------ Define common properties, take global Allplan settings
 
@@ -144,4 +169,4 @@ class DimensioningExample():
         self.model_ele_list.append(elevation_x)
         self.model_ele_list.append(elevation_y)
 
-        return (self.model_ele_list, self.handle_list)
+        return CreateElementResult(self.model_ele_list, self.handle_list)

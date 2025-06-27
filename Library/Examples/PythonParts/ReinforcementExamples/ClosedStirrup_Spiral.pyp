@@ -114,19 +114,19 @@
           </Parameter>
           <Parameter>
             <Name>Pen</Name>
-            <Text>Pen</Text>
+            <Text>Line thickness</Text>
             <Value>1</Value>
             <ValueType>Pen</ValueType>
           </Parameter>
           <Parameter>
             <Name>Stroke</Name>
-            <Text>Stroke</Text>
+            <Text>Line type</Text>
             <Value>1</Value>
             <ValueType>Stroke</ValueType>
           </Parameter>
           <Parameter>
             <Name>Color</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>1</Value>
             <ValueType>Color</ValueType>
           </Parameter>

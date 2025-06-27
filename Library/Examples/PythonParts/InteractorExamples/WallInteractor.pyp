@@ -180,7 +180,7 @@
       </Parameter>
       <Parameter>
         <Name>Pen</Name>
-        <Text>Pen</Text>
+        <Text>Line thickness</Text>
         <TextId>e_PEN</TextId>
         <Value>[1] * 2</Value>
         <ValueType>Pen</ValueType>
@@ -218,7 +218,7 @@
       </Parameter>
       <Parameter>
         <Name>Color</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <TextId>e_COLOR</TextId>
         <Value>[7] * 2</Value>
         <ValueType>Color</ValueType>

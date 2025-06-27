@@ -150,8 +150,8 @@ def create_label(build_ele: BuildingElement) -> AllplanReinf.ReinforcementLabel:
     # show bar markers on the dimension line for all bars or just the first and last one
     label.ShowAllBars(build_ele.ShowAllBars.value)
 
-    label.SetTextProperties(text_props)
-    label.SetShowTextPointer(build_ele.ShowTextPointer.value)
-    label.SetShowTextPointerEndSymbol(build_ele.ShowTextPointerEndSymbol.value)
+    label.TextProperties           = text_props
+    label.ShowTextPointer          = build_ele.ShowTextPointer.value
+    label.PointerProperties        = build_ele.PointerProperties.value
 
     return label

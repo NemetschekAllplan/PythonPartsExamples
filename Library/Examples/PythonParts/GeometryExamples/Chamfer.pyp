@@ -8,10 +8,10 @@
   <!--<Page>
         <Name>Line3D</Name>
         <Text>Line3D</Text>
-        
+
         <Parameter>
             <Name>Color2</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>2</Value>
             <ValueType>Color</ValueType>
         </Parameter>
@@ -112,7 +112,7 @@
     <Parameters>
       <Parameter>
         <Name>Color4</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>4</Value>
         <ValueType>Color</ValueType>
       </Parameter>
@@ -154,7 +154,7 @@
     <Parameters>
       <Parameter>
         <Name>Color5</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>5</Value>
         <ValueType>Color</ValueType>
       </Parameter>

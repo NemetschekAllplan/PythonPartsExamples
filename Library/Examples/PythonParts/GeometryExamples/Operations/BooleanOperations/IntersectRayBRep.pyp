@@ -56,7 +56,7 @@
           </Parameter>
           <Parameter>
             <Name>RayLine1Color</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>4</Value>
             <ValueType>Color</ValueType>
           </Parameter>

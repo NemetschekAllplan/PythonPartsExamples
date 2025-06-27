@@ -37,7 +37,7 @@
           </Parameter>
           <Parameter>
             <Name>PolygonColor</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>4</Value>
             <ValueType>Color</ValueType>
           </Parameter>
@@ -70,7 +70,7 @@
           </Parameter>
           <Parameter>
             <Name>BRepColor</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>3</Value>
             <ValueType>Color</ValueType>
           </Parameter>
@@ -96,7 +96,7 @@
           </Parameter>
           <Parameter>
             <Name>PolyhedColor</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>3</Value>
             <ValueType>Color</ValueType>
           </Parameter>

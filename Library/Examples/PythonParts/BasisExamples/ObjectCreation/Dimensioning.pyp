@@ -21,6 +21,20 @@
         <Value>2000.</Value>
         <ValueType>Length</ValueType>
       </Parameter>
+      <Parameter>
+        <Name>PointSymbolElevation</Name>
+        <Text>Point symbol for elevation</Text>        
+        <Value>1001</Value>
+        <ValueList>ElevationDimension</ValueList>
+        <ValueType>ConstructionPointSymbol</ValueType>
+      </Parameter>
+      <Parameter>
+        <Name>PointSymbolLine</Name>
+        <Text>Point symbol for line</Text>        
+        <Value>1</Value>
+        <ValueList>LineDimension</ValueList>
+        <ValueType>ConstructionPointSymbol</ValueType>       
+      </Parameter>
     </Parameters>
   </Page>
 </Element>

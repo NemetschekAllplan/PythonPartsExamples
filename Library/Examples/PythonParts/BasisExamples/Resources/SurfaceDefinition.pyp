@@ -109,7 +109,7 @@
       </Parameter>
       <Parameter>
         <Name>ColorExpander</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <ValueType>Expander</ValueType>
         <Parameters>
           <Parameter>
@@ -141,7 +141,7 @@
           </Parameter>
           <Parameter>
             <Name>DiffuseColor</Name>
-            <Text>Color</Text>
+            <Text>Line color</Text>
             <Value>255</Value>
             <ValueType>Integer</ValueType>
             <ValueDialog>RGBColorDialog</ValueDialog>

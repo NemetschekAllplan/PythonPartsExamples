@@ -546,6 +546,14 @@ return (0, 0, 255)
         <ValueDialog>BitmapResourceDialog</ValueDialog>
       </Parameter>
       <Parameter>
+        <Name>DrawingFile</Name>
+        <Text>DrawingFile</Text>
+        <Value/>
+        <ValueType>DrawingFile</ValueType>
+        <SingleSelection>False</SingleSelection>
+        <DeactivateDerived>False</DeactivateDerived>
+      </Parameter>
+      <Parameter>
         <Name>BottomPlane</Name>
         <Text>Bottom plane</Text>
         <Value/>
@@ -619,19 +627,19 @@ return (0, 0, 255)
     <Parameters>
       <Parameter>
         <Name>Pen</Name>
-        <Text>Pen</Text>
+        <Text>Line thickness</Text>
         <Value>-1</Value>
         <ValueType>Pen</ValueType>
       </Parameter>
       <Parameter>
         <Name>Stroke</Name>
-        <Text>Stroke</Text>
+        <Text>Line type</Text>
         <Value>-1</Value>
         <ValueType>Stroke</ValueType>
       </Parameter>
       <Parameter>
         <Name>Color</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>-1</Value>
         <ValueType>Color</ValueType>
       </Parameter>

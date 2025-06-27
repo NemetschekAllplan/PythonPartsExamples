@@ -74,7 +74,7 @@
       </Parameter>
       <Parameter>
         <Name>ColorID</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>16711680</Value>
         <ValueType>Integer</ValueType>
         <ValueDialog>RGBColorDialog</ValueDialog>

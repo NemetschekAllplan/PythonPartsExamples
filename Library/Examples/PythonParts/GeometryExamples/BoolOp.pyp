@@ -15,7 +15,7 @@
     <Parameters>
       <Parameter>
         <Name>Color1</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>8</Value>
         <ValueType>Color</ValueType>
       </Parameter>
@@ -110,7 +110,7 @@
     <Parameters>
       <Parameter>
         <Name>Color2</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>5</Value>
         <ValueType>Color</ValueType>
       </Parameter>
@@ -252,7 +252,7 @@
     <Parameters>
       <Parameter>
         <Name>Color4</Name>
-        <Text>Color</Text>
+        <Text>Line color</Text>
         <Value>4</Value>
         <ValueType>Color</ValueType>
       </Parameter>
