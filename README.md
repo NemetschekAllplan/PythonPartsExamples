@@ -20,7 +20,7 @@ You can download the examples using a tool included in the SDK. Is you want
 to install them **manually**, follow these steps:
 
 1.  Switch to the branch adequate to the Allplan version you are using. You are now
-    on the branch with examples for **ALLPLAN 2026**.
+    on the branch with examples for **ALLPLAN 2027**.
 2.  Save the files to the **USR** location of your Allplan installation:
 
     *   Obtain the USR directory by opening Allmenu -> Service -> File explorer ->
