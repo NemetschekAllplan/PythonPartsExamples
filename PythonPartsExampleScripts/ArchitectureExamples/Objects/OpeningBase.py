@@ -194,7 +194,8 @@ class OpeningBase(BaseScriptObject):
         if build_ele.get_property("HasIndependent2DInteraction") is not None:
             has_independent_interaction = build_ele.HasIndependent2DInteraction.value
 
-        self.hide_ele.hide_opening_parent_element(self.placement_ele, has_independent_interaction)
+        if not self.placement_ele.IsNull():
+            self.hide_ele.hide_opening_parent_element(self.placement_ele, has_independent_interaction)
 
 
     def modify_element_property(self,
@@ -303,5 +304,7 @@ class OpeningBase(BaseScriptObject):
             return OnCancelFunctionResult.CANCEL_INPUT
 
         self.hide_ele.show_elements()
+
+        self.placement_ele = AllplanEleAdapter.BaseElementAdapter()
 
         return OnCancelFunctionResult.CREATE_ELEMENTS

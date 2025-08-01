@@ -100,6 +100,13 @@
         <Enable>False</Enable>
         <ValueType>CheckBox</ValueType>
       </Parameter>
+      <Parameter>
+        <Name>IsUserSysAdmin</Name>
+        <Text>Is current user sys admin</Text>
+        <Value>False</Value>
+        <Enable>False</Enable>
+        <ValueType>CheckBox</ValueType>
+      </Parameter>
     </Parameters>
   </Page>
 </Element>

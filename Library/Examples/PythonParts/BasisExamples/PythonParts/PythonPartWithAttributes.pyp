@@ -40,6 +40,58 @@
             </Parameters>
         </Parameter>
         <Parameter>
+            <Name>DrawingTypeExp</Name>
+            <Text>Drawing type</Text>
+            <ValueType>Expander</ValueType>
+            <Parameters>
+                <Parameter>
+                    <Name>AllDrawingTypesRow</Name>
+                    <Text>All drawing types</Text>
+                    <ValueType>Row</ValueType>
+                    <Parameters>
+                        <Parameter>
+                            <Name>AllDrawingTypes</Name>
+                            <Text></Text>
+                            <Value>True</Value>
+                            <ValueType>CheckBox</ValueType>
+                        </Parameter>
+                        <Parameter>
+                            <Name>ScaleDependent</Name>
+                            <Text></Text>
+                            <Value>Scale dependent</Value>
+                            <ValueType>Text</ValueType>
+                        </Parameter>
+                    </Parameters>
+                </Parameter>
+                <Parameter>
+                    <Name>DrawingTypesListGroup</Name>
+                    <ValueType>ListGroup</ValueType>
+                    <Parameters>
+                        <Parameter>
+                            <Name>DrawingTypesRow</Name>
+                            <TextDyn>" " * ($list_row + 1)</TextDyn>
+                            <ValueType>Row</ValueType>
+                            <Visible>not AllDrawingTypes</Visible>
+                            <Parameters>
+                                <Parameter>
+                                    <Name>DrawingTypes</Name>
+                                    <Text></Text>
+                                    <Value>[False] * 10</Value>
+                                    <ValueType>CheckBox</ValueType>
+                                </Parameter>
+                                <Parameter>
+                                    <Name>DrawingTypesText</Name>
+                                    <Text></Text>
+                                    <Value>["Schematic design drawing", "Design drawing", "Building drawing", "Working drawing", "Presentation drawing", "KeyPlan", "GeneralArrangement drawing", "Reinforcement drawing", "Building alteration drawing", "Building alteration drawing colored"]</Value>
+                                    <ValueType>Text</ValueType>
+                                </Parameter>
+                            </Parameters>
+                        </Parameter>
+                    </Parameters>
+                </Parameter>
+            </Parameters>
+        </Parameter>
+        <Parameter>
             <Name>AttributesExpander</Name>
             <Text>Attributes</Text>
             <ValueType>Expander</ValueType>

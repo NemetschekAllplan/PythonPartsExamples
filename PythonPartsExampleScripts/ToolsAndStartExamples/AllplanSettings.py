@@ -132,6 +132,8 @@ class AllplanSettingsExample():
 
         build_ele.IsDarkTheme.value = AllplanEnvironment.is_dark_mode()
 
+        build_ele.IsUserSysAdmin.value = AllplanSettings.UserService.IsCurrentUserSysAdmin()
+
         return
 
 

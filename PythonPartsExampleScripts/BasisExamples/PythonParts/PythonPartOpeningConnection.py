@@ -21,6 +21,7 @@ from TypeCollections.ModelEleList import ModelEleList
 
 from Utils import LibraryBitmapPreview
 from Utils.ElementFilter.ArchitectureElementsQueryUtil import ArchitectureElementsQueryUtil
+from Utils.General.BuildingElementParameterUtil import BuildingElementParameterUtil
 
 from ValueTypes.Data.ElementGeometryConnection import ElementGeometryConnection, GeometryType
 
@@ -103,28 +104,25 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
         self.select_opening_for_copy = False
 
+        self.opening_ele = build_ele.OpeningConnection.value.element
+
 
         #----------------- check for modification
 
         if self.execution_event == AllplanSettings.ExecutionEvent.eCreation:
             return
 
-        python_part = self.modification_ele_list.get_base_element_adapter(self.document)
+        if self.execution_event == AllplanSettings.ExecutionEvent.eCopy:
+            build_ele.InputMode.value = build_ele.PARAMETER_MODIFICATION
 
-        self.opening_ele = build_ele.OpeningConnection.value.element
+            return
 
-        if str(python_part.GetModelElementUUID()) != build_ele.PythonPartUUID.value:
+        if self.opening_ele.IsNull():
             AllplanUtil.ShowMessageBox("You are modifying a copied PythonPart!\n\n"
                                         "Please select the opening for the connection",
                                         AllplanUtil.MB_OK)
 
             self.select_opening_for_copy = True
-
-            return
-
-        if not self.opening_ele.IsValid():
-            AllplanUtil.ShowMessageBox("The opening is deleted ---> PythonPart will be deleted",
-                                       AllplanUtil.MB_OK)
 
             return
 
@@ -137,8 +135,14 @@ class PythonPartOpeningConnection(BaseScriptObject):
 
         build_ele = self.build_ele
 
+
+        #----------------- check for modification
+
         if self.is_only_update or self.execution_event != AllplanSettings.ExecutionEvent.eCreation and not self.select_opening_for_copy:
             return
+
+
+        #----------------- select the opening
 
         self.script_object_interactor = SingleElementSelectInteractor(self.sel_result,
                                                                       ArchitectureElementsQueryUtil.create_vertical_arch_opening_query(),
@@ -172,33 +176,50 @@ class PythonPartOpeningConnection(BaseScriptObject):
         build_ele = self.build_ele
 
 
+        #----------------- calculate multiple opening elements in case of PythonPart copy
+
+        if self.execution_event == AllplanSettings.ExecutionEvent.eCopy:
+            if len(self.modification_ele_list.get_base_element_adapter_list(self.document)) > 1:
+                model_ele_list = ModelEleList()
+
+                for ele in self.modification_ele_list.get_base_element_adapter_list(self.document):
+                    BuildingElementParameterUtil.fill_parameter_from_python_part(build_ele, ele, self.org_and_copy_ele_guids)
+
+                    self.opening_ele = build_ele.OpeningConnection.value.element
+
+                    model_ele_list.extend(self.create_opening_pyp())
+
+                return CreateElementResult(model_ele_list,
+                                           placement_point= AllplanGeo.Point3D())
+
+
+
+            #------------- if the opening element is not set, return empty result in case of copy
+
+            if self.opening_ele.IsNull():
+                return CreateElementResult()
+
+
         #----------------- delete the PythonPart
 
-        if not self.opening_ele.IsValid():
-            pyp_uuid = AllplanEleAdapter.GUID.FromString(build_ele.PythonPartUUID.value)
-
-            pyp_ele = AllplanEleAdapter.BaseElementAdapter.FromGUID(pyp_uuid, self.document)
-
-            return CreateElementResult(ModelEleList(), elements_to_delete = AllplanEleAdapter.BaseElementAdapterList([pyp_ele]))
+        if self.opening_ele.IsNull() and self.execution_event != AllplanSettings.ExecutionEvent.eCopy:
+            return CreateElementResult(ModelEleList(),
+                                       elements_to_delete = AllplanEleAdapter.BaseElementAdapterList( \
+                                           [self.modification_ele_list.get_base_element_adapter(self.document)]))
 
 
         #----------------- create the PythonPart
 
-        pyp_util = PythonPartUtil()
-
-        pyp_util.add_pythonpart_view_2d3d(self.create_opening_element())
-
-        return CreateElementResult(pyp_util.create_pythonpart(build_ele),
+        return CreateElementResult(self.create_opening_pyp(),
                                    placement_point = AllplanGeo.Point3D(),
-                                   multi_placement = True,
-                                   uuid_parameter_name = "PythonPartUUID")
+                                   multi_placement = True)
 
 
-    def create_opening_element(self) -> ModelEleList:
-        """ extrude the geometry
+    def create_opening_pyp(self) -> ModelEleList:
+        """ create the opening PythonPart
 
         Returns:
-            created model elements
+            created model elements for the opening PythonPart
         """
 
         build_ele = self.build_ele
@@ -279,4 +300,11 @@ class PythonPartOpeningConnection(BaseScriptObject):
         model_ele_list.append_geometry_3d_with_texture(AllplanGeo.Transform(pane_ele, placement_mat),
                                                        AllplanBasisEle.TextureDefinition(build_ele.PaneSurface.value))
 
-        return model_ele_list
+       #----------------- create the PythonPart
+
+        pyp_util = PythonPartUtil()
+
+        pyp_util.add_pythonpart_view_2d3d(model_ele_list)
+
+        return pyp_util.create_pythonpart(build_ele)
+

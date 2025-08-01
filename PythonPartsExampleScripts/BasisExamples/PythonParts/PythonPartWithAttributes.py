@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import NemAll_Python_BaseElements as AllplanBaseEle
 import NemAll_Python_Geometry as AllplanGeo
 
 from BaseScriptObject import BaseScriptObject, BaseScriptObjectData
@@ -18,6 +19,8 @@ from BuildingElementAttributeList import BuildingElementAttributeList
 from CreateElementResult import CreateElementResult
 from PythonPart import PythonPart
 from PythonPartUtil import PythonPartUtil
+from PythonPartViewData import PythonPartViewData
+
 from TypeCollections.ModelEleList import ModelEleList
 
 from Utilities.AttributeIdEnums import AttributeIdEnums
@@ -131,7 +134,12 @@ class PythonPartWithAttributes(BaseScriptObject):
 
         python_part_util = PythonPartUtil(build_ele.CommonProp.value)
 
-        python_part_util.add_pythonpart_view_2d3d(self.create_bottom_cuboid() + self.create_top_cuboid())
+        start_index = int(AllplanBaseEle.DrawingTypeService.DefaultDrawingTypes.eSchematicDesignDrawing)    # type: ignore
+
+        view_data = PythonPartViewData(all_drawing_types = build_ele.AllDrawingTypes.value,
+                                       drawing_types     = [start_index + index for index, item in enumerate(build_ele.DrawingTypes.value) if item])
+
+        python_part_util.add_pythonpart_view_2d3d(self.create_bottom_cuboid() + self.create_top_cuboid(), view_data)
 
         if build_ele.AppendGeometryAttributes.value:
             geometry_attributes = BuildingElementAttributeList()
